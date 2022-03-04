@@ -6,6 +6,7 @@ plot (fk$GPP,fk$SmothedMoisture)
 plot (fk$GPP,fk$SmothedTEMP)
 
 plot(fk$SmothedMoisture,fk$GPP)
+#test
 
 # Fsoil = Fref * θ [1 − c(θ − θopt)]^2*ebTs ,
 # Where Ts – in soil temperature, θ – soil moisture, Fref - is the basal Fsoil when Ts is 0 ◦C (µmol CO2 m−2 s −1 ),  θopt – optimum soil moisture for the biggest efflux.
