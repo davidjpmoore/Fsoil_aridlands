@@ -1,6 +1,6 @@
 #load Kendall data in R
-datarainman=read.csv("RainMan 2022/kendall2017.csv", header=TRUE, na.strings = "NaN", sep=";")
-dataGPP=read.csv("RainMan 2022/GPP_data.csv", header=TRUE, sep=";")
+datarainman=read.csv("data/kendall2017.csv", header=TRUE, na.strings = "NaN", sep=";")
+dataGPP=read.csv("data/GPP_data.csv", header=TRUE, sep=";")
 
 plot(dataGPP$GPP)
 
@@ -30,7 +30,7 @@ mutate(c,Tsall=Ts_1+TFs_2+TFs_3+Ts_4)
 setwd("C:/Users/sunlife1408/Documents/RainMan2022")
 
 #open cvs
-rains=read.csv("20162017Meteo.csv", header=TRUE, na.strings = "NaN", sep=";")
+rains=read.csv("data/20162017Meteo.csv", header=TRUE, na.strings = "NaN", sep=";")
 
 # read precip. column from dataset
 p = X20162017Meteo$P
