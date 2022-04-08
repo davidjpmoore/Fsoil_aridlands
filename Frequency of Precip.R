@@ -242,6 +242,27 @@ plot(x9,y9,
      xlab='Time',
      ylab='GPP [micromol CO2 m-2 s-1]')
 
+x10=dataP_6_Pulse1$ST5 
+y10=dataP_6_Pulse1$Reco
+plot(x10,y10,
+     xlab='Soil temperature 5cm',
+     ylab='Reco [micromol CO2 m-2 s-1]')
+
+x11=dataP_6_Pulse1$dateS 
+y11=dataP_6_Pulse1$r
+plot(x11,y11,
+     xlab='Time',
+     ylab='Rain [mm]')
+
+cor(dataP_6_Pulse1$SWC5, dataP_6_Pulse1$Reco, method = c("pearson"))
+cor(dataP_6_Pulse1$ST30, dataP_6_Pulse1$Reco, method = c("pearson"))
+cor(dataP_6_Pulse1$AT2, dataP_6_Pulse1$Reco, method = c("pearson"))
+cor(dataP_6_Pulse1$NEE, dataP_6_Pulse1$Reco, method = c("pearson"))
+cor(dataP_6_Pulse1$GPP, dataP_6_Pulse1$Reco, method = c("pearson"))
+
+
+
+
 
 
 
