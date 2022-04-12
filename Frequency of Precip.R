@@ -1,6 +1,9 @@
 #load Kendall data in R
 library(dplyr)
 library(lubridate)
+library(skimr)
+library(data.table)
+
 
 datarainman=read.csv("data/kendall2017.csv", header=TRUE, na.strings = "NaN", sep=";")
 dataGPP=read.csv("data/GPP_data.csv", header=TRUE, sep=";")
@@ -132,6 +135,7 @@ dataP$timeStart <- paste(dataP$hour,dataP$min, sep=":")
 dataP$dateEnd <- paste(dataP$year1, dataP$month1, dataP$day1, sep="-")
 dataP$timeEnd <- paste(dataP$hour1,dataP$min1, sep=":")
 
+
 dataP$data_time_Start <- paste(dataP$dateStart,dataP$timeStart)
 dataP$data_time_End <- paste(dataP$dateEnd,dataP$timeEnd)
 
@@ -260,11 +264,48 @@ cor(dataP_6_Pulse1$AT2, dataP_6_Pulse1$Reco, method = c("pearson"))
 cor(dataP_6_Pulse1$NEE, dataP_6_Pulse1$Reco, method = c("pearson"))
 cor(dataP_6_Pulse1$GPP, dataP_6_Pulse1$Reco, method = c("pearson"))
 
+a=dataP$data_time_Start
+b=dataP$r
+plot(a,b,
+     alab='Time',
+     blab='Rain [mm]')
+
+#summery about your dataset
+
+library(skimr)
+install.packages("skimr")
+skim(dataP)
+
+#making DOY 
+dataP$DOY_S <- paste(yday(dataP$dateStart))
+dataP$DOY_E <- paste(yday(dataP$dateEnd))
+
+# 1. Create classification of the rain events based on the rain event in mm: 
+# o-0.5 mm, >0.5 - 1 mm, >1-5 mm, >5-10 mm, >10-20 mm, >20-30 mm, >30-40 mm  
+
+# 2. Making the data set for each event including: 
+# Date S/E, DOY_S/E, NEE, Reco, GPP, Ts 5, 15, 30, cm, SM 5,15,30 cm, AT 2m, RH 2m
+
+# 3. Create the lag function to look the initial conditions of each rain event
+
+# 4. DOY of the seasons:
+# DOY = 60-181 - Spring 
+# DOY = 305-59 - Winter
+# DOY = 182-304 - Summer 
+# Make classification based on the season, initial conditions and size of the rain event
+
+
+
+# Choosing the dates with Rain events in DataP
+
+dataP$RainEvent <- paste(dataP$r>0)
+dataP$RainEvent <- as.numeric(dataP$r>0)
+
+dataP$Rain_DOY <- as.numeric(dataP$RainEvent)*as.numeric(dataP$DOY_S)
+
+sum(dataP$RainEvent, na.rm=FALSE)
 
 
 
 
-
-
-
-
+ 
