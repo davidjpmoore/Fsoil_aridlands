@@ -25,20 +25,21 @@ datarain$day1=substr(datarain$TIMESTAMP_END, 7,8)
 datarain$hour1=substr(datarain$TIMESTAMP_END,9,10)
 datarain$min1=substr(datarain$TIMESTAMP_END,11,12)
 
-#Rename these columns
-rename(datarain, r=P)
-rename(datarain, SWC5=SWC_1_1_1)
-rename(datarain, SWC15=SWC_1_2_1)
-rename(datarain, SWC30=SWC_1_3_1)
-rename(datarain, ST5=TS_1_1_1)
-rename(datarain, ST15=TS_1_2_1)
-rename(datarain, ST30=TS_1_3_1)
-rename(datarain, AT2=TA_1_2_1)
-rename(datarain, AT6=TA_1_1_1)
-rename(datarain, RH2=RH_1_2_1)
-rename(datarain, RH6=RH_1_1_1)
+# #Rename these columns
+# iris <- as_tibble(iris) # so it prints a little nicer
+# rename(iris, petal_length = Petal.Length)
 
-#For some reasons THESE FUNCTIONS DO NOT WORK
+#ASSIGN the result of the rename function to the same dataframe
+datarain <-  rename(datarain, r=P, 
+                    SWC5=SWC_1_1_1, 
+                    SWC30=SWC_1_3_1,
+                    ST5=TS_1_1_1,  
+                    ST15=TS_1_2_1, 
+                    ST30=TS_1_3_1,
+                    AT2=TA_1_2_1,
+                    AT6=TA_1_1_1, 
+                    RH2=RH_1_2_1,
+                       RH6=RH_1_1_1)
 
 #I did not delete this data frame because I still do not have these in datarain Data set
 dataP <- data.frame(year=Years,
