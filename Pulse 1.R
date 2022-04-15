@@ -76,6 +76,7 @@ ggplot(Pulse1, aes(x=Pulse1$DOY_S))+
   geom_point(aes(y=Pulse1$SWC5, color="blue"))
 
 
+
 ggplot(Pulse1, aes(x=Pulse1$DOY_S, Pulse1$RECO))+
   geom_point(aes(y=Pulse1$RECO, color="red"))+
   geom_point(aes(y=Pulse1$SWC5, color="blue"))+

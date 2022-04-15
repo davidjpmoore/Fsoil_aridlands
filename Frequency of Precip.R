@@ -305,7 +305,24 @@ dataP$Rain_DOY <- as.numeric(dataP$RainEvent)*as.numeric(dataP$DOY_S)
 
 sum(dataP$RainEvent, na.rm=FALSE)
 
+#Create a data set for a one pulse 
+Pulse1 <- 
+  dataP %>%
+filter(DOY_S %in% (175:186)) 
+
+# Calculate the summary for initial conditions one the time after the rain event
+# Sum / Average / Daily things
+
+#library(dplyr)
+dataP %>%
+  group_by(DOY_S) %>%
+  dplyr::mutate(sum_rain = sum(r))
 
 
 
- 
+
+
+
+
+
+

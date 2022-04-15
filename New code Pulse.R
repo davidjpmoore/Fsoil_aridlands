@@ -103,6 +103,7 @@ datarain <- datarain %>%
   mutate(sum_rain = sum(r))
 
 
+
 summary1 <- datarain %>%
   group_by(as.numeric(DOY_S)) %>%
   summarise(sum_rain = sum(r))
