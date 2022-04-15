@@ -3,10 +3,25 @@
 
 #packages we need
 library(dplyr)
+library(tidyverse)
 library(lubridate)
 library(skimr)
 library(data.table)
 
+install.packages("pacman")
+
+# Downloads and load required packages
+pacman::p_load(dlookr,
+               formattable,
+               ggdist,
+               ggpubr,
+               ggridges,
+               kableExtra,
+               knitr,
+               papeR,
+               RColorBrewer,
+               Stat2Data,
+               tidyverse)
 
 #open cvs
 datarain=read.csv("data/20162017Meteo.csv", header=TRUE, na.strings = "NaN")
@@ -89,9 +104,63 @@ datarain <- datarain %>%
 
 
 
-                    
-                    
-                    
+
+summary1 <- datarain %>%
+  group_by(as.numeric(DOY_S)) %>%
+  summarise(sum_rain = sum(r))
+
+
+summary2 <- datarain %>%
+  group_by(DOY_S) %>%
+  select(DOY_S, DOY_E, data_time_Start, data_time_End, r, RainEvent, Rain_DOY, sum_rain, AT2, AT6, RH2, RH6,
+         SWC5, SWC15, SWC30, ST5, ST15, ST30, NEE, GPP, RECO)
+
+summary2 <- datarain %>%
+  group_by(as.numeric(DOY_S)) %>%
+  summarise(meanAT2=mean(AT2, na.rm=TRUE), meanAT6=mean(AT6, na.rm=TRUE), sum_R=mean(sum_rain, na.rm=TRUE),
+            meanRH2=mean(RH2, na.rm=TRUE),meanRH6=mean(RH6, na.rm=TRUE),meanSWC5=mean(SWC5, na.rm=TRUE),
+            meanSWC15=mean(SWC15, na.rm=TRUE), meanSWC30=mean(SWC30, na.rm=TRUE), meanST5=mean(ST5, na.rm=TRUE),
+            meanST15=mean(ST15, na.rm=TRUE),meanST30=mean(ST30, na.rm=TRUE),meanNEE=mean(NEE, na.rm=TRUE),
+            meanGPP=mean(GPP, na.rm=TRUE),meanRECO=mean(RECO, na.rm=TRUE))
+  
+
+# Exclude "-9999" value from the calculations
+
+summary2 <- datarain %>%
+  group_by(as.numeric(DOY_S)) %>%
+  summarise(meanAT2=mean(replace(AT2, AT2== -9999, NA),na.rm=TRUE), 
+            meanAT6=mean(replace(AT6, AT6== -9999, NA),na.rm=TRUE),
+            sum_R=mean(sum_rain, na.rm=TRUE),
+            meanRH2=mean(replace(RH2, RH2== -9999, NA),na.rm=TRUE),
+            meanRH6=mean(replace(RH6, RH6== -9999, NA),na.rm=TRUE),
+            meanSWC5=mean(replace(SWC5, SWC5== -9999, NA),na.rm=TRUE),
+            meanSWC15=mean(replace(SWC15, SWC15== -9999, NA),na.rm=TRUE),
+            meanSWC30=mean(replace(SWC30, SWC30== -9999, NA),na.rm=TRUE), 
+            meanST5=mean(replace(ST5, ST5== -9999, NA),na.rm=TRUE),
+            meanST15=mean(replace(ST15, ST15== -9999, NA),na.rm=TRUE),
+            meanST30=mean(replace(ST30, ST30== -9999, NA),na.rm=TRUE),
+            meanNEE=mean(NEE, na.rm=TRUE), meanGPP=mean(GPP, na.rm=TRUE),meanRECO=mean(RECO, na.rm=TRUE))
+
+
+summary2 %>%
+  diagnose(meanRECO)
+
+t.test(summary2$meanRECO)
+
+ggplot(mapping=aes(x=summary2$`as.numeric(DOY_S)`,y=summary2$meanRECO))+
+  geom_point()
+
+ggplot(mapping=aes(x=summary2$meanSWC5,y=summary2$meanRECO))+
+  geom_point()+
+  geom_smooth(method = lm, level=0.99)
+
+#Change the names of axis
+ggplot(mapping=aes(x=summary2$meanSWC5,y=summary2$meanRECO))+
+  geom_point()+
+  geom_smooth()+
+  xlab(label="SWC 5 cm (%)")+
+  ylab(label="Reco (micromol CO2 m-2 s-1)")
+  
                     
                     
 
