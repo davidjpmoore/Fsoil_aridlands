@@ -56,7 +56,7 @@ datarain <-  rename(datarain, r=P,
                     RH6=RH_1_1_1)
 
 
-datarain <-  rename(datarain,SWC15=SWC_1_2_1)
+
 
 # Adding the new columns with dates to the datarain
 datarain$dateStart <- paste(datarain$year, datarain$month, datarain$day, sep="-")
@@ -104,7 +104,8 @@ datarain <- datarain %>%
   group_by(DOY_S) %>%
   mutate(sum_rain = sum(r))
 
-
+write_csv(file="data/datarain_processed.csv", datarain)
+write_csv(file="data/Pulse1.csv", Pulse1)
 
 summary1 <- datarain %>%
   group_by(as.numeric(DOY_S)) %>%

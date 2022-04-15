@@ -1,5 +1,16 @@
 #4/13/2022
 #Anastasia Makhnykina
+#grab data we need
+
+
+#Load Datarain
+datarain_pro=read.csv("data/datarain_processed.csv", header=TRUE, na.strings = "NaN")
+#remove unnessessary columns
+
+
+Pulse1=read.csv("data/Pulse1.csv", header=TRUE, na.strings = "NaN")
+#remove unnessessary columns
+
 
 #packages we need
 library(dplyr)
@@ -10,8 +21,9 @@ library(data.table)
 library(corrplot)
 library(scales)
 
+
 # Required package for quick package downloading and loading 
-install.packages("pacman")
+#install.packages("pacman")
 
 # Downloads and load required packages
 pacman::p_load(dlookr,
