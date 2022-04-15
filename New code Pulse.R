@@ -40,21 +40,12 @@ datarain$day1=substr(datarain$TIMESTAMP_END, 7,8)
 datarain$hour1=substr(datarain$TIMESTAMP_END,9,10)
 datarain$min1=substr(datarain$TIMESTAMP_END,11,12)
 
-<<<<<<< HEAD
+
 
 #ASSIGN the result of the rename function to the same dataframe
 datarain <-  rename(datarain, r=P, 
                     SWC5=SWC_1_1_1,
                     SWC15=SWC_1_2_1,
-=======
-# #Rename these columns
-# iris <- as_tibble(iris) # so it prints a little nicer
-# rename(iris, petal_length = Petal.Length)
-
-#ASSIGN the result of the rename function to the same dataframe
-datarain <-  rename(datarain, r=P, 
-                    SWC5=SWC_1_1_1, 
->>>>>>> 42d8ed5dd5acf58a9dfd4c78fedaf2e9f2f3949b
                     SWC30=SWC_1_3_1,
                     ST5=TS_1_1_1,  
                     ST15=TS_1_2_1, 
@@ -62,11 +53,8 @@ datarain <-  rename(datarain, r=P,
                     AT2=TA_1_2_1,
                     AT6=TA_1_1_1, 
                     RH2=RH_1_2_1,
-<<<<<<< HEAD
                     RH6=RH_1_1_1)
-=======
-                       RH6=RH_1_1_1)
->>>>>>> 42d8ed5dd5acf58a9dfd4c78fedaf2e9f2f3949b
+
 
 datarain <-  rename(datarain,SWC15=SWC_1_2_1)
 
