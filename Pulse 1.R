@@ -88,8 +88,6 @@ ggplot(Pulse1, aes(x=Pulse1$DOY_S, Pulse1$RECO))+
 
 head(Pulse1)
 
-
-
 numeric_Pulse1 <- diagnose_numeric(Pulse1)
 
 
