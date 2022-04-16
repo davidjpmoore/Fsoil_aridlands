@@ -92,8 +92,8 @@ sum(datarain$RainEvent, na.rm=FALSE)
 
 #Create a data set for a one pulse 
 Pulse1 <- 
-  datarain %>%
-  filter(DOY_S %in% (175:186)) 
+  datarain_pro %>%
+  filter(DOY_S %in% (169:191)) 
 
 # Calculate the summary for initial conditions one the time after the rain event
 # Sum / Average / Daily things
@@ -104,9 +104,14 @@ datarain <- datarain %>%
   group_by(DOY_S) %>%
   mutate(sum_rain = sum(r))
 
+#Save new csv files
+write.csv(file="data/Pulse1.csv", Pulse1)
+
+# My version of R does not work with this comand - write_csv >- I made new Pulse1 by using write.csv
 write_csv(file="data/datarain_processed.csv", datarain)
 write_csv(file="data/Pulse1.csv", Pulse1)
 
+#Some Mean values for our data
 summary1 <- datarain %>%
   group_by(as.numeric(DOY_S)) %>%
   summarise(sum_rain = sum(r))
@@ -146,6 +151,9 @@ summary2 <- datarain %>%
 
 summary2 %>%
   diagnose(meanRECO)
+
+sum(summary2$sum_R)
+sum(datarain_pro$r)
 
 t.test(summary2$meanRECO)
 

@@ -111,15 +111,22 @@ cormatrix <- cor(Pulse1[sapply(Pulse1, is.numeric)])
 corrplot(cormatrix)
 
 
+#1 - Choose the columns which I really need for analysis
+#2 - Make the analysis of rain events based on the previous conditions and look at the variables directions after the rain OR pulse
+#3 - Which rain can be qualified as pulse??? 
 
 
+Pulse1_pro <- select(Pulse1, c(PA, AT2, RH2, AT6, RH6, r, SWC5, 
+                               SWC15, SWC30, SWC30, ST5, 
+                               ST15,ST30, NEE, RECO, GPP, high_precip, 
+                               RainEvent, dateStart, dateEnd, data_time_Start,
+                               data_time_End, DOY_S, DOY_E, Rain_DOY, sum_rain))
 
 
+plot(Pulse1_pro$SWC5)
 
-
-
-
-
+#Make this graph without 0-values
+plot(Pulse1_pro$r) 
 
 
 
