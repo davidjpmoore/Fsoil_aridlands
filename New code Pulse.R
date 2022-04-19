@@ -147,7 +147,9 @@ summary2 <- datarain %>%
             meanST5=mean(replace(ST5, ST5== -9999, NA),na.rm=TRUE),
             meanST15=mean(replace(ST15, ST15== -9999, NA),na.rm=TRUE),
             meanST30=mean(replace(ST30, ST30== -9999, NA),na.rm=TRUE),
-            meanNEE=mean(NEE, na.rm=TRUE), meanGPP=mean(GPP, na.rm=TRUE),meanRECO=mean(RECO, na.rm=TRUE))
+            meanNEE=mean(NEE, na.rm=TRUE), 
+            meanGPP=mean(GPP, na.rm=TRUE),
+            meanRECO=mean(RECO, na.rm=TRUE), sdReco=sd(RECO, na.rm=TRUE))
 
 
 summaryrains <- summary2 %>%
@@ -181,7 +183,13 @@ plot(summaryrains$DeltaRains, summaryrains$meanNEE)
 # lead to the higher CO2 fluxes
 plot(summaryrains$DeltaRains, summaryrains$meanRECO)
 
+# Add SD + R eco
+plot(summaryrains$`as.numeric(DOY_S)`, summaryrains$meanRECO)
 
+ggplot(summaryrains, aes(x=`as.numeric(DOY_S)`, y=meanRECO)) + 
+  geom_point()+
+  geom_errorbar(aes(ymin=meanRECO - sdReco, ymax=meanRECO + sdReco),
+                width=.8, position=position_dodge(0.05))
 
 summary2 %>%
   diagnose(meanRECO)
