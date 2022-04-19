@@ -138,6 +138,7 @@ summary2 <- datarain %>%
   summarise(meanAT2=mean(replace(AT2, AT2== -9999, NA),na.rm=TRUE), 
             meanAT6=mean(replace(AT6, AT6== -9999, NA),na.rm=TRUE),
             sum_R=mean(sum_rain, na.rm=TRUE),
+            rain_events=sum(RainEvent, na.rm=TRUE),
             meanRH2=mean(replace(RH2, RH2== -9999, NA),na.rm=TRUE),
             meanRH6=mean(replace(RH6, RH6== -9999, NA),na.rm=TRUE),
             meanSWC5=mean(replace(SWC5, SWC5== -9999, NA),na.rm=TRUE),
@@ -147,6 +148,39 @@ summary2 <- datarain %>%
             meanST15=mean(replace(ST15, ST15== -9999, NA),na.rm=TRUE),
             meanST30=mean(replace(ST30, ST30== -9999, NA),na.rm=TRUE),
             meanNEE=mean(NEE, na.rm=TRUE), meanGPP=mean(GPP, na.rm=TRUE),meanRECO=mean(RECO, na.rm=TRUE))
+
+
+summaryrains <- summary2 %>%
+  filter(rain_events >0)
+
+#AMOUNTS  of rains in 2017 in Kendall site - 48 days with rain events
+nrow(summaryrains)
+
+summaryrains$rain_intens_per_day <- summaryrains$sum_R/summaryrains$rain_events
+
+
+summaryrains$DeltaRains <- vector(mode="integer", length = length(summaryrains$`as.numeric(DOY_S)`))
+
+for (i in 2: length(DeltaRains)){
+  summaryrains$DeltaRains[i]=summaryrains$`as.numeric(DOY_S)`[i]-summaryrains$`as.numeric(DOY_S)`[i-1]
+}
+
+plot(summaryrains$DeltaRains, summaryrains$rain_events)
+
+#Time in between the rain events and sum od daily precipitation
+plot(summaryrains$DeltaRains, summaryrains$sum_R)
+
+plot(summaryrains$DeltaRains, summaryrains$meanAT2)
+
+plot(summaryrains$DeltaRains, summaryrains$meanRH2)
+plot(summaryrains$DeltaRains, summaryrains$meanGPP)
+
+plot(summaryrains$DeltaRains, summaryrains$meanNEE)
+
+#For most of the graphs - more frequent events (less time interval in between the rain events) 
+# lead to the higher CO2 fluxes
+plot(summaryrains$DeltaRains, summaryrains$meanRECO)
+
 
 
 summary2 %>%
