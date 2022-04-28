@@ -284,8 +284,82 @@ Pulse1_sum %>%
   geom_errorbar(aes(ymin=meanSWC5 - sdSWC5, ymax=meanSWC5 + sdSWC5),
                 width=.8, position=position_dodge(0.05))
 
-#2 - Make the analysis of rain events based on the previous conditions and look at the variables directions
-# after the rain OR pulse
+#2 - Make the analysis of 2 rain events based on the previous conditions 
+
+pdata = read.csv("data/Pulse1_sum.csv", header=TRUE, na.strings = "NaN")
+
+p1.corr.df = as.data.frame(matrix(nrow = 7, ncol = 14))
+p2.corr.df = as.data.frame(matrix(nrow = 7, ncol = 14))
+
+cols = c('Precip_event','Days_before_event',
+         'meanAT2','meanAT6','meanRH2','meanRH6','meanSWC5','meanSWC15','meanSWC30','meanST5','meanST15','meanST30','meanNEE','meanGPP')
+
+vars = cols[3:length(cols)]
+
+colnames(p1.corr.df) = cols
+colnames(p2.corr.df) = cols
+
+p1.corr.df$Precip_event = c(rep('P1',7))
+p1.corr.df$Days_before_event = c(seq(1,7,1))
+p2.corr.df$Precip_event = c(rep('P2',7))
+p2.corr.df$Days_before_event = c(seq(1,7,1))
+
+
+P1day = 8
+P2day = 16
+
+for (i in 1 : 7){
+  # Precip event 1
+  p1.corr.df$meanAT2[i] = cor(x = pdata$meanAT2[P1day:(P1day-i)], y = pdata$meanRECO[P1day:(P1day-i)], method = 'pearson')
+  p1.corr.df$meanAT6[i] = cor(x = pdata$meanAT6[P1day:(P1day-i)], y = pdata$meanRECO[P1day:(P1day-i)], method = 'pearson')
+  p1.corr.df$meanRH2[i] = cor(x = pdata$meanRH2[P1day:(P1day-i)], y = pdata$meanRECO[P1day:(P1day-i)], method = 'pearson')
+  p1.corr.df$meanRH6[i] = cor(x = pdata$meanRH6[P1day:(P1day-i)], y = pdata$meanRECO[P1day:(P1day-i)], method = 'pearson')
+  p1.corr.df$meanSWC5[i] = cor(x = pdata$meanSWC5[P1day:(P1day-i)], y = pdata$meanRECO[P1day:(P1day-i)], method = 'pearson')
+  p1.corr.df$meanSWC15[i] = cor(x = pdata$meanSWC15[P1day:(P1day-i)], y = pdata$meanRECO[P1day:(P1day-i)], method = 'pearson')
+  p1.corr.df$meanSWC30[i] = cor(x = pdata$meanSWC30[P1day:(P1day-i)], y = pdata$meanRECO[P1day:(P1day-i)], method = 'pearson')
+  p1.corr.df$meanST5[i] = cor(x = pdata$meanST5[P1day:(P1day-i)], y = pdata$meanRECO[P1day:(P1day-i)], method = 'pearson')
+  p1.corr.df$meanST15[i] = cor(x = pdata$meanST15[P1day:(P1day-i)], y = pdata$meanRECO[P1day:(P1day-i)], method = 'pearson')
+  p1.corr.df$meanST30[i] = cor(x = pdata$meanST30[P1day:(P1day-i)], y = pdata$meanRECO[P1day:(P1day-i)], method = 'pearson')
+  p1.corr.df$meanNEE[i] = cor(x = pdata$meanNEE[P1day:(P1day-i)], y = pdata$meanRECO[P1day:(P1day-i)], method = 'pearson')
+  p1.corr.df$meanGPP[i] = cor(x = pdata$meanGPP[P1day:(P1day-i)], y = pdata$meanRECO[P1day:(P1day-i)], method = 'pearson')
+  
+  # Precip event 2
+  p2.corr.df$meanAT2[i] = cor(x = pdata$meanAT2[P2day:(P2day-i)], y = pdata$meanRECO[P2day:(P2day-i)], method = 'pearson')
+  p2.corr.df$meanAT6[i] = cor(x = pdata$meanAT6[P2day:(P2day-i)], y = pdata$meanRECO[P2day:(P2day-i)], method = 'pearson')
+  p2.corr.df$meanRH2[i] = cor(x = pdata$meanRH2[P2day:(P2day-i)], y = pdata$meanRECO[P2day:(P2day-i)], method = 'pearson')
+  p2.corr.df$meanRH6[i] = cor(x = pdata$meanRH6[P2day:(P2day-i)], y = pdata$meanRECO[P2day:(P2day-i)], method = 'pearson')
+  p2.corr.df$meanSWC5[i] = cor(x = pdata$meanSWC5[P2day:(P2day-i)], y = pdata$meanRECO[P2day:(P2day-i)], method = 'pearson')
+  p2.corr.df$meanSWC15[i] = cor(x = pdata$meanSWC15[P2day:(P2day-i)], y = pdata$meanRECO[P2day:(P2day-i)], method = 'pearson')
+  p2.corr.df$meanSWC30[i] = cor(x = pdata$meanSWC30[P2day:(P2day-i)], y = pdata$meanRECO[P2day:(P2day-i)], method = 'pearson')
+  p2.corr.df$meanST5[i] = cor(x = pdata$meanST5[P2day:(P2day-i)], y = pdata$meanRECO[P2day:(P2day-i)], method = 'pearson')
+  p2.corr.df$meanST15[i] = cor(x = pdata$meanST15[P2day:(P2day-i)], y = pdata$meanRECO[P2day:(P2day-i)], method = 'pearson')
+  p2.corr.df$meanST30[i] = cor(x = pdata$meanST30[P2day:(P2day-i)], y = pdata$meanRECO[P2day:(P2day-i)], method = 'pearson')
+  p2.corr.df$meanNEE[i] = cor(x = pdata$meanNEE[P2day:(P2day-i)], y = pdata$meanRECO[P2day:(P2day-i)], method = 'pearson')
+  p2.corr.df$meanGPP[i] = cor(x = pdata$meanGPP[P2day:(P2day-i)], y = pdata$meanRECO[P2day:(P2day-i)], method = 'pearson')
+}
+
+p1.corr.df = melt(p1.corr.df, id.vars = c('Precip_event','Days_before_event'), variable.name = 'Var', value.name = 'R')
+p2.corr.df = melt(p2.corr.df, id.vars = c('Precip_event','Days_before_event'), variable.name = 'Var', value.name = 'R')
+
+corr.df = rbind(p1.corr.df, p2.corr.df)
+corr.df = subset(corr.df, Days_before_event != 1)
+
+# ---- Plot data
+library(ggplot2)
+
+ggplot(corr.df, aes(x = 1, y = R, fill = Var)) +
+  geom_bar(position = 'dodge', stat = 'identity') +
+  scale_y_continuous(limits = c(-1,1), breaks = seq(-1,1,0.25)) +
+  facet_grid(Precip_event ~ Days_before_event) +
+  xlab('Number of days prior to precipitation event used to compute R') +
+  ylab('Correlation (Pearson R)') +
+  theme_bw() +
+  theme(legend.title = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_blank())
 
 
 
