@@ -26,7 +26,7 @@ data_Chambers$date <- as_date(data_Chambers$date)
 #Calculate the mean Rsoil for each DOY
 dataRsoil <- data_Chambers %>%
   group_by(as.numeric(DOY)) %>%
-  dplyr::summarize(meanSR1=mean(Fs_1, na.rm=TRUE), 
+  dplyr::summarise(meanSR1=mean(Fs_1, na.rm=TRUE), 
             meanSR2=mean(Fs_2, na.rm=TRUE), 
             meanSR3=mean(Fs_3, na.rm=TRUE),
             meanSR4=mean(Fs_4, na.rm=TRUE),
@@ -40,19 +40,45 @@ dataRsoil <- data_Chambers %>%
             meanSM4=mean(VWC_4, na.rm=TRUE))
 
 
+write.csv(file="data/dataRsoil.csv", dataRsoil)
 
 
 
+plot(summary2$meanRECO, dataRsoil$meanSR1)
+plot(dataRsoil$`as.numeric(DOY)`)
+
+#Create the empty rows from DOY = 331 to DOU = 354 - I need 22 empty rows == NA
+
+dataRsoil$Date = as.Date(dataRsoil$'as.numeric(DOY)'-1, '2017-01-01')
+
+soildata_new <- dataRsoil %>%
+  complete(Date = seq(as.Date('2017-01-01'),as.Date('2017-12-31'),by='day'))
+
+soildata_new$'as.numeric(DOY)' = seq(1, nrow(soildata_new), by = 1)
 
 
+soildata_new <- soildata_new %>%
+  mutate(MeanReco = summary2$meanRECO)
+
+soildata_new%>%
+  na.omit() %>%
+  ggplot(aes(x=meanSR1, y=MeanReco, color = Season)) + 
+  geom_point()
 
 
+soildata_new$Season = vector(mode = 'character', length = nrow(soildata_new))
+
+soildata_new$Season[soildata_new$`as.numeric(DOY)` %in% c(1:59,305:366)] = 'Winter'
+soildata_new$Season[soildata_new$`as.numeric(DOY)` %in% 60:181] = 'Spring'
+soildata_new$Season[soildata_new$`as.numeric(DOY)` %in% 182:304] = 'Summer'
 
 
-
-
-
-
+soildata_new%>%
+  na.omit() %>%
+  group_by(Season) %>%
+  ggplot(aes(x=meanSR1, y=MeanReco, color = Season)) + 
+  geom_point()+
+  geom_smooth()
 
 
 

@@ -7,6 +7,7 @@ library(tidyverse)
 library(lubridate)
 library(skimr)
 library(data.table)
+library(tidyr)
 
 install.packages("pacman")
 
@@ -104,6 +105,10 @@ datarain <- datarain %>%
   group_by(DOY_S) %>%
   mutate(sum_rain = sum(r))
 
+
+
+
+
 #Save new csv files
 write.csv(file="data/Pulse1.csv", Pulse1)
 
@@ -111,16 +116,34 @@ write.csv(file="data/Pulse1.csv", Pulse1)
 write_csv(file="data/datarain_processed.csv", datarain)
 write_csv(file="data/Pulse1.csv", Pulse1)
 
+
+#Plotting SM VS ST for rain events
+
+datarain[datarain == -9999] <- NA
+
+datarain$Season = vector(mode = 'character', length = nrow(datarain))
+
+datarain$Season[datarain$DOY_S %in% c(1:59,305:366)] = 'Winter'
+datarain$Season[datarain$DOY_S %in% 60:181] = 'Spring'
+datarain$Season[datarain$DOY_S %in% 182:304] = 'Summer'
+
+
+datarain %>%
+  filter(RainEvent==1)%>%
+  ggplot(aes(x= SWC5, y= ST5, size = RECO, color = Season)) + 
+  geom_point()
+
+datarain %>%
+  filter(RainEvent==1)%>%
+  ggplot(aes(x= SWC5, y= ST5, size = r, color = Season)) + 
+  geom_point()
+
+write.csv(file="data/datarain.csv", datarain)
+
+
+
+
 #Some Mean values for our data
-summary1 <- datarain %>%
-  group_by(as.numeric(DOY_S)) %>%
-  summarise(sum_rain = sum(r))
-
-
-summary2 <- datarain %>%
-  group_by(DOY_S) %>%
-  select(DOY_S, DOY_E, data_time_Start, data_time_End, r, RainEvent, Rain_DOY, sum_rain, AT2, AT6, RH2, RH6,
-         SWC5, SWC15, SWC30, ST5, ST15, ST30, NEE, GPP, RECO)
 
 summary2 <- datarain %>%
   group_by(as.numeric(DOY_S)) %>%
@@ -135,7 +158,7 @@ summary2 <- datarain %>%
 
 summary2 <- datarain %>%
   group_by(as.numeric(DOY_S)) %>%
-  summarise(meanAT2=mean(replace(AT2, AT2== -9999, NA),na.rm=TRUE), 
+  dplyr :: summarise(meanAT2=mean(replace(AT2, AT2== -9999, NA),na.rm=TRUE), 
             meanAT6=mean(replace(AT6, AT6== -9999, NA),na.rm=TRUE),
             sum_R=mean(sum_rain, na.rm=TRUE),
             rain_events=sum(RainEvent, na.rm=TRUE),
@@ -191,6 +214,8 @@ ggplot(summaryrains, aes(x=`as.numeric(DOY_S)`, y=meanRECO)) +
   geom_errorbar(aes(ymin=meanRECO - sdReco, ymax=meanRECO + sdReco),
                 width=.8, position=position_dodge(0.05))
 
+
+
 summary2 %>%
   diagnose(meanRECO)
 
@@ -213,6 +238,7 @@ ggplot(mapping=aes(x=summary2$meanSWC5,y=summary2$meanRECO))+
   xlab(label="SWC 5 cm (%)")+
   ylab(label="Reco (micromol CO2 m-2 s-1)")
   
-                    
+mean(summary2$meanRECO, na.rm=TRUE)
+
                     
 

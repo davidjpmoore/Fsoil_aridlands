@@ -338,6 +338,7 @@ for (i in 1 : 7){
   p2.corr.df$meanGPP[i] = cor(x = pdata$meanGPP[P2day:(P2day-i)], y = pdata$meanRECO[P2day:(P2day-i)], method = 'pearson')
 }
 
+library(reshape2)
 p1.corr.df = melt(p1.corr.df, id.vars = c('Precip_event','Days_before_event'), variable.name = 'Var', value.name = 'R')
 p2.corr.df = melt(p2.corr.df, id.vars = c('Precip_event','Days_before_event'), variable.name = 'Var', value.name = 'R')
 
@@ -346,9 +347,13 @@ corr.df = subset(corr.df, Days_before_event != 1)
 
 # ---- Plot data
 library(ggplot2)
+library(colorRamps)
+
+bluecols = colorRampPalette(c('lightblue','navyblue'))
 
 ggplot(corr.df, aes(x = 1, y = R, fill = Var)) +
-  geom_bar(position = 'dodge', stat = 'identity') +
+  geom_bar(position = 'dodge', stat = 'identity', color = 'black') +
+  scale_fill_manual(values = bluecols(12)) +
   scale_y_continuous(limits = c(-1,1), breaks = seq(-1,1,0.25)) +
   facet_grid(Precip_event ~ Days_before_event) +
   xlab('Number of days prior to precipitation event used to compute R') +
@@ -360,6 +365,7 @@ ggplot(corr.df, aes(x = 1, y = R, fill = Var)) +
         panel.grid.minor.x = element_blank(),
         panel.grid.minor.y = element_blank(),
         panel.grid.major.x = element_blank())
+
 
 
 
