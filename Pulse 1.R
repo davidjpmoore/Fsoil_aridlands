@@ -149,6 +149,20 @@ Pulse1_pro %>%
 
 plot(Pulse1_pro$SWC5)
 
+Pulse1_pro%>%
+  na.omit()%>%
+  summarise(mean=mean(RECO), sd=sd(RECO),
+            n=n(),
+            stderr=sd/sqrt(n)) %>%
+  ggplot(aes(x=DOY_S, y=mean)) + 
+  geom_point()+
+  geom_errorbar(aes(x=DOY_S, ymin=mean - stderr, ymax=mean + stderr))+
+  xlab('DOY') +
+  ylab('Mean Reco')
+               
+
+
+
 Pulse1 %>%
   ggplot(aes(x=DOY_S, y=SWC5))+
   geom_point()

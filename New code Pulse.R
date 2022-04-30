@@ -240,5 +240,27 @@ ggplot(mapping=aes(x=summary2$meanSWC5,y=summary2$meanRECO))+
   
 mean(summary2$meanRECO, na.rm=TRUE)
 
-                    
+hist(summary2$sum_R[summary2$sum_R>5])  
+
+summary2$Season = vector(mode = 'character', length = nrow(summary2))
+
+summary2$Season[summary2$`as.numeric(DOY_S)` %in% c(1:59,305:366)] = 'Winter'
+summary2$Season[summary2$`as.numeric(DOY_S)` %in% 60:181] = 'Spring'
+summary2$Season[summary2$`as.numeric(DOY_S)` %in% 182:304] = 'Summer'
+
+
+
+yearPulses18 <- summary2 %>%
+  filter(sum_R > 5)
+
+
+yearPulses18 %>%
+  ggplot(aes(x= meanSWC5, y= meanST5, size = meanRECO, color = Season)) + 
+  geom_point()
+
+yearPulses18 %>%
+  ggplot(aes(x= meanSWC5, y= meanST5, size = sum_R, color = Season)) + 
+  geom_point()
+
+write.csv(file="data/yearPulses18.csv", yearPulses18)
 

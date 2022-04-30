@@ -48,6 +48,7 @@ plot(summary2$meanRECO, dataRsoil$meanSR1)
 plot(dataRsoil$`as.numeric(DOY)`)
 
 #Create the empty rows from DOY = 331 to DOU = 354 - I need 22 empty rows == NA
+library()
 
 dataRsoil$Date = as.Date(dataRsoil$'as.numeric(DOY)'-1, '2017-01-01')
 
@@ -66,6 +67,7 @@ soildata_new%>%
   geom_point()
 
 
+
 soildata_new$Season = vector(mode = 'character', length = nrow(soildata_new))
 
 soildata_new$Season[soildata_new$`as.numeric(DOY)` %in% c(1:59,305:366)] = 'Winter'
@@ -79,6 +81,72 @@ soildata_new%>%
   ggplot(aes(x=meanSR1, y=MeanReco, color = Season)) + 
   geom_point()+
   geom_smooth()
+
+
+soildata_new%>%
+  na.omit() %>%
+  group_by(Season) %>%
+  ggplot(aes(x=meanSR1, y=MeanReco, color = Season)) + 
+  geom_point()+
+    stat_smooth(method = 'lm')+
+  theme_bw() +
+  scale_colour_brewer(name = 'Trendline', palette = 'Set2')
+
+
+soildata_new%>%
+  na.omit() %>%
+  group_by(Season) %>%
+  ggplot(aes(x=meanSR2, y=MeanReco, color = Season)) + 
+  geom_point()+
+  stat_smooth(method = 'lm')+
+  theme_bw() +
+  scale_colour_brewer(name = 'Trendline', palette = 'Set2')
+
+soildata_new%>%
+  na.omit() %>%
+  group_by(Season) %>%
+  ggplot(aes(x=meanSR3, y=MeanReco, color = Season)) + 
+  geom_point()+
+  stat_smooth(method = 'lm')+
+  theme_bw() +
+  scale_colour_brewer(name = 'Trendline', palette = 'Set2')
+
+
+soildata_new%>%
+  na.omit() %>%
+  group_by(Season) %>%
+  ggplot(aes(x=meanSR4, y=MeanReco, color = Season)) + 
+  geom_point()+
+  stat_smooth(method = 'lm')+
+  theme_bw() +
+  scale_colour_brewer(name = 'Trendline', palette = 'Set2')
+
+# Calculate the mean SR 
+
+soildata_new$meanSR <- rowMeans(soildata_new [, c(3,4,5,6)])
+
+soildata_new%>%
+  na.omit() %>%
+  group_by(Season) %>%
+  ggplot(aes(x=meanSR, y=MeanReco, color = Season)) + 
+  geom_point()+
+  stat_smooth(method = 'lm')+
+  theme_bw() +
+  scale_colour_brewer(name = 'Trendline', palette = 'Set2')
+
+
+soildata_new%>%
+  na.omit() %>%
+  ggplot(aes(x=meanSR, y=MeanReco)) + 
+  geom_point()+
+  stat_smooth(method = 'lm')+
+  theme_bw() +
+  scale_colour_brewer(name = 'Trendline', palette = 'Set2')
+
+
+
+
+
 
 
 
