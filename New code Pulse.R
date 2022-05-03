@@ -8,6 +8,7 @@ library(lubridate)
 library(skimr)
 library(data.table)
 library(tidyr)
+library(ggplot2)
 
 install.packages("pacman")
 
@@ -92,7 +93,7 @@ datarain$Rain_DOY <- as.numeric(datarain$RainEvent)*as.numeric(datarain$DOY_S)
 sum(datarain$RainEvent, na.rm=FALSE)
 
 #Create a data set for a one pulse 
-Pulse1 <- 
+Pulse5 <- 
   datarain_pro %>%
   filter(DOY_S %in% (169:191)) 
 
@@ -107,14 +108,12 @@ datarain <- datarain %>%
 
 
 
-
-
 #Save new csv files
-write.csv(file="data/Pulse1.csv", Pulse1)
+write.csv(file="data/Pulse5.csv", Pulse5)
 
-# My version of R does not work with this comand - write_csv >- I made new Pulse1 by using write.csv
+# My version of R does not work with this comand - write_csv >- I made new Pulse5 by using write.csv
 write_csv(file="data/datarain_processed.csv", datarain)
-write_csv(file="data/Pulse1.csv", Pulse1)
+write_csv(file="data/Pulse5.csv", Pulse1)
 
 
 #Plotting SM VS ST for rain events
@@ -263,4 +262,6 @@ yearPulses18 %>%
   geom_point()
 
 write.csv(file="data/yearPulses18.csv", yearPulses18)
+
+yearPulses18$Timeinbetween <- lag(yearPulses18$`as.numeric(DOY_S)`)
 

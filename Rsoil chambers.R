@@ -88,7 +88,7 @@ soildata_new%>%
   group_by(Season) %>%
   ggplot(aes(x=meanSR1, y=MeanReco, color = Season)) + 
   geom_point()+
-    stat_smooth(method = 'lm')+
+  stat_smooth(method = 'lm')+
   theme_bw() +
   scale_colour_brewer(name = 'Trendline', palette = 'Set2')
 
