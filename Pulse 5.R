@@ -271,7 +271,7 @@ write.csv(file="data/Pulse5_sum.csv", datarain)
 
 Pulse5_sum <- Pulse5_pro %>%
   group_by(as.numeric(DOY_S)) %>%
-    dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
+    dplyr::summarise(meanAT2=mean(AT2,na.rm=TRUE), 
                       meanAT6=mean(AT6, na.rm=TRUE),
                       sum_R=mean(sum_rain, na.rm=TRUE),
                       rain_events=sum(RainEvent, na.rm=TRUE),
@@ -283,9 +283,11 @@ Pulse5_sum <- Pulse5_pro %>%
                       meanST5=mean(ST5, na.rm=TRUE),
                       meanST15=mean(ST15, na.rm=TRUE),
                       meanST30=mean(ST30, na.rm=TRUE),
-                      meanNEE=mean(NEE, na.rm=TRUE), 
-                      meanGPP=mean(GPP, na.rm=TRUE),
-                      meanRECO=mean(RECO, na.rm=TRUE))
+                      meanNEE=mean(as.numeric(NEE), na.rm=TRUE), 
+                      meanGPP=mean(as.numeric(GPP), na.rm=TRUE),
+                      meanRECO=mean(as.numeric(RECO), na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
+
+
 Pulse5_pro %>%
   na.omit() %>%
   dplyr:: summarise(mean=mean(RECO), sd=sd(RECO),

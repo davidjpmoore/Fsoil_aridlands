@@ -95,7 +95,7 @@ sum(datarain$RainEvent, na.rm=FALSE)
 #Create a data set for a one pulse 
 Pulse5 <- 
   datarain_pro %>%
-  filter(DOY_S %in% (169:191)) 
+  filter(DOY_S %in% (169:190)) 
 
 # Calculate the summary for initial conditions one the time after the rain event
 # Sum / Average / Daily things
