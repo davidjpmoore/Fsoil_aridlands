@@ -4,8 +4,22 @@
 
 
 #Load Datarain
-datarain_pro=read.csv("data/datarain_processed.csv", header=TRUE, na.strings = "NaN")
+datarain=read.csv("data/datarain_processed.csv", header=TRUE, na.strings = "NaN")
 #remove unnessessary columns
+
+
+#Create a data set for a one pulse 
+Pulse5 <- 
+  datarain %>%
+  filter(DOY_S %in% (169:190)) 
+
+
+
+Pulse5_pro <- select(Pulse5, c(PA, AT2, RH2, AT6, RH6, r, SWC5, 
+                               SWC15, SWC30, SWC30, ST5, 
+                               ST15,ST30, NEE, RECO, GPP, high_precip, 
+                               RainEvent, dateStart, dateEnd, data_time_Start,
+                               data_time_End, DOY_S, DOY_E, Rain_DOY, sum_rain))
 
 
 #packages we need
@@ -186,313 +200,6 @@ Pulse18 <-
           data_time_End, DOY_S, DOY_E, Rain_DOY, sum_rain) %>%
   filter(DOY_S %in% (344:365)) 
 
-
-#Make summary for all 18 Pulses
-Pulse1_sum <- Pulse1 %>%
-  group_by(as.numeric(DOY_S)) %>%
-  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
-                    meanAT6=mean(AT6, na.rm=TRUE),
-                    sum_R=mean(sum_rain, na.rm=TRUE),
-                    rain_events=sum(RainEvent, na.rm=TRUE),
-                    meanRH2=mean(RH2, na.rm=TRUE),
-                    meanRH6=mean(RH6,na.rm=TRUE),
-                    meanSWC5=mean(SWC5, na.rm=TRUE),
-                    meanSWC15=mean(SWC15, na.rm=TRUE),
-                    meanSWC30=mean(SWC30, na.rm=TRUE), 
-                    meanST5=mean(ST5, na.rm=TRUE),
-                    meanST15=mean(ST15, na.rm=TRUE),
-                    meanST30=mean(ST30, na.rm=TRUE),
-                    meanNEE=mean(NEE, na.rm=TRUE), 
-                    meanGPP=mean(GPP, na.rm=TRUE),
-                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
-
-Pulse2_sum <- Pulse2 %>%
-  group_by(as.numeric(DOY_S)) %>%
-  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
-                    meanAT6=mean(AT6, na.rm=TRUE),
-                    sum_R=mean(sum_rain, na.rm=TRUE),
-                    rain_events=sum(RainEvent, na.rm=TRUE),
-                    meanRH2=mean(RH2, na.rm=TRUE),
-                    meanRH6=mean(RH6,na.rm=TRUE),
-                    meanSWC5=mean(SWC5, na.rm=TRUE),
-                    meanSWC15=mean(SWC15, na.rm=TRUE),
-                    meanSWC30=mean(SWC30, na.rm=TRUE), 
-                    meanST5=mean(ST5, na.rm=TRUE),
-                    meanST15=mean(ST15, na.rm=TRUE),
-                    meanST30=mean(ST30, na.rm=TRUE),
-                    meanNEE=mean(NEE, na.rm=TRUE), 
-                    meanGPP=mean(GPP, na.rm=TRUE),
-                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
-
-Pulse3_sum <- Pulse3 %>%
-  group_by(as.numeric(DOY_S)) %>%
-  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
-                    meanAT6=mean(AT6, na.rm=TRUE),
-                    sum_R=mean(sum_rain, na.rm=TRUE),
-                    rain_events=sum(RainEvent, na.rm=TRUE),
-                    meanRH2=mean(RH2, na.rm=TRUE),
-                    meanRH6=mean(RH6,na.rm=TRUE),
-                    meanSWC5=mean(SWC5, na.rm=TRUE),
-                    meanSWC15=mean(SWC15, na.rm=TRUE),
-                    meanSWC30=mean(SWC30, na.rm=TRUE), 
-                    meanST5=mean(ST5, na.rm=TRUE),
-                    meanST15=mean(ST15, na.rm=TRUE),
-                    meanST30=mean(ST30, na.rm=TRUE),
-                    meanNEE=mean(NEE, na.rm=TRUE), 
-                    meanGPP=mean(GPP, na.rm=TRUE),
-                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
-
-Pulse4_sum <- Pulse4 %>%
-  group_by(as.numeric(DOY_S)) %>%
-  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
-                    meanAT6=mean(AT6, na.rm=TRUE),
-                    sum_R=mean(sum_rain, na.rm=TRUE),
-                    rain_events=sum(RainEvent, na.rm=TRUE),
-                    meanRH2=mean(RH2, na.rm=TRUE),
-                    meanRH6=mean(RH6,na.rm=TRUE),
-                    meanSWC5=mean(SWC5, na.rm=TRUE),
-                    meanSWC15=mean(SWC15, na.rm=TRUE),
-                    meanSWC30=mean(SWC30, na.rm=TRUE), 
-                    meanST5=mean(ST5, na.rm=TRUE),
-                    meanST15=mean(ST15, na.rm=TRUE),
-                    meanST30=mean(ST30, na.rm=TRUE),
-                    meanNEE=mean(NEE, na.rm=TRUE), 
-                    meanGPP=mean(GPP, na.rm=TRUE),
-                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
-
-Pulse6_sum <- Pulse6 %>%
-  group_by(as.numeric(DOY_S)) %>%
-  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
-                    meanAT6=mean(AT6, na.rm=TRUE),
-                    sum_R=mean(sum_rain, na.rm=TRUE),
-                    rain_events=sum(RainEvent, na.rm=TRUE),
-                    meanRH2=mean(RH2, na.rm=TRUE),
-                    meanRH6=mean(RH6,na.rm=TRUE),
-                    meanSWC5=mean(SWC5, na.rm=TRUE),
-                    meanSWC15=mean(SWC15, na.rm=TRUE),
-                    meanSWC30=mean(SWC30, na.rm=TRUE), 
-                    meanST5=mean(ST5, na.rm=TRUE),
-                    meanST15=mean(ST15, na.rm=TRUE),
-                    meanST30=mean(ST30, na.rm=TRUE),
-                    meanNEE=mean(NEE, na.rm=TRUE), 
-                    meanGPP=mean(GPP, na.rm=TRUE),
-                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
-
-Pulse7_sum <- Pulse7 %>%
-  group_by(as.numeric(DOY_S)) %>%
-  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
-                    meanAT6=mean(AT6, na.rm=TRUE),
-                    sum_R=mean(sum_rain, na.rm=TRUE),
-                    rain_events=sum(RainEvent, na.rm=TRUE),
-                    meanRH2=mean(RH2, na.rm=TRUE),
-                    meanRH6=mean(RH6,na.rm=TRUE),
-                    meanSWC5=mean(SWC5, na.rm=TRUE),
-                    meanSWC15=mean(SWC15, na.rm=TRUE),
-                    meanSWC30=mean(SWC30, na.rm=TRUE), 
-                    meanST5=mean(ST5, na.rm=TRUE),
-                    meanST15=mean(ST15, na.rm=TRUE),
-                    meanST30=mean(ST30, na.rm=TRUE),
-                    meanNEE=mean(NEE, na.rm=TRUE), 
-                    meanGPP=mean(GPP, na.rm=TRUE),
-                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
-
-Pulse8_sum <- Pulse8 %>%
-  group_by(as.numeric(DOY_S)) %>%
-  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
-                    meanAT6=mean(AT6, na.rm=TRUE),
-                    sum_R=mean(sum_rain, na.rm=TRUE),
-                    rain_events=sum(RainEvent, na.rm=TRUE),
-                    meanRH2=mean(RH2, na.rm=TRUE),
-                    meanRH6=mean(RH6,na.rm=TRUE),
-                    meanSWC5=mean(SWC5, na.rm=TRUE),
-                    meanSWC15=mean(SWC15, na.rm=TRUE),
-                    meanSWC30=mean(SWC30, na.rm=TRUE), 
-                    meanST5=mean(ST5, na.rm=TRUE),
-                    meanST15=mean(ST15, na.rm=TRUE),
-                    meanST30=mean(ST30, na.rm=TRUE),
-                    meanNEE=mean(NEE, na.rm=TRUE), 
-                    meanGPP=mean(GPP, na.rm=TRUE),
-                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
-
-Pulse9_sum <- Pulse9 %>%
-  group_by(as.numeric(DOY_S)) %>%
-  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
-                    meanAT6=mean(AT6, na.rm=TRUE),
-                    sum_R=mean(sum_rain, na.rm=TRUE),
-                    rain_events=sum(RainEvent, na.rm=TRUE),
-                    meanRH2=mean(RH2, na.rm=TRUE),
-                    meanRH6=mean(RH6,na.rm=TRUE),
-                    meanSWC5=mean(SWC5, na.rm=TRUE),
-                    meanSWC15=mean(SWC15, na.rm=TRUE),
-                    meanSWC30=mean(SWC30, na.rm=TRUE), 
-                    meanST5=mean(ST5, na.rm=TRUE),
-                    meanST15=mean(ST15, na.rm=TRUE),
-                    meanST30=mean(ST30, na.rm=TRUE),
-                    meanNEE=mean(NEE, na.rm=TRUE), 
-                    meanGPP=mean(GPP, na.rm=TRUE),
-                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
-
-Pulse10_sum <- Pulse10 %>%
-  group_by(as.numeric(DOY_S)) %>%
-  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
-                    meanAT6=mean(AT6, na.rm=TRUE),
-                    sum_R=mean(sum_rain, na.rm=TRUE),
-                    rain_events=sum(RainEvent, na.rm=TRUE),
-                    meanRH2=mean(RH2, na.rm=TRUE),
-                    meanRH6=mean(RH6,na.rm=TRUE),
-                    meanSWC5=mean(SWC5, na.rm=TRUE),
-                    meanSWC15=mean(SWC15, na.rm=TRUE),
-                    meanSWC30=mean(SWC30, na.rm=TRUE), 
-                    meanST5=mean(ST5, na.rm=TRUE),
-                    meanST15=mean(ST15, na.rm=TRUE),
-                    meanST30=mean(ST30, na.rm=TRUE),
-                    meanNEE=mean(NEE, na.rm=TRUE), 
-                    meanGPP=mean(GPP, na.rm=TRUE),
-                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
-
-Pulse11_sum <- Pulse11 %>%
-  group_by(as.numeric(DOY_S)) %>%
-  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
-                    meanAT6=mean(AT6, na.rm=TRUE),
-                    sum_R=mean(sum_rain, na.rm=TRUE),
-                    rain_events=sum(RainEvent, na.rm=TRUE),
-                    meanRH2=mean(RH2, na.rm=TRUE),
-                    meanRH6=mean(RH6,na.rm=TRUE),
-                    meanSWC5=mean(SWC5, na.rm=TRUE),
-                    meanSWC15=mean(SWC15, na.rm=TRUE),
-                    meanSWC30=mean(SWC30, na.rm=TRUE), 
-                    meanST5=mean(ST5, na.rm=TRUE),
-                    meanST15=mean(ST15, na.rm=TRUE),
-                    meanST30=mean(ST30, na.rm=TRUE),
-                    meanNEE=mean(NEE, na.rm=TRUE), 
-                    meanGPP=mean(GPP, na.rm=TRUE),
-                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
-
-Pulse12_sum <- Pulse12 %>%
-  group_by(as.numeric(DOY_S)) %>%
-  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
-                    meanAT6=mean(AT6, na.rm=TRUE),
-                    sum_R=mean(sum_rain, na.rm=TRUE),
-                    rain_events=sum(RainEvent, na.rm=TRUE),
-                    meanRH2=mean(RH2, na.rm=TRUE),
-                    meanRH6=mean(RH6,na.rm=TRUE),
-                    meanSWC5=mean(SWC5, na.rm=TRUE),
-                    meanSWC15=mean(SWC15, na.rm=TRUE),
-                    meanSWC30=mean(SWC30, na.rm=TRUE), 
-                    meanST5=mean(ST5, na.rm=TRUE),
-                    meanST15=mean(ST15, na.rm=TRUE),
-                    meanST30=mean(ST30, na.rm=TRUE),
-                    meanNEE=mean(NEE, na.rm=TRUE), 
-                    meanGPP=mean(GPP, na.rm=TRUE),
-                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
-
-Pulse13_sum <- Pulse13 %>%
-  group_by(as.numeric(DOY_S)) %>%
-  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
-                    meanAT6=mean(AT6, na.rm=TRUE),
-                    sum_R=mean(sum_rain, na.rm=TRUE),
-                    rain_events=sum(RainEvent, na.rm=TRUE),
-                    meanRH2=mean(RH2, na.rm=TRUE),
-                    meanRH6=mean(RH6,na.rm=TRUE),
-                    meanSWC5=mean(SWC5, na.rm=TRUE),
-                    meanSWC15=mean(SWC15, na.rm=TRUE),
-                    meanSWC30=mean(SWC30, na.rm=TRUE), 
-                    meanST5=mean(ST5, na.rm=TRUE),
-                    meanST15=mean(ST15, na.rm=TRUE),
-                    meanST30=mean(ST30, na.rm=TRUE),
-                    meanNEE=mean(NEE, na.rm=TRUE), 
-                    meanGPP=mean(GPP, na.rm=TRUE),
-                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
-
-Pulse14_sum <- Pulse14 %>%
-  group_by(as.numeric(DOY_S)) %>%
-  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
-                    meanAT6=mean(AT6, na.rm=TRUE),
-                    sum_R=mean(sum_rain, na.rm=TRUE),
-                    rain_events=sum(RainEvent, na.rm=TRUE),
-                    meanRH2=mean(RH2, na.rm=TRUE),
-                    meanRH6=mean(RH6,na.rm=TRUE),
-                    meanSWC5=mean(SWC5, na.rm=TRUE),
-                    meanSWC15=mean(SWC15, na.rm=TRUE),
-                    meanSWC30=mean(SWC30, na.rm=TRUE), 
-                    meanST5=mean(ST5, na.rm=TRUE),
-                    meanST15=mean(ST15, na.rm=TRUE),
-                    meanST30=mean(ST30, na.rm=TRUE),
-                    meanNEE=mean(NEE, na.rm=TRUE), 
-                    meanGPP=mean(GPP, na.rm=TRUE),
-                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
-
-Pulse15_sum <- Pulse15 %>%
-  group_by(as.numeric(DOY_S)) %>%
-  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
-                    meanAT6=mean(AT6, na.rm=TRUE),
-                    sum_R=mean(sum_rain, na.rm=TRUE),
-                    rain_events=sum(RainEvent, na.rm=TRUE),
-                    meanRH2=mean(RH2, na.rm=TRUE),
-                    meanRH6=mean(RH6,na.rm=TRUE),
-                    meanSWC5=mean(SWC5, na.rm=TRUE),
-                    meanSWC15=mean(SWC15, na.rm=TRUE),
-                    meanSWC30=mean(SWC30, na.rm=TRUE), 
-                    meanST5=mean(ST5, na.rm=TRUE),
-                    meanST15=mean(ST15, na.rm=TRUE),
-                    meanST30=mean(ST30, na.rm=TRUE),
-                    meanNEE=mean(NEE, na.rm=TRUE), 
-                    meanGPP=mean(GPP, na.rm=TRUE),
-                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
-
-Pulse16_sum <- Pulse16 %>%
-  group_by(as.numeric(DOY_S)) %>%
-  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
-                    meanAT6=mean(AT6, na.rm=TRUE),
-                    sum_R=mean(sum_rain, na.rm=TRUE),
-                    rain_events=sum(RainEvent, na.rm=TRUE),
-                    meanRH2=mean(RH2, na.rm=TRUE),
-                    meanRH6=mean(RH6,na.rm=TRUE),
-                    meanSWC5=mean(SWC5, na.rm=TRUE),
-                    meanSWC15=mean(SWC15, na.rm=TRUE),
-                    meanSWC30=mean(SWC30, na.rm=TRUE), 
-                    meanST5=mean(ST5, na.rm=TRUE),
-                    meanST15=mean(ST15, na.rm=TRUE),
-                    meanST30=mean(ST30, na.rm=TRUE),
-                    meanNEE=mean(NEE, na.rm=TRUE), 
-                    meanGPP=mean(GPP, na.rm=TRUE),
-                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
-
-Pulse17_sum <- Pulse17 %>%
-  group_by(as.numeric(DOY_S)) %>%
-  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
-                    meanAT6=mean(AT6, na.rm=TRUE),
-                    sum_R=mean(sum_rain, na.rm=TRUE),
-                    rain_events=sum(RainEvent, na.rm=TRUE),
-                    meanRH2=mean(RH2, na.rm=TRUE),
-                    meanRH6=mean(RH6,na.rm=TRUE),
-                    meanSWC5=mean(SWC5, na.rm=TRUE),
-                    meanSWC15=mean(SWC15, na.rm=TRUE),
-                    meanSWC30=mean(SWC30, na.rm=TRUE), 
-                    meanST5=mean(ST5, na.rm=TRUE),
-                    meanST15=mean(ST15, na.rm=TRUE),
-                    meanST30=mean(ST30, na.rm=TRUE),
-                    meanNEE=mean(NEE, na.rm=TRUE), 
-                    meanGPP=mean(GPP, na.rm=TRUE),
-                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
-
-Pulse18_sum <- Pulse18 %>%
-  group_by(as.numeric(DOY_S)) %>%
-  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
-                    meanAT6=mean(AT6, na.rm=TRUE),
-                    sum_R=mean(sum_rain, na.rm=TRUE),
-                    rain_events=sum(RainEvent, na.rm=TRUE),
-                    meanRH2=mean(RH2, na.rm=TRUE),
-                    meanRH6=mean(RH6,na.rm=TRUE),
-                    meanSWC5=mean(SWC5, na.rm=TRUE),
-                    meanSWC15=mean(SWC15, na.rm=TRUE),
-                    meanSWC30=mean(SWC30, na.rm=TRUE), 
-                    meanST5=mean(ST5, na.rm=TRUE),
-                    meanST15=mean(ST15, na.rm=TRUE),
-                    meanST30=mean(ST30, na.rm=TRUE),
-                    meanNEE=mean(NEE, na.rm=TRUE), 
-                    meanGPP=mean(GPP, na.rm=TRUE),
-                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
 
 
 # Make a Huuuge! summary table for the all 18 pulses = 16 variables + 22*18 rows should be Pulse(n)_sum files!!!
@@ -927,6 +634,336 @@ Pulse18$Day [Pulse18$DOY_S %in% 362] = '11'
 Pulse18$Day [Pulse18$DOY_S %in% 362] = '12'
 Pulse18$Day [Pulse18$DOY_S %in% 364] = '13'
 Pulse18$Day [Pulse18$DOY_S %in% 365] = '14'
+
+
+
+#Make summary for all 18 Pulses
+Pulse1_sum <- Pulse1 %>%
+  group_by(as.numeric(DOY_S)) %>%
+  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
+                    meanAT6=mean(AT6, na.rm=TRUE),
+                    sum_R=mean(sum_rain, na.rm=TRUE),
+                    rain_events=sum(RainEvent, na.rm=TRUE),
+                    meanRH2=mean(RH2, na.rm=TRUE),
+                    meanRH6=mean(RH6,na.rm=TRUE),
+                    meanSWC5=mean(SWC5, na.rm=TRUE),
+                    meanSWC15=mean(SWC15, na.rm=TRUE),
+                    meanSWC30=mean(SWC30, na.rm=TRUE), 
+                    meanST5=mean(ST5, na.rm=TRUE),
+                    meanST15=mean(ST15, na.rm=TRUE),
+                    meanST30=mean(ST30, na.rm=TRUE),
+                    meanNEE=mean(NEE, na.rm=TRUE), 
+                    meanGPP=mean(GPP, na.rm=TRUE),
+                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
+
+Pulse2_sum <- Pulse2 %>%
+  group_by(as.numeric(DOY_S)) %>%
+  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
+                    meanAT6=mean(AT6, na.rm=TRUE),
+                    sum_R=mean(sum_rain, na.rm=TRUE),
+                    rain_events=sum(RainEvent, na.rm=TRUE),
+                    meanRH2=mean(RH2, na.rm=TRUE),
+                    meanRH6=mean(RH6,na.rm=TRUE),
+                    meanSWC5=mean(SWC5, na.rm=TRUE),
+                    meanSWC15=mean(SWC15, na.rm=TRUE),
+                    meanSWC30=mean(SWC30, na.rm=TRUE), 
+                    meanST5=mean(ST5, na.rm=TRUE),
+                    meanST15=mean(ST15, na.rm=TRUE),
+                    meanST30=mean(ST30, na.rm=TRUE),
+                    meanNEE=mean(NEE, na.rm=TRUE), 
+                    meanGPP=mean(GPP, na.rm=TRUE),
+                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
+
+Pulse3_sum <- Pulse3 %>%
+  group_by(as.numeric(DOY_S)) %>%
+  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
+                    meanAT6=mean(AT6, na.rm=TRUE),
+                    sum_R=mean(sum_rain, na.rm=TRUE),
+                    rain_events=sum(RainEvent, na.rm=TRUE),
+                    meanRH2=mean(RH2, na.rm=TRUE),
+                    meanRH6=mean(RH6,na.rm=TRUE),
+                    meanSWC5=mean(SWC5, na.rm=TRUE),
+                    meanSWC15=mean(SWC15, na.rm=TRUE),
+                    meanSWC30=mean(SWC30, na.rm=TRUE), 
+                    meanST5=mean(ST5, na.rm=TRUE),
+                    meanST15=mean(ST15, na.rm=TRUE),
+                    meanST30=mean(ST30, na.rm=TRUE),
+                    meanNEE=mean(NEE, na.rm=TRUE), 
+                    meanGPP=mean(GPP, na.rm=TRUE),
+                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
+
+Pulse4_sum <- Pulse4 %>%
+  group_by(as.numeric(DOY_S)) %>%
+  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
+                    meanAT6=mean(AT6, na.rm=TRUE),
+                    sum_R=mean(sum_rain, na.rm=TRUE),
+                    rain_events=sum(RainEvent, na.rm=TRUE),
+                    meanRH2=mean(RH2, na.rm=TRUE),
+                    meanRH6=mean(RH6,na.rm=TRUE),
+                    meanSWC5=mean(SWC5, na.rm=TRUE),
+                    meanSWC15=mean(SWC15, na.rm=TRUE),
+                    meanSWC30=mean(SWC30, na.rm=TRUE), 
+                    meanST5=mean(ST5, na.rm=TRUE),
+                    meanST15=mean(ST15, na.rm=TRUE),
+                    meanST30=mean(ST30, na.rm=TRUE),
+                    meanNEE=mean(NEE, na.rm=TRUE), 
+                    meanGPP=mean(GPP, na.rm=TRUE),
+                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
+
+
+Pulse5_sum <- Pulse5_pro %>%
+  group_by(as.numeric(DOY_S)) %>%
+  dplyr::summarise(meanAT2=mean(AT2,na.rm=TRUE), 
+                   meanAT6=mean(AT6, na.rm=TRUE),
+                   sum_R=mean(sum_rain, na.rm=TRUE),
+                   rain_events=sum(RainEvent, na.rm=TRUE),
+                   meanRH2=mean(RH2, na.rm=TRUE),
+                   meanRH6=mean(RH6,na.rm=TRUE),
+                   meanSWC5=mean(SWC5, na.rm=TRUE),
+                   meanSWC15=mean(SWC15, na.rm=TRUE),
+                   meanSWC30=mean(SWC30, na.rm=TRUE), 
+                   meanST5=mean(ST5, na.rm=TRUE),
+                   meanST15=mean(ST15, na.rm=TRUE),
+                   meanST30=mean(ST30, na.rm=TRUE),
+                   meanNEE=mean(as.numeric(NEE), na.rm=TRUE), 
+                   meanGPP=mean(as.numeric(GPP), na.rm=TRUE),
+                   meanRECO=mean(as.numeric(RECO), na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
+
+
+Pulse6_sum <- Pulse6 %>%
+  group_by(as.numeric(DOY_S)) %>%
+  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
+                    meanAT6=mean(AT6, na.rm=TRUE),
+                    sum_R=mean(sum_rain, na.rm=TRUE),
+                    rain_events=sum(RainEvent, na.rm=TRUE),
+                    meanRH2=mean(RH2, na.rm=TRUE),
+                    meanRH6=mean(RH6,na.rm=TRUE),
+                    meanSWC5=mean(SWC5, na.rm=TRUE),
+                    meanSWC15=mean(SWC15, na.rm=TRUE),
+                    meanSWC30=mean(SWC30, na.rm=TRUE), 
+                    meanST5=mean(ST5, na.rm=TRUE),
+                    meanST15=mean(ST15, na.rm=TRUE),
+                    meanST30=mean(ST30, na.rm=TRUE),
+                    meanNEE=mean(NEE, na.rm=TRUE), 
+                    meanGPP=mean(GPP, na.rm=TRUE),
+                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
+
+Pulse7_sum <- Pulse7 %>%
+  group_by(as.numeric(DOY_S)) %>%
+  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
+                    meanAT6=mean(AT6, na.rm=TRUE),
+                    sum_R=mean(sum_rain, na.rm=TRUE),
+                    rain_events=sum(RainEvent, na.rm=TRUE),
+                    meanRH2=mean(RH2, na.rm=TRUE),
+                    meanRH6=mean(RH6,na.rm=TRUE),
+                    meanSWC5=mean(SWC5, na.rm=TRUE),
+                    meanSWC15=mean(SWC15, na.rm=TRUE),
+                    meanSWC30=mean(SWC30, na.rm=TRUE), 
+                    meanST5=mean(ST5, na.rm=TRUE),
+                    meanST15=mean(ST15, na.rm=TRUE),
+                    meanST30=mean(ST30, na.rm=TRUE),
+                    meanNEE=mean(NEE, na.rm=TRUE), 
+                    meanGPP=mean(GPP, na.rm=TRUE),
+                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
+
+Pulse8_sum <- Pulse8 %>%
+  group_by(as.numeric(DOY_S)) %>%
+  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
+                    meanAT6=mean(AT6, na.rm=TRUE),
+                    sum_R=mean(sum_rain, na.rm=TRUE),
+                    rain_events=sum(RainEvent, na.rm=TRUE),
+                    meanRH2=mean(RH2, na.rm=TRUE),
+                    meanRH6=mean(RH6,na.rm=TRUE),
+                    meanSWC5=mean(SWC5, na.rm=TRUE),
+                    meanSWC15=mean(SWC15, na.rm=TRUE),
+                    meanSWC30=mean(SWC30, na.rm=TRUE), 
+                    meanST5=mean(ST5, na.rm=TRUE),
+                    meanST15=mean(ST15, na.rm=TRUE),
+                    meanST30=mean(ST30, na.rm=TRUE),
+                    meanNEE=mean(NEE, na.rm=TRUE), 
+                    meanGPP=mean(GPP, na.rm=TRUE),
+                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
+
+Pulse9_sum <- Pulse9 %>%
+  group_by(as.numeric(DOY_S)) %>%
+  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
+                    meanAT6=mean(AT6, na.rm=TRUE),
+                    sum_R=mean(sum_rain, na.rm=TRUE),
+                    rain_events=sum(RainEvent, na.rm=TRUE),
+                    meanRH2=mean(RH2, na.rm=TRUE),
+                    meanRH6=mean(RH6,na.rm=TRUE),
+                    meanSWC5=mean(SWC5, na.rm=TRUE),
+                    meanSWC15=mean(SWC15, na.rm=TRUE),
+                    meanSWC30=mean(SWC30, na.rm=TRUE), 
+                    meanST5=mean(ST5, na.rm=TRUE),
+                    meanST15=mean(ST15, na.rm=TRUE),
+                    meanST30=mean(ST30, na.rm=TRUE),
+                    meanNEE=mean(NEE, na.rm=TRUE), 
+                    meanGPP=mean(GPP, na.rm=TRUE),
+                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
+
+Pulse10_sum <- Pulse10 %>%
+  group_by(as.numeric(DOY_S)) %>%
+  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
+                    meanAT6=mean(AT6, na.rm=TRUE),
+                    sum_R=mean(sum_rain, na.rm=TRUE),
+                    rain_events=sum(RainEvent, na.rm=TRUE),
+                    meanRH2=mean(RH2, na.rm=TRUE),
+                    meanRH6=mean(RH6,na.rm=TRUE),
+                    meanSWC5=mean(SWC5, na.rm=TRUE),
+                    meanSWC15=mean(SWC15, na.rm=TRUE),
+                    meanSWC30=mean(SWC30, na.rm=TRUE), 
+                    meanST5=mean(ST5, na.rm=TRUE),
+                    meanST15=mean(ST15, na.rm=TRUE),
+                    meanST30=mean(ST30, na.rm=TRUE),
+                    meanNEE=mean(NEE, na.rm=TRUE), 
+                    meanGPP=mean(GPP, na.rm=TRUE),
+                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
+
+Pulse11_sum <- Pulse11 %>%
+  group_by(as.numeric(DOY_S)) %>%
+  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
+                    meanAT6=mean(AT6, na.rm=TRUE),
+                    sum_R=mean(sum_rain, na.rm=TRUE),
+                    rain_events=sum(RainEvent, na.rm=TRUE),
+                    meanRH2=mean(RH2, na.rm=TRUE),
+                    meanRH6=mean(RH6,na.rm=TRUE),
+                    meanSWC5=mean(SWC5, na.rm=TRUE),
+                    meanSWC15=mean(SWC15, na.rm=TRUE),
+                    meanSWC30=mean(SWC30, na.rm=TRUE), 
+                    meanST5=mean(ST5, na.rm=TRUE),
+                    meanST15=mean(ST15, na.rm=TRUE),
+                    meanST30=mean(ST30, na.rm=TRUE),
+                    meanNEE=mean(NEE, na.rm=TRUE), 
+                    meanGPP=mean(GPP, na.rm=TRUE),
+                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
+
+Pulse12_sum <- Pulse12 %>%
+  group_by(as.numeric(DOY_S)) %>%
+  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
+                    meanAT6=mean(AT6, na.rm=TRUE),
+                    sum_R=mean(sum_rain, na.rm=TRUE),
+                    rain_events=sum(RainEvent, na.rm=TRUE),
+                    meanRH2=mean(RH2, na.rm=TRUE),
+                    meanRH6=mean(RH6,na.rm=TRUE),
+                    meanSWC5=mean(SWC5, na.rm=TRUE),
+                    meanSWC15=mean(SWC15, na.rm=TRUE),
+                    meanSWC30=mean(SWC30, na.rm=TRUE), 
+                    meanST5=mean(ST5, na.rm=TRUE),
+                    meanST15=mean(ST15, na.rm=TRUE),
+                    meanST30=mean(ST30, na.rm=TRUE),
+                    meanNEE=mean(NEE, na.rm=TRUE), 
+                    meanGPP=mean(GPP, na.rm=TRUE),
+                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
+
+Pulse13_sum <- Pulse13 %>%
+  group_by(as.numeric(DOY_S)) %>%
+  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
+                    meanAT6=mean(AT6, na.rm=TRUE),
+                    sum_R=mean(sum_rain, na.rm=TRUE),
+                    rain_events=sum(RainEvent, na.rm=TRUE),
+                    meanRH2=mean(RH2, na.rm=TRUE),
+                    meanRH6=mean(RH6,na.rm=TRUE),
+                    meanSWC5=mean(SWC5, na.rm=TRUE),
+                    meanSWC15=mean(SWC15, na.rm=TRUE),
+                    meanSWC30=mean(SWC30, na.rm=TRUE), 
+                    meanST5=mean(ST5, na.rm=TRUE),
+                    meanST15=mean(ST15, na.rm=TRUE),
+                    meanST30=mean(ST30, na.rm=TRUE),
+                    meanNEE=mean(NEE, na.rm=TRUE), 
+                    meanGPP=mean(GPP, na.rm=TRUE),
+                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
+
+Pulse14_sum <- Pulse14 %>%
+  group_by(as.numeric(DOY_S)) %>%
+  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
+                    meanAT6=mean(AT6, na.rm=TRUE),
+                    sum_R=mean(sum_rain, na.rm=TRUE),
+                    rain_events=sum(RainEvent, na.rm=TRUE),
+                    meanRH2=mean(RH2, na.rm=TRUE),
+                    meanRH6=mean(RH6,na.rm=TRUE),
+                    meanSWC5=mean(SWC5, na.rm=TRUE),
+                    meanSWC15=mean(SWC15, na.rm=TRUE),
+                    meanSWC30=mean(SWC30, na.rm=TRUE), 
+                    meanST5=mean(ST5, na.rm=TRUE),
+                    meanST15=mean(ST15, na.rm=TRUE),
+                    meanST30=mean(ST30, na.rm=TRUE),
+                    meanNEE=mean(NEE, na.rm=TRUE), 
+                    meanGPP=mean(GPP, na.rm=TRUE),
+                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
+
+Pulse15_sum <- Pulse15 %>%
+  group_by(as.numeric(DOY_S)) %>%
+  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
+                    meanAT6=mean(AT6, na.rm=TRUE),
+                    sum_R=mean(sum_rain, na.rm=TRUE),
+                    rain_events=sum(RainEvent, na.rm=TRUE),
+                    meanRH2=mean(RH2, na.rm=TRUE),
+                    meanRH6=mean(RH6,na.rm=TRUE),
+                    meanSWC5=mean(SWC5, na.rm=TRUE),
+                    meanSWC15=mean(SWC15, na.rm=TRUE),
+                    meanSWC30=mean(SWC30, na.rm=TRUE), 
+                    meanST5=mean(ST5, na.rm=TRUE),
+                    meanST15=mean(ST15, na.rm=TRUE),
+                    meanST30=mean(ST30, na.rm=TRUE),
+                    meanNEE=mean(NEE, na.rm=TRUE), 
+                    meanGPP=mean(GPP, na.rm=TRUE),
+                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
+
+Pulse16_sum <- Pulse16 %>%
+  group_by(as.numeric(DOY_S)) %>%
+  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
+                    meanAT6=mean(AT6, na.rm=TRUE),
+                    sum_R=mean(sum_rain, na.rm=TRUE),
+                    rain_events=sum(RainEvent, na.rm=TRUE),
+                    meanRH2=mean(RH2, na.rm=TRUE),
+                    meanRH6=mean(RH6,na.rm=TRUE),
+                    meanSWC5=mean(SWC5, na.rm=TRUE),
+                    meanSWC15=mean(SWC15, na.rm=TRUE),
+                    meanSWC30=mean(SWC30, na.rm=TRUE), 
+                    meanST5=mean(ST5, na.rm=TRUE),
+                    meanST15=mean(ST15, na.rm=TRUE),
+                    meanST30=mean(ST30, na.rm=TRUE),
+                    meanNEE=mean(NEE, na.rm=TRUE), 
+                    meanGPP=mean(GPP, na.rm=TRUE),
+                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
+
+Pulse17_sum <- Pulse17 %>%
+  group_by(as.numeric(DOY_S)) %>%
+  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
+                    meanAT6=mean(AT6, na.rm=TRUE),
+                    sum_R=mean(sum_rain, na.rm=TRUE),
+                    rain_events=sum(RainEvent, na.rm=TRUE),
+                    meanRH2=mean(RH2, na.rm=TRUE),
+                    meanRH6=mean(RH6,na.rm=TRUE),
+                    meanSWC5=mean(SWC5, na.rm=TRUE),
+                    meanSWC15=mean(SWC15, na.rm=TRUE),
+                    meanSWC30=mean(SWC30, na.rm=TRUE), 
+                    meanST5=mean(ST5, na.rm=TRUE),
+                    meanST15=mean(ST15, na.rm=TRUE),
+                    meanST30=mean(ST30, na.rm=TRUE),
+                    meanNEE=mean(NEE, na.rm=TRUE), 
+                    meanGPP=mean(GPP, na.rm=TRUE),
+                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
+
+Pulse18_sum <- Pulse18 %>%
+  group_by(as.numeric(DOY_S)) %>%
+  dplyr:: summarise(meanAT2=mean(AT2,na.rm=TRUE), 
+                    meanAT6=mean(AT6, na.rm=TRUE),
+                    sum_R=mean(sum_rain, na.rm=TRUE),
+                    rain_events=sum(RainEvent, na.rm=TRUE),
+                    meanRH2=mean(RH2, na.rm=TRUE),
+                    meanRH6=mean(RH6,na.rm=TRUE),
+                    meanSWC5=mean(SWC5, na.rm=TRUE),
+                    meanSWC15=mean(SWC15, na.rm=TRUE),
+                    meanSWC30=mean(SWC30, na.rm=TRUE), 
+                    meanST5=mean(ST5, na.rm=TRUE),
+                    meanST15=mean(ST15, na.rm=TRUE),
+                    meanST30=mean(ST30, na.rm=TRUE),
+                    meanNEE=mean(NEE, na.rm=TRUE), 
+                    meanGPP=mean(GPP, na.rm=TRUE),
+                    meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
+
 
 
 #Next step is to merge the all data frames with "_sum" based on the same column which called "daymean"
