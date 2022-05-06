@@ -74,13 +74,15 @@ flux_rainman %>%
   geom_point()+
   theme_classic()
 
-flux_rainman_sum <- datarain %>%
+flux_rainman_sum <- flux_rainman %>%
+  filter(House == 1) %>%
   group_by(DOY) %>%
-  group_by(S) %>%
-  summarise(meanRs=mean(Flux))
+  summarise(meanRs=mean(Flux), Sum_Treatment=S)
 
 
-
+flux_rainman_sum <- flux_rainman %>%
+  group_by(House) %>%
+  summarise(meanRs=mean(Flux), Sum_Treatment=S)
 
 
 
