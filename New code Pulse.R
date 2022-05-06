@@ -258,24 +258,20 @@ write.csv(file="data/yearPulses18.csv", yearPulses18)
 
 yearPulses18$Previous_DOY_rain <- lag(yearPulses18$`as.numeric(DOY_S)`)
 
-yearPulses18
+yearPulses18$Timeinbetween <- yearPulses18$`as.numeric(DOY_S)`- yearPulses18$Previous_DOY_rain
 
+yearPulses18 %>%
+  ggplot(aes(x=Timeinbetween, y=meanRECO))+
+  geom_point()+
+  theme_classic()
 
+hist(yearPulses18$Timeinbetween)
 
-
-yearPulses18 %>% # It works but always subtract the first value
-  select('as.numeric(DOY_S)') %>%
-  mutate(Between = `as.numeric(DOY_S)` - first(x = `as.numeric(DOY_S)`))
-
-yearPulses18$BetweenPulses <- yearPulses18 %>% #It's WORKING!!! - But - it made a new data frame in this document 
-#and you can make any graphs
-  select('as.numeric(DOY_S)') %>%
-  mutate(Between = `as.numeric(DOY_S)` - lag(`as.numeric(DOY_S)`))
-
-yearPulses18$BetweenPulses <- yearPulses18 %>% #It's WORKING!!!
-  select('as.numeric(DOY_S)') %>%
-  mutate(`as.numeric(DOY_S)` - lag(`as.numeric(DOY_S)`))
-
+yearPulses18 %>%
+  na.omit() %>%
+  ggplot(aes(x=Timeinbetween))+
+  geom_histogram()+
+  theme_classic()
 
 
 
