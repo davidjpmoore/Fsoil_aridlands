@@ -43,7 +43,6 @@ datarain$hour1=substr(datarain$TIMESTAMP_END,9,10)
 datarain$min1=substr(datarain$TIMESTAMP_END,11,12)
 
 
-
 #ASSIGN the result of the rename function to the same dataframe
 datarain <-  rename(datarain, r=P, 
                     SWC5=SWC_1_1_1,
@@ -58,57 +57,48 @@ datarain <-  rename(datarain, r=P,
                     RH6=RH_1_1_1)
 
 
-
-
 # Adding the new columns with dates to the datarain
 datarain$dateStart <- paste(datarain$year, datarain$month, datarain$day, sep="-")
 datarain$timeStart <- paste(datarain$hour,datarain$min, sep=":")
 datarain$dateEnd <- paste(datarain$year1, datarain$month1, datarain$day1, sep="-")
 datarain$timeEnd <- paste(datarain$hour1,datarain$min1, sep=":")
-
 datarain$data_time_Start <- paste(datarain$dateStart,datarain$timeStart)
 datarain$data_time_End <- paste(datarain$dateEnd,datarain$timeEnd)
-
 datarain$data_time_Start = as.POSIXlt(datarain$data_time_Start, format = "%Y-%m-%d %H:%M")
 datarain$data_time_End = as.POSIXlt(datarain$data_time_End, format = "%Y-%m-%d %H:%M")
 
 
-#high Precipitation column
+# High Precipitation column > 5mm rain
 datarain$high_precip <- datarain$r>5
 datarain$high_precip <- as.numeric(datarain$r>5)
 datarain$high_precip <- as.numeric(datarain$r>5)*datarain$r
 
 
-#making DOY 
+# making DOY 
 datarain$DOY_S <- paste(yday(datarain$dateStart))
 datarain$DOY_E <- paste(yday(datarain$dateEnd))
 
 # Choosing the dates with Rain events in DataP
-
 datarain$RainEvent <- paste(datarain$r>0)
 datarain$RainEvent <- as.numeric(datarain$r>0)
-
 datarain$Rain_DOY <- as.numeric(datarain$RainEvent)*as.numeric(datarain$DOY_S)
-
 sum(datarain$RainEvent, na.rm=FALSE)
 
-#Create a data set for a one pulse 
+# Create a data set for a one pulse 
 Pulse5 <- 
   datarain_pro %>%
   filter(DOY_S %in% (169:190)) 
 
 # Calculate the summary for initial conditions one the time after the rain event
 # Sum / Average / Daily things
-
-#Sum the rains for each DOY
+# Sum the rains for each DOY
 
 datarain <- datarain %>%
   group_by(DOY_S) %>%
   mutate(sum_rain = sum(r))
 
 
-
-#Save new csv files
+# Save new csv files
 write.csv(file="data/Pulse5.csv", Pulse5)
 
 # My version of R does not work with this comand - write_csv >- I made new Pulse5 by using write.csv
@@ -117,11 +107,8 @@ write_csv(file="data/Pulse5.csv", Pulse1)
 
 
 #Plotting SM VS ST for rain events
-
 datarain[datarain == -9999] <- NA
-
 datarain$Season = vector(mode = 'character', length = nrow(datarain))
-
 datarain$Season[datarain$DOY_S %in% c(1:59,305:366)] = 'Winter'
 datarain$Season[datarain$DOY_S %in% 60:181] = 'Spring'
 datarain$Season[datarain$DOY_S %in% 182:304] = 'Summer'
@@ -140,10 +127,7 @@ datarain %>%
 write.csv(file="data/datarain.csv", datarain)
 
 
-
-
 #Some Mean values for our data
-
 summary2 <- datarain %>%
   group_by(as.numeric(DOY_S)) %>%
   summarise(meanAT2=mean(AT2, na.rm=TRUE), meanAT6=mean(AT6, na.rm=TRUE), sum_R=mean(sum_rain, na.rm=TRUE),
@@ -154,7 +138,6 @@ summary2 <- datarain %>%
   
 
 # Exclude "-9999" value from the calculations
-
 summary2 <- datarain %>%
   group_by(as.numeric(DOY_S)) %>%
   dplyr :: summarise(meanAT2=mean(replace(AT2, AT2== -9999, NA),na.rm=TRUE), 
@@ -179,10 +162,7 @@ summaryrains <- summary2 %>%
 
 #AMOUNTS  of rains in 2017 in Kendall site - 48 days with rain events
 nrow(summaryrains)
-
 summaryrains$rain_intens_per_day <- summaryrains$sum_R/summaryrains$rain_events
-
-
 summaryrains$DeltaRains <- vector(mode="integer", length = length(summaryrains$`as.numeric(DOY_S)`))
 
 for (i in 2: length(DeltaRains)){
@@ -201,9 +181,11 @@ plot(summaryrains$DeltaRains, summaryrains$meanGPP)
 
 plot(summaryrains$DeltaRains, summaryrains$meanNEE)
 
-#For most of the graphs - more frequent events (less time interval in between the rain events) 
+
+# For most of the graphs - more frequent events (less time interval in between the rain events) 
 # lead to the higher CO2 fluxes
 plot(summaryrains$DeltaRains, summaryrains$meanRECO)
+
 
 # Add SD + R eco
 plot(summaryrains$`as.numeric(DOY_S)`, summaryrains$meanRECO)
@@ -214,9 +196,19 @@ ggplot(summaryrains, aes(x=`as.numeric(DOY_S)`, y=meanRECO)) +
                 width=.8, position=position_dodge(0.05))
 
 
-
+#I tried to diagnose (statistically) summary2 but this function doesn't work 
 summary2 %>%
   diagnose(meanRECO)
+
+# diagnose <- function(.data, ...) {
+# UseMethod("diagnose", .data)
+# }
+
+diagnose <- function(summary2) {
+  UseMethod("diagnose", summary2)
+}
+
+
 
 sum(summary2$sum_R)
 sum(datarain_pro$r)
@@ -248,10 +240,9 @@ summary2$Season[summary2$`as.numeric(DOY_S)` %in% 60:181] = 'Spring'
 summary2$Season[summary2$`as.numeric(DOY_S)` %in% 182:304] = 'Summer'
 
 
-
+# Creating the summary for 18 Pulses
 yearPulses18 <- summary2 %>%
   filter(sum_R > 5)
-
 
 yearPulses18 %>%
   ggplot(aes(x= meanSWC5, y= meanST5, size = meanRECO, color = Season)) + 
@@ -263,5 +254,28 @@ yearPulses18 %>%
 
 write.csv(file="data/yearPulses18.csv", yearPulses18)
 
-yearPulses18$Timeinbetween <- lag(yearPulses18$`as.numeric(DOY_S)`)
+# Count the time interval between the Pulses - in days (using DOY)
+
+yearPulses18$Previous_DOY_rain <- lag(yearPulses18$`as.numeric(DOY_S)`)
+
+yearPulses18
+
+
+
+
+yearPulses18 %>% # It works but always subtract the first value
+  select('as.numeric(DOY_S)') %>%
+  mutate(Between = `as.numeric(DOY_S)` - first(x = `as.numeric(DOY_S)`))
+
+yearPulses18$BetweenPulses <- yearPulses18 %>% #It's WORKING!!! - But - it made a new data frame in this document 
+#and you can make any graphs
+  select('as.numeric(DOY_S)') %>%
+  mutate(Between = `as.numeric(DOY_S)` - lag(`as.numeric(DOY_S)`))
+
+yearPulses18$BetweenPulses <- yearPulses18 %>% #It's WORKING!!!
+  select('as.numeric(DOY_S)') %>%
+  mutate(`as.numeric(DOY_S)` - lag(`as.numeric(DOY_S)`))
+
+
+
 

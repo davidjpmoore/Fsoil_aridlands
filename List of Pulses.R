@@ -2,26 +2,6 @@
 #Anastasia Makhnykina
 #grab data we need
 
-
-#Load Datarain
-datarain=read.csv("data/datarain_processed.csv", header=TRUE, na.strings = "NaN")
-#remove unnessessary columns
-
-
-#Create a data set for a one pulse 
-Pulse5 <- 
-  datarain %>%
-  filter(DOY_S %in% (169:190)) 
-
-
-
-Pulse5_pro <- select(Pulse5, c(PA, AT2, RH2, AT6, RH6, r, SWC5, 
-                               SWC15, SWC30, SWC30, ST5, 
-                               ST15,ST30, NEE, RECO, GPP, high_precip, 
-                               RainEvent, dateStart, dateEnd, data_time_Start,
-                               data_time_End, DOY_S, DOY_E, Rain_DOY, sum_rain))
-
-
 #packages we need
 library(dplyr)
 library(tidyverse)
@@ -37,12 +17,14 @@ library(ggpubr)
 library(ggplot2)
 library(colorRamps)
 
-#Create Pulses 2-18
 
-Pulse1 <- 
-  datarain %>% 
-  filter(DOY_S %in% (7:28)) 
-  
+#Load Datarain
+datarain=read.csv("data/datarain_processed.csv", header=TRUE, na.strings = "NaN")
+#remove unnessessary columns
+
+
+
+#Create Pulses 2-18
 # Make subset of 26 columns
 
 Pulse1 <- 
@@ -53,8 +35,6 @@ Pulse1 <-
           RainEvent, dateStart, dateEnd, data_time_Start,
           data_time_End, DOY_S, DOY_E, Rain_DOY, sum_rain) %>%
   filter(DOY_S %in% (7:28))
-  
-  
 
 Pulse2 <- 
   datarain %>%
@@ -82,6 +62,15 @@ Pulse4 <-
           RainEvent, dateStart, dateEnd, data_time_Start,
           data_time_End, DOY_S, DOY_E, Rain_DOY, sum_rain) %>%
   filter(DOY_S %in% (165:186)) 
+
+Pulse5 <- 
+  datarain %>%
+  filter(DOY_S %in% (169:190)) 
+Pulse5_pro <- select(Pulse5, c(PA, AT2, RH2, AT6, RH6, r, SWC5, 
+                               SWC15, SWC30, SWC30, ST5, 
+                               ST15,ST30, NEE, RECO, GPP, high_precip, 
+                               RainEvent, dateStart, dateEnd, data_time_Start,
+                               data_time_End, DOY_S, DOY_E, Rain_DOY, sum_rain))
 
 Pulse6 <- 
   datarain %>%
@@ -201,8 +190,7 @@ Pulse18 <-
   filter(DOY_S %in% (344:365)) 
 
 
-
-# Make a Huuuge! summary table for the all 18 pulses = 16 variables + 22*18 rows should be Pulse(n)_sum files!!!
+# Make a summary table for the all 18 pulses = 16 variables + 22*18 rows should be Pulse(n)_sum files!!! = 306 columns
 
 Pulse1$Day [Pulse1$DOY_S %in% 7] = '-7'
 Pulse1$Day [Pulse1$DOY_S %in% 8] = '-6'
@@ -636,7 +624,6 @@ Pulse18$Day [Pulse18$DOY_S %in% 364] = '13'
 Pulse18$Day [Pulse18$DOY_S %in% 365] = '14'
 
 
-
 #Make summary for all 18 Pulses
 Pulse1_sum <- Pulse1 %>%
   group_by(as.numeric(DOY_S)) %>%
@@ -965,36 +952,218 @@ Pulse18_sum <- Pulse18 %>%
                     meanRECO=mean(RECO, na.rm=TRUE), meanday=mean(as.numeric(Day), na.rm= TRUE))
 
 
+# Create the "Pulse" column for each Pulse(n)_sum
+Pulse1_sum$Pulse <- 1
+Pulse2_sum$Pulse <- 2
+Pulse3_sum$Pulse <- 3
+Pulse4_sum$Pulse <- 4
+Pulse5_sum$Pulse <- 5
+Pulse6_sum$Pulse <- 6
+Pulse7_sum$Pulse <- 7
+Pulse8_sum$Pulse <- 8
+Pulse9_sum$Pulse <- 9
+Pulse10_sum$Pulse <- 10
+Pulse11_sum$Pulse <- 11
+Pulse12_sum$Pulse <- 12
+Pulse13_sum$Pulse <- 13
+Pulse14_sum$Pulse <- 14
+Pulse15_sum$Pulse <- 15
+Pulse16_sum$Pulse <- 16
+Pulse17_sum$Pulse <- 17
+Pulse18_sum$Pulse <- 18
 
-#Next step is to merge the all data frames with "_sum" based on the same column which called "daymean"
 
-#df_list <- list(df1, df2, df3) 
-#df_list %>% reduce(full_join, by='id')
+#Next step is to merge the all data frames with "_sum" based on the same column in all 18 Pulses which is called "Pulse"
+All_yearPulses <- dplyr::bind_rows (Pulse1_sum, Pulse2_sum, Pulse3_sum, Pulse4_sum,
+                                    Pulse5_sum, Pulse6_sum, Pulse7_sum, Pulse8_sum,
+                                    Pulse9_sum, Pulse10_sum, Pulse11_sum, Pulse12_sum,
+                                    Pulse13_sum, Pulse14_sum, Pulse15_sum, Pulse16_sum,
+                                    Pulse17_sum, Pulse18_sum)
 
-All_yearPulses <- list(Pulse1_sum, Pulse2_sum, Pulse3_sum, Pulse4_sum,
-                       Pulse5_sum, Pulse6_sum, Pulse7_sum, Pulse8_sum,
-                       Pulse9_sum, Pulse10_sum, Pulse11_sum, Pulse12_sum,
-                       Pulse13_sum, Pulse14_sum, Pulse15_sum, Pulse16_sum,
-                       Pulse17_sum, Pulse18_sum)
+plot(All_yearPulses$meanRECO)
 
 
 All_yearPulses %>%
-  reduce(full_join, by='meanday')
+  group_by(Pulse) %>%
+  filter(as.numeric(meanday) %in% 0:14) %>%
+  dplyr:: summarise(sum(meanRECO))
+
+All_yearPulses %>%
+  na.omit() %>%
+  group_by(Pulse) %>%
+  ggplot(aes(x= `as.numeric(DOY_S)`, y = meanRECO))+
+  geom_line()+
+  geom_point()+
+  xlab('DOY')+
+  ylab('Mean Reco (micromol m-2 s-1)')
+  
+All_yearPulses %>%
+  na.omit() %>%
+  group_by(Pulse) %>%
+  filter(meanday>=0) %>%
+  ggplot(aes(x= `as.numeric(DOY_S)`, y = meanRECO))+
+  geom_line()+
+  geom_point()+
+  xlab('DOY')+
+  ylab('Mean Reco (micromol m-2 s-1)')
 
 
-view(All_yearPulses)
+All_yearPulses %>%
+  na.omit() %>%
+  filter(Pulse==1) %>%
+  filter(meanday>0) %>%
+  ggplot(aes(x= meanday, y = meanRECO))+
+  geom_line()+
+  geom_point()+
+  xlab('Day after the Pulse')+
+  ylab('Mean Reco (micromol m-2 s-1)')
 
-write.csv(All_yearPulses, file = "data/All_yearPulses")
+
+All_yearPulses %>%
+  na.omit() %>%
+  filter(Pulse==18) %>%
+  filter(meanday %in% -3:14) %>%
+  ggplot(aes(x= meanday, y = meanRECO))+
+  geom_line()+
+  geom_point()+
+  xlab('Day after the Pulse')+
+  ylab('Mean Reco (micromol m-2 s-1)')+
+  theme_classic()
+ 
+
+
+# Calculate cumulative fluxes for each day and them all together
+# First take Pulse 1
+
+Pulse1_sum$DayFlux <- (Pulse1_sum$meanRECO*60*60*24)/1000000
+sum(Pulse1_sum$DayFlux)
+plot(Pulse1_sum$DayFlux)
+Pulse1_sum$CumulFlux <- cumsum(Pulse1_sum$DayFlux)
+plot(Pulse1_sum$`as.numeric(DOY_S)`, Pulse1_sum$CumulFlux)
+Pulse1_sum %>%
+  filter(as.numeric(meanday) %in% 0:14) %>%
+  summarise(sum=sum(CumulFlux))
+
+Pulse2_sum$DayFlux <- (Pulse2_sum$meanRECO*60*60*24)/1000000
+Pulse2_sum$CumulFlux <- cumsum(Pulse2_sum$DayFlux)
+Pulse2_sum %>%
+  filter(as.numeric(meanday) %in% 0:14) %>%
+  summarise(sum=sum(CumulFlux))
+
+Pulse3_sum$DayFlux <- (Pulse3_sum$meanRECO*60*60*24)/1000000
+Pulse3_sum$CumulFlux <- cumsum(Pulse3_sum$DayFlux)
+Pulse3_sum %>%
+  filter(as.numeric(meanday) %in% 0:14) %>%
+  summarise(sum=sum(CumulFlux))
+
+Pulse4_sum$DayFlux <- (Pulse4_sum$meanRECO*60*60*24)/1000000
+Pulse4_sum$CumulFlux <- cumsum(Pulse4_sum$DayFlux)
+Pulse4_sum %>%
+  filter(as.numeric(meanday) %in% 0:14) %>%
+  summarise(sum=sum(CumulFlux))
+
+Pulse5_sum$DayFlux <- (Pulse5_sum$meanRECO*60*60*24)/1000000
+Pulse5_sum$CumulFlux <- cumsum(Pulse5_sum$DayFlux)
+Pulse5_sum %>%
+  filter(as.numeric(meanday) %in% 0:14) %>%
+  summarise(sum=sum(CumulFlux))
+
+Pulse6_sum$DayFlux <- (Pulse6_sum$meanRECO*60*60*24)/1000000
+Pulse6_sum$CumulFlux <- cumsum(Pulse6_sum$DayFlux)
+Pulse6_sum %>%
+  filter(as.numeric(meanday) %in% 0:14) %>%
+  summarise(sum=sum(CumulFlux))
+
+Pulse7_sum$DayFlux <- (Pulse7_sum$meanRECO*60*60*24)/1000000
+Pulse7_sum$CumulFlux <- cumsum(Pulse7_sum$DayFlux)
+Pulse7_sum %>%
+  filter(as.numeric(meanday) %in% 0:14) %>%
+  summarise(sum=sum(CumulFlux))
+
+Pulse8_sum$DayFlux <- (Pulse8_sum$meanRECO*60*60*24)/1000000
+Pulse8_sum$CumulFlux <- cumsum(Pulse8_sum$DayFlux)
+Pulse8_sum %>%
+  filter(as.numeric(meanday) %in% 0:14) %>%
+  summarise(sum=sum(CumulFlux))
+
+Pulse9_sum$DayFlux <- (Pulse9_sum$meanRECO*60*60*24)/1000000
+Pulse9_sum$CumulFlux <- cumsum(Pulse9_sum$DayFlux)
+Pulse9_sum %>%
+  filter(as.numeric(meanday) %in% 0:14) %>%
+  summarise(sum=sum(CumulFlux))
+
+Pulse10_sum$DayFlux <- (Pulse10_sum$meanRECO*60*60*24)/1000000
+Pulse10_sum$CumulFlux <- cumsum(Pulse10_sum$DayFlux)
+Pulse10_sum %>%
+  filter(as.numeric(meanday) %in% 0:14) %>%
+  summarise(sum=sum(CumulFlux))
+
+Pulse11_sum$DayFlux <- (Pulse11_sum$meanRECO*60*60*24)/1000000
+Pulse11_sum$CumulFlux <- cumsum(Pulse11_sum$DayFlux)
+Pulse11_sum %>%
+  filter(as.numeric(meanday) %in% 0:14) %>%
+  summarise(sum=sum(CumulFlux))
+
+Pulse12_sum$DayFlux <- (Pulse12_sum$meanRECO*60*60*24)/1000000
+Pulse12_sum$CumulFlux <- cumsum(Pulse12_sum$DayFlux)
+Pulse12_sum %>%
+  filter(as.numeric(meanday) %in% 0:14) %>%
+  summarise(sum=sum(CumulFlux))
+
+Pulse13_sum$DayFlux <- (Pulse13_sum$meanRECO*60*60*24)/1000000
+Pulse13_sum$CumulFlux <- cumsum(Pulse13_sum$DayFlux)
+Pulse13_sum %>%
+  filter(as.numeric(meanday) %in% 0:14) %>%
+  summarise(sum=sum(CumulFlux))
+
+Pulse14_sum$DayFlux <- (Pulse14_sum$meanRECO*60*60*24)/1000000
+Pulse14_sum$CumulFlux <- cumsum(Pulse14_sum$DayFlux)
+Pulse14_sum %>%
+  filter(as.numeric(meanday) %in% 0:14) %>%
+  summarise(sum=sum(CumulFlux))
+
+Pulse15_sum$DayFlux <- (Pulse15_sum$meanRECO*60*60*24)/1000000
+Pulse15_sum$CumulFlux <- cumsum(Pulse15_sum$DayFlux)
+Pulse15_sum %>%
+  filter(as.numeric(meanday) %in% 0:14) %>%
+  summarise(sum=sum(CumulFlux))
+
+Pulse16_sum$DayFlux <- (Pulse16_sum$meanRECO*60*60*24)/1000000
+Pulse16_sum$CumulFlux <- cumsum(Pulse16_sum$DayFlux)
+Pulse16_sum %>%
+  filter(as.numeric(meanday) %in% 0:14) %>%
+  summarise(sum=sum(CumulFlux))
+
+Pulse17_sum$DayFlux <- (Pulse17_sum$meanRECO*60*60*24)/1000000
+Pulse17_sum$CumulFlux <- cumsum(Pulse17_sum$DayFlux)
+Pulse17_sum %>%
+  filter(as.numeric(meanday) %in% 0:14) %>%
+  summarise(sum=sum(CumulFlux))
+
+Pulse18_sum$DayFlux <- (Pulse18_sum$meanRECO*60*60*24)/1000000
+Pulse18_sum$CumulFlux <- cumsum(Pulse18_sum$DayFlux)
+Pulse18_sum %>%
+  filter(as.numeric(meanday) %in% 0:14) %>%
+  summarise(sum=sum(CumulFlux))
+
+
+# How to write the one-row summary for each Pulse 
+
+
+
+
+
+
+
+
 
 #Remove the meanday.1-.17
-
 All_yearPulses_new <- All_yearPulses %>%
   select(-c(meanday.1, meanday.2,meanday.3,
          meanday.4,meanday.5,meanday.6,meanday.7,meanday.8,
          meanday.8,meanday.10,meanday.11,meanday.12,
          meanday.13,meanday.14,meanday.15,meanday.16,
          meanday.17))
-
 
 All_yearPulses_new <- subset(All_yearPulses, select = -c(meanday.1, meanday.2,meanday.3,
                                                          meanday.4,meanday.5,meanday.6,meanday.7,meanday.8,
@@ -1035,6 +1204,8 @@ All_yearPulses %>%
 
 All_yearPulses %>%
   filter(as.numeric(meanday) == 0)
+
+
 
 
 
