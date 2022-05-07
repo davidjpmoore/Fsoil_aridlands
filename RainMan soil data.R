@@ -9,26 +9,186 @@ library(skimr)
 library(data.table)
 library(tidyr)
 library(ggplot2)
-library(Hmisc)
+#library(Hmisc)
+#package does not install
 
-# Making the Interval Graph
+# The ID of a file can be found by navigating to the 
+# Google Drive web. Right click on the file you need, and 
+# select get sharable link . 
+# The File ID is the last part of that link, after id= .
 
-getwd()
-freqrainman <- read.csv("data/Complete Irrigation.csv",
-                        sep=";",header=TRUE, na.strings = "NaN")
+#https://drive.google.com/drive/folders/1An5QfaLByd2CadyI5Bg_T8-mz89rYHlf?usp=sharing
+
+
+############################################################################
+# Read in files from 
+############################################################################
 
 freqrainman <- read.csv("data/Complete Irrigation.csv",
                         sep=";",header=TRUE, na.strings = ".")
+freqrainman$Date10 <- as.Date(substr(freqrainman$Date, 1,10))
+#formating the 10 digit date as a DATE
+#create DOY from date field
+freqrainman$DOY <- as.numeric(paste(yday(freqrainman$Date)))
+#need to document this file (where does it come from?)
+
+############################
+#### freq dataset reports the rainfall recieved by each irrigation treatment
+#############
+
 
 flux_rainman <- read.csv("data/AllColumns_FirstCleanMethod.csv",
-                        sep=",",header=TRUE, na.strings = "NaN")
+                         sep=",",header=TRUE, na.strings = "NaN")
+flux_rainman$Date10 <- as.Date(substr(flux_rainman$Date, 1,10))
+#formating the 10 digit date as a DATE
+flux_rainman$DOY <- as.numeric(paste(yday(flux_rainman$Date10)))
+#need to document this file (where does it come from?)
+
+
+flux_RM <-  flux_rainman %>% 
+  mutate(Plot = recode(Plot, '1' = '01', '2' = '02', 
+                       '3' = '03', '4' = '04', '5' = '05','6' = '06', 
+                       '7' = '07', '8' = '08', '9' = '09', 
+                       '10' = '10', '11' = '11', '12' = '12'))  %>%
+  mutate(House = recode(House, '1' = '01', '2' = '02', 
+                        '3' = '03', '4' = '04', '5' = '05')) %>%
+  rename(Summer=S, Winter=W)
+
+flux_RM$Sum_Wint_TRT = paste(flux_RM$Winter, flux_RM$Summer, sep="_")
+flux_RM$Plot = as.character(flux_RM$Plot)
+flux_RM$House = as.character(flux_RM$House)
+flux_RM$House_plot = paste(flux_RM$House, flux_RM$Plot, sep="_")
+#columns above created for a join check - join check passed
+#removing columns to avoid duplications
+flux_RM <- subset(flux_RM, select = -c(Winter, Summer, Sum_Wint_TRT))
+
+########### from the treatement definition
+# https://docs.google.com/spreadsheets/d/1eL_CKVklv2upHVd3Hck9stpddoQscd22yFScTaqrdxM/edit#gid=853864262
+# House	Plot	Winter	Summer
+# 1	1	W3	S4
+# 1	2	W2	S2
+# 1	3	W3	S1
+# 1	4	W1	S1
+# 1	5	W1	S3
+# 1	6	W3	S2
+# 1	7	W2	S1
+# 1	8	W1	S4
+# 1	9	W1	S2
+# 1	10	W2	S3
+# 1	11	W3	S3
+# 1	12	W2	S4
+
+#For example House 1, Plot 2 should be	W2	S2
+#flux_RM_check = subset(flux_RM, select = c(House, Plot, Winter, Summer))
+
+###############################################################
+# read treatment codes from RAINMAN DATA STORE
+# https://docs.google.com/spreadsheets/d/1eL_CKVklv2upHVd3Hck9stpddoQscd22yFScTaqrdxM/edit#gid=853864262
+# This file was downloaded to a CSV file Path= "~/data/TreatmentCODED.csv"
+###############################################################
+
+TRT_RM <- read.csv("data/TreatmentCODED.csv",
+                   sep=",",header=TRUE, na.strings = "NA")
+TRT_RM <-  TRT_RM %>% 
+  mutate(Plot = recode(Plot, '1' = '01', '2' = '02', 
+                       '3' = '03', '4' = '04', '5' = '05','6' = '06', 
+                       '7' = '07', '8' = '08', '9' = '09', 
+                       '10' = '10', '11' = '11', '12' = '12'))  %>%
+  mutate(House = recode(House, '1' = '01', '2' = '02', 
+                        '3' = '03', '4' = '04', '5' = '05')) 
+
+TRT_RM$Sum_Wint_TRT = paste(TRT_RM$Winter, TRT_RM$Summer, sep="_")
+TRT_RM$Plot = as.character(TRT_RM$Plot)
+TRT_RM$House = as.character(TRT_RM$House)
+TRT_RM$House_plot = paste(TRT_RM$House, TRT_RM$Plot, sep="_")
+#slim down TRT 
+TRT_RM_mge=subset(TRT_RM, select = c(House_plot, Winter, Summer, Sum_Wint_TRT))
+
+###############################################################
+
+
+#Join with Treatment information for check
+#Note there are more treatment combinations than VWC probes
+flux_RM_jn =  full_join( TRT_RM_mge,flux_RM, by = c("House_plot" = "House_plot"))
+flux_RM = subset(flux_RM_jn, select = c(Date10 ,DOY, House, Plot, Winter, Summer, Sum_Wint_TRT, House_plot,  Tchamb., Flux, R2))
+
+ flux_RM %>%
+#  mutate(Daily = day(Date10)) %>%
+  group_by(Date10, House_plot) 
+ 
+ 
+ flux_RM_daily =flux_RM %>%
+   group_by(Date10, House_plot, Summer) %>% 
+  summarize(
+    Fsoil_daily = sum(Flux, na.rm=TRUE),
+    Tcham_daily = mean(Tchamb., na.rm=TRUE))
+
+# PlotFlux by Treatment in RAINMAN  
+ Flux_byTreat <- ggplot(flux_RM_daily, aes(x=Date10, y=Fsoil_daily, group=Summer, color=Summer)) +
+   #Note that I have stored the Date10 variable as.Date 
+   #this allows me to use date functions like this
+   scale_x_date(date_breaks = "3 month" , date_labels = "%b-%y")+
+   geom_line() 
+ 
+ 
+ # to display this plot type VWCplotRaw and add any theme you'd like to it
+ Flux_byTreat + theme_classic() 
+
+#  
+#  ########################################################### 
+# # READ DAILY VWC data unless already created
+# # file="data/VWC_daily.csv"
+#  ###########################################################
+#  VWC_slim_RM_daily <- read.csv("data/VWC_daily.csv",
+#                     sep=",",header=TRUE, na.strings = "NA")
+ 
+ 
+#VWC_slim
+flux_RM_VWC =full_join( flux_RM_daily,VWC_slim_RM_daily, by = c("House_plot" = "House_plot", "Date10" = "Date10", "Summer"="Summer"))
+
+ 
+ ################
+# quick plots
+################
+
+# PlotFlux by Treatment in RAINMAN  
+Flux_byTreat <- ggplot(flux_RM_VWC, aes(x=Date10, y=Fsoil_daily, group=Summer, color=Summer)) +
+  #Note that I have stored the Date10 variable as.Date 
+  #this allows me to use date functions like this
+  scale_x_date(date_breaks = "3 month" , date_labels = "%b-%y")+
+  geom_line() 
+
+
+# to display this plot type the name of the object and add any theme you'd like to it
+Flux_byTreat + theme_classic() 
+
+# plot VWC by Treatment in RAINMAN  
+VWC_byTreat <- ggplot(flux_RM_VWC, aes(x=Date10, y=VWC_daily, group=Summer, color=Summer)) +
+  #Note that I have stored the Date10 variable as.Date 
+  #this allows me to use date functions like this
+  scale_x_date(date_breaks = "3 month" , date_labels = "%b-%y")+
+  geom_line() 
+
+
+# to display this plot type the name of the object and add any theme you'd like to it
+VWC_byTreat + theme_classic() 
+
+# plot VWC by Treatment in RAINMAN  
+Flux_by_VWC <- ggplot(flux_RM_VWC, aes(x=VWC_daily, y=Fsoil_daily, group=Summer, color=Summer)) +
+  #Note that I have stored the Date10 variable as.Date 
+  #this allows me to use date functions like this
+  #scale_x_date(date_breaks = "3 month" , date_labels = "%b-%y")+
+  geom_line() 
+
+
+# to display this plot type the name of the object and add any theme you'd like to it
+Flux_by_VWC + theme_classic() 
+
 
 plot(freqrainman$S1.mm.)
 typeof(freqrainman$S1.mm.)
 
-#create DOY from date field
-freqrainman$DOY <- as.numeric(paste(yday(freqrainman$Date)))
-
+# Making the Interval Graph 
 
 ###############################################################
 # Create histograms of rainfall, Rsoil and intervals
