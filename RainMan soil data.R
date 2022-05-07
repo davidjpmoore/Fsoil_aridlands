@@ -21,9 +21,12 @@ library(ggplot2)
 
 
 ############################################################################
-# Read in files from 
+# Read in files from data store
 ############################################################################
 
+############################################################################
+#### freq dataset reports the rainfall recieved by each irrigation treatment
+############################################################################
 freqrainman <- read.csv("data/Complete Irrigation.csv",
                         sep=";",header=TRUE, na.strings = ".")
 freqrainman$Date10 <- as.Date(substr(freqrainman$Date, 1,10))
@@ -32,18 +35,43 @@ freqrainman$Date10 <- as.Date(substr(freqrainman$Date, 1,10))
 freqrainman$DOY <- as.numeric(paste(yday(freqrainman$Date)))
 #need to document this file (where does it come from?)
 
-############################
-#### freq dataset reports the rainfall recieved by each irrigation treatment
-#############
+#using pivot_longer to change columns to rows
+freqrainman_slim <-
+  pivot_longer(data= freqrainman,
+               cols = starts_with("S"),
+               names_to = "Summer_mm",
+               values_to = "Precip"
+  )
+#add Summer to be consistent with other datasets
+freqrainman_slim$Summer <- as.character(substr(freqrainman_slim$Summer_mm, 1,2))
+freqrainman_slim$Precip[is.na(freqrainman_slim$Precip)] <- 0
+freqrainman_slim <- subset(freqrainman_slim, select=-c(Summer_mm, Date, DOY))
 
+
+Precip_daily =freqrainman_slim %>%
+  group_by(Date10, Summer) %>% 
+  summarize(
+    Precip_daily = sum(Precip,na.rm=TRUE) )
+
+plot(Precip_daily$Precip_daily)
+
+plot(freqrainman_slim$Date10,freqrainman_slim$Precip)
+plot(freqrainman$Date10,freqrainman$S4.mm.)
+plot(freqrainman$S1.mm.)
+plot(freqrainman$S2.mm.)
+plot(freqrainman$S3.mm.)
+############################################################################
+#
+# Soil Efflux data sent from Jake
+#
+############################################################################
 
 flux_rainman <- read.csv("data/AllColumns_FirstCleanMethod.csv",
                          sep=",",header=TRUE, na.strings = "NaN")
 flux_rainman$Date10 <- as.Date(substr(flux_rainman$Date, 1,10))
 #formating the 10 digit date as a DATE
 flux_rainman$DOY <- as.numeric(paste(yday(flux_rainman$Date10)))
-#need to document this file (where does it come from?)
-
+#need to document this file (where does it come from? email from Jake?)
 
 flux_RM <-  flux_rainman %>% 
   mutate(Plot = recode(Plot, '1' = '01', '2' = '02', 
@@ -109,20 +137,26 @@ TRT_RM_mge=subset(TRT_RM, select = c(House_plot, Winter, Summer, Sum_Wint_TRT))
 
 #Join with Treatment information for check
 #Note there are more treatment combinations than VWC probes
-flux_RM_jn =  full_join( TRT_RM_mge,flux_RM, by = c("House_plot" = "House_plot"))
-flux_RM = subset(flux_RM_jn, select = c(Date10 ,DOY, House, Plot, Winter, Summer, Sum_Wint_TRT, House_plot,  Tchamb., Flux, R2))
+flux_RM_jn =  full_join( TRT_RM_mge,flux_RM,
+                         by = c("House_plot" = "House_plot"))
+flux_RM = subset(flux_RM_jn, 
+                 select = c(Date10 ,DOY, House, Plot, Winter, Summer, 
+                     Sum_Wint_TRT, House_plot,  Tchamb., Flux, R2))
+
 
  flux_RM %>%
 #  mutate(Daily = day(Date10)) %>%
-  group_by(Date10, House_plot) 
+  group_by(Date10, House_plot, na.rm=TRUE) 
  
+ plot( flux_RM$Precip, na.rm=TRUE)
  
  flux_RM_daily =flux_RM %>%
    group_by(Date10, House_plot, Summer) %>% 
   summarize(
     Fsoil_daily = sum(Flux, na.rm=TRUE),
-    Tcham_daily = mean(Tchamb., na.rm=TRUE))
+    Tcham_daily = mean(Tchamb., na.rm=TRUE) )
 
+ 
 # PlotFlux by Treatment in RAINMAN  
  Flux_byTreat <- ggplot(flux_RM_daily, aes(x=Date10, y=Fsoil_daily, group=Summer, color=Summer)) +
    #Note that I have stored the Date10 variable as.Date 
@@ -139,13 +173,23 @@ flux_RM = subset(flux_RM_jn, select = c(Date10 ,DOY, House, Plot, Winter, Summer
 # # READ DAILY VWC data unless already created
 # # file="data/VWC_daily.csv"
 #  ###########################################################
-#  VWC_slim_RM_daily <- read.csv("data/VWC_daily.csv",
-#                     sep=",",header=TRUE, na.strings = "NA")
+ VWC_slim_RM_daily <- read.csv("data/VWC_daily.csv",
+                     sep=",",header=TRUE, na.strings = "NA")
+ VWC_slim_RM_daily$Date10 = as.Date(VWC_slim_RM_daily$Date10)
+ #  ###########################################################
  
- 
+ Precip_daily
+ flux_RM =  full_join(flux_RM,freqrainman_slim,  
+                      by = c("Date10" = "Date10", "Summer" = "Summer"))
+ #  ###########################################################
+ #  Merge daily rainman flux with VWC
+ #  ###########################################################
 #VWC_slim
 flux_RM_VWC =full_join( flux_RM_daily,VWC_slim_RM_daily, by = c("House_plot" = "House_plot", "Date10" = "Date10", "Summer"="Summer"))
 
+ flux_RM_VWC_precip =full_join( flux_RM_VWC,Precip_daily, by = c("Date10" = "Date10", "Summer"="Summer"))
+ 
+ 
  
  ################
 # quick plots
@@ -173,6 +217,21 @@ VWC_byTreat <- ggplot(flux_RM_VWC, aes(x=Date10, y=VWC_daily, group=Summer, colo
 # to display this plot type the name of the object and add any theme you'd like to it
 VWC_byTreat + theme_classic() 
 
+
+# plot PRECIP by Treatment in RAINMAN  
+Precip_byTreat <- ggplot(flux_RM_VWC_precip, aes(x=Date10, y=Precip_daily, group=Summer, color=Summer)) +
+  #Note that I have stored the Date10 variable as.Date 
+  #this allows me to use date functions like this
+  scale_x_date(date_breaks = "3 month" , date_labels = "%b-%y")+
+  geom_line() 
+#######################
+# this is wrong! the precip is not summed up correctly 
+#######################
+
+# to display this plot type the name of the object and add any theme you'd like to it
+Precip_byTreat + theme_classic() 
+
+
 # plot VWC by Treatment in RAINMAN  
 Flux_by_VWC <- ggplot(flux_RM_VWC, aes(x=VWC_daily, y=Fsoil_daily, group=Summer, color=Summer)) +
   #Note that I have stored the Date10 variable as.Date 
@@ -180,13 +239,10 @@ Flux_by_VWC <- ggplot(flux_RM_VWC, aes(x=VWC_daily, y=Fsoil_daily, group=Summer,
   #scale_x_date(date_breaks = "3 month" , date_labels = "%b-%y")+
   geom_line() 
 
-
 # to display this plot type the name of the object and add any theme you'd like to it
 Flux_by_VWC + theme_classic() 
 
 
-plot(freqrainman$S1.mm.)
-typeof(freqrainman$S1.mm.)
 
 # Making the Interval Graph 
 
@@ -223,20 +279,20 @@ freqrainman$Timeinbetween_S1 <- freqrainman$DOY - freqrainman$Previous_DOY_S1
 
 
 
-
-# create multiple histogram
-hist(freqrainman$S1.mm., col='red')
-hist(freqrainman$S2.mm., col='green', add=TRUE)
-hist(freqrainman$S3.mm., col='blue', add=TRUE)
-hist(freqrainman$S4.mm., col='yellow', add=TRUE)
-#need to create a histogram for all the raindata
-
-freqrainman %>%
-  na.omit() %>%
-  filter(Timeinbetween_S1>0) %>%
-  ggplot(aes(x=Timeinbetween_S1))+
-  geom_bar()+
-  theme_classic()
+# 
+# # create multiple histogram
+# hist(freqrainman$S1.mm., col='red')
+# hist(freqrainman$S2.mm., col='green', add=TRUE)
+# hist(freqrainman$S3.mm., col='blue', add=TRUE)
+# hist(freqrainman$S4.mm., col='yellow', add=TRUE)
+# #need to create a histogram for all the raindata
+# 
+# freqrainman %>%
+#   na.omit() %>%
+#   filter(Timeinbetween_S1>0) %>%
+#   ggplot(aes(x=Timeinbetween_S1))+
+#   geom_bar()+
+#   theme_classic()
 
 
 
