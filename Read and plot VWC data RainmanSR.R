@@ -5,7 +5,13 @@
 # extract plot, probe and house data from VWC column headers
 # graph data by plot
 ###############################################################
-
+library(dplyr)
+library(tidyverse)
+library(lubridate)
+library(skimr)
+library(data.table)
+library(tidyr)
+library(ggplot2)
 
 ###############################################################
 # read treatment codes from RAINMAN DATA STORE

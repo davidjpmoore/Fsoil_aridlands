@@ -4,7 +4,13 @@
 ###### Purpose: Read in irrigation data from RAINMAN & 
 ###### organize by treatment and date
 
-
+library(dplyr)
+library(tidyverse)
+library(lubridate)
+library(skimr)
+library(data.table)
+library(tidyr)
+library(ggplot2)
 ############################################################################
 # Read in files from data store
 ############################################################################
@@ -213,85 +219,6 @@ flux_RM =  full_join(flux_RM,freqrainman_slim,
 #VWC_slim
 flux_RM_VWC =full_join( flux_RM_daily,VWC_slim_RM_daily, by = c("House_plot" = "House_plot", "Date10" = "Date10", "Summer"="Summer"))
 flux_RM_VWC_precip =full_join( flux_RM_VWC,Precip_daily, by = c("Date10" = "Date10", "Summer"="Summer"))
-
-
-# PlotFlux by Treatment in RAINMAN  
-Flux_byTreat_mge <- ggplot(flux_RM_VWC_precip, 
-                       aes(x=Date10, y=Fsoil_daily, 
-                           group=Summer, 
-                           color=Summer
-                       )) +
-  theme_bw() +
-  theme(axis.ticks.length = unit(-0.2, "cm"))+
-  #Note that I have stored the Date10 variable as.Date 
-  #this allows me to use date functions like this
-  
-  scale_x_date(date_breaks = "3 month" , date_labels = "%b-%y")+
-  xlab("Date") +
-  ylab("Soil Efflux (umol m-2 s-1)") +
-  geom_point(size = 2) 
-
-
-# PlotFlux by Treatment in RAINMAN  
-VWC_daily_byTreat_mge <- ggplot(flux_RM_VWC_precip, 
-                           aes(x=Date10, y=VWC_daily,
-                               group=Summer, 
-                               color=Summer
-                           )) +
-  theme_bw() +
-  theme(axis.ticks.length = unit(-0.2, "cm"))+
-  #Note that I have stored the Date10 variable as.Date 
-  #this allows me to use date functions like this
-  
-  scale_x_date(date_breaks = "3 month" , date_labels = "%b-%y")+
-  xlab("Date") +
-  ylab("Volumetric Water Content (prop)") +
-  geom_point(size = 2) 
-
-
-
-
-# PlotFlux by Treatment in RAINMAN  
-RAIN_daily_byTreat_mge <- ggplot(flux_RM_VWC_precip, 
-                                aes(x=Date10, y=Precip_daily,
-                                    group=Summer, 
-                                    color=Summer
-                                )) +
-  theme_bw() +
-  theme(axis.ticks.length = unit(-0.2, "cm"))+
-  #Note that I have stored the Date10 variable as.Date 
-  #this allows me to use date functions like this
-  
-  scale_x_date(date_breaks = "3 month" , date_labels = "%b-%y")+
-  xlab("Date") +
-  ylab("Precip (mm)") +
-  geom_point(size = 2) 
-
-
-# PlotFlux by VWC in RAINMAN  
-Flux_VWC_daily_byTreat_mge <- ggplot(flux_RM_VWC_precip, 
-                                aes(x=VWC_daily, y=,Fsoil_daily,
-                                    group=Summer, 
-                                    color=Summer
-                                )) +
-  theme_bw() +
-  theme(axis.ticks.length = unit(-0.2, "cm"))+
-  #Note that I have stored the Date10 variable as.Date 
-  #this allows me to use date functions like this
-  
-  #scale_x_date(date_breaks = "3 month" , date_labels = "%b-%y")+
-  xlab("Volumetric Water Content (prop)") +
-  ylab("Soil Efflux (umol m-2 s-1)") +
-  geom_point(size = 2) 
-
-
-
-
-###display plot
-Flux_byTreat
-Flux_byTreat_mge
-VWC_daily_byTreat_mge
-Flux_VWC_daily_byTreat_mge
 
 
 write_csv(flux_RM_VWC_precip, file="data/RM_dailyFlux_VWC_Rain.csv")

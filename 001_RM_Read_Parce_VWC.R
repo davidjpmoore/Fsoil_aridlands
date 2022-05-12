@@ -1,5 +1,11 @@
 
-
+library(dplyr)
+library(tidyverse)
+library(lubridate)
+library(skimr)
+library(data.table)
+library(tidyr)
+library(ggplot2)
 
 #  ########################################################### 
 # # READ DAILY VWC data unless already created
