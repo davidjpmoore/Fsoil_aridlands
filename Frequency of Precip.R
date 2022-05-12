@@ -5,7 +5,8 @@ library(skimr)
 library(data.table)
 
 
-datarainman=read.csv("data/kendall2017.csv", header=TRUE, na.strings = "NaN", sep=";")
+datarain=read.csv("data/kendall2017.csv", header=TRUE, na.strings = "NaN", sep=";")
+#this was called datarainman - but it refefences Kendall data
 dataGPP=read.csv("data/GPP_data.csv", header=TRUE, sep=";")
 
 plot(dataGPP$GPP)
