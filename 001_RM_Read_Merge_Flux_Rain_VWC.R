@@ -192,7 +192,7 @@ Flux_byTreat <- ggplot(flux_RM_daily,
 ###display plot
 Flux_byTreat
 
-
+#### are multiple probes still in this summary by day?
 
 
 #  ########################################################### 
