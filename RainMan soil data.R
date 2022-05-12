@@ -231,6 +231,10 @@ Precip_byTreat <- ggplot(flux_RM_VWC_precip, aes(x=Date10, y=Precip_daily, group
 # to display this plot type the name of the object and add any theme you'd like to it
 Precip_byTreat + theme_classic() 
 
+plot(flux_RM_VWC_precip$Date10, flux_RM_VWC_precip$Precip_daily)
+
+plot(flux_RM_VWC_precip$Precip_daily)
+
 
 # plot VWC by Treatment in RAINMAN  
 Flux_by_VWC <- ggplot(flux_RM_VWC, aes(x=VWC_daily, y=Fsoil_daily, group=Summer, color=Summer)) +
