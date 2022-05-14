@@ -170,7 +170,7 @@ flux_RM %>%
   #  mutate(Daily = day(Date10)) %>%
   group_by(Date10, House_plot, na.rm=TRUE) 
 
-plot( flux_RM$Precip, na.rm=TRUE)
+plot( flux_RM$Date10, flux_RM$Flux, na.rm=TRUE)
 
 flux_RM_daily =flux_RM %>%
   group_by(Date10, House_plot, Summer) %>% 
