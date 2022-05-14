@@ -1195,6 +1195,8 @@ All_yearPulses[, c('meanday.1', 'meanday.2','meanday.3',
 
 head(All_yearPulses)
 
+write.csv(file="data/All_yearPulses.csv", All_yearPulses)
+
 
 All_yearPulses %>%
   filter(as.numeric(meanday) == 0)

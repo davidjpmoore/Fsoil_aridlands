@@ -5,45 +5,11 @@ library(skimr)
 library(data.table)
 
 
-datarain=read.csv("data/kendall2017.csv", header=TRUE, na.strings = "NaN", sep=";")
-#this was called datarainman - but it refefences Kendall data
-dataGPP=read.csv("data/GPP_data.csv", header=TRUE, sep=";")
-
-plot(dataGPP$GPP)
-
-newGPP = dataGPP$GPP*5 -3
-
-dataGPP$newGPP =  dataGPP$GPP*5 -3
-
-#plot two dimensional graph
-plot(dataGPP22$GPP,dataGPP22$ER.ecosystem.respiration)
-
-#make correlation
-cor(dataGPP22$NEE,dataGPP22$ER.ecosystem.respiration,use="everything", method=c("pearson"))
-
-#make ggplot with dots
-ggplot(data=dataGPP22)+geom_point(mapping=aes(x=NEE,y=ER.ecosystem.respiration))
-
-# summary of your dataset
-summary(dataGPP22)
-
-#ggplot in other way
-ggplot(dataeddy, aes(x=Fs_1,y=Ts_1))
-
-#add new column as a function
-mutate(c,Tsall=Ts_1+TFs_2+TFs_3+Ts_4)
-
-#change directory
-setwd("C:/Users/sunlife1408/Documents/RainMan2022")
-
-
-
-
 #open cvs
 datarain=read.csv("data/20162017Meteo.csv", header=TRUE, na.strings = "NaN")
 
 # read precip. column from dataset
-r = X20162017Meteo$P
+r = datarain$P
 r[r == 0] = NA
 
 
@@ -75,9 +41,6 @@ hist(r, breaks = 50,
      xlab = 'Half-Hourly Precipitation [mm]')
 
 #simple filtering
-filter(datarain, P>0)
-datarain$P 
-
 
 datarain_positive <- datarain  %>% # Choosing the Batting Table 
   # AND

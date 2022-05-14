@@ -68,7 +68,7 @@ plot(freqrainman$S3.mm.)
 
 flux_rainman <- read.csv("data/AllColumns_FirstCleanMethod.csv",
                          sep=",",header=TRUE, na.strings = "NaN")
-flux_rainman$Date10 <- as.Date(substr(flux_rainman$Date, 1,10))
+flux_rainman$Date10 <- as.Date(substr(flux_rainman$ï..Date, 1,10))
 #formating the 10 digit date as a DATE
 flux_rainman$DOY <- as.numeric(paste(yday(flux_rainman$Date10)))
 #need to document this file (where does it come from? email from Jake?)
@@ -139,6 +139,14 @@ TRT_RM_mge=subset(TRT_RM, select = c(House_plot, Winter, Summer, Sum_Wint_TRT))
 #Note there are more treatment combinations than VWC probes
 flux_RM_jn =  full_join( TRT_RM_mge,flux_RM,
                          by = c("House_plot" = "House_plot"))
+
+##### I need to rename - I have this "ï..Date" - but I need "Date10"
+flux_RM_jn <- rename(flux_RM_jn, replace=c("Date10" = "ï..Date")) 
+flux_RM_jn <- rename(flux_RM_jn, Date_time = replace...Date10) 
+
+
+#### Now I can start with next Dave's steps
+
 flux_RM = subset(flux_RM_jn, 
                  select = c(Date10 ,DOY, House, Plot, Winter, Summer, 
                      Sum_Wint_TRT, House_plot,  Tchamb., Flux, R2))
