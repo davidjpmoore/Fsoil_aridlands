@@ -24,6 +24,7 @@ VWC_slim_RM_HHly_slim <-
                values_to = "VWC_prop"
   )
 
+# Probe one - 10 cm, Probe two - 25 cm, Probe three - 75 cm.
 VWC_slim_RM_HHly_slim <- VWC_slim_RM_HHly_slim %>% 
   separate(Var_Plot_Prb_Hse, c('Variable', 'Plot', 'Probe', 'House'), sep = "_")
 
