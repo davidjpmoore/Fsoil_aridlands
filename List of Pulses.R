@@ -1217,6 +1217,8 @@ Pulse1_pick <- Pulse1 %>%
 
 
 
+
+
 All_yearPulses_01 <- All_yearPulses_0 %>%
   pivot_longer(names_to = "Factor",
                values_to = "Value", 
