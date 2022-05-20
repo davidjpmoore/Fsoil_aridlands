@@ -5,7 +5,7 @@ library(lubridate)
 library(skimr)
 library(data.table)
 library(tidyr)
-library(ggplot2)
+library(ggplot2) 
 
 #  ########################################################### 
 # # READ DAILY VWC data unless already created
@@ -46,12 +46,15 @@ VWC_slim_RM_HHly_slim_TRT =  full_join( TRT_RM_mge,VWC_slim_RM_HHly_slim,
                          by = c("House_plot" = "House_plot"))
 
 
+VWC_slim_RM_HHly_slim_TRT <- VWC_slim_RM_HHly_slim_TRT %>% filter(Probe  <2)
+
+
 #calculate average by day
 
 VWC_slim_RM_TRT_daily =VWC_slim_RM_HHly_slim_TRT %>%
   group_by(Date10, House_plot, Summer) %>% 
   summarize(
-    VWC_daily = sum(VWC_prop, na.rm=TRUE),
+    VWC_daily_top = sum(VWC_prop, na.rm=TRUE),
     Tout_daily = mean(T_outside, na.rm=TRUE), 
     RHout_daily = mean(RH_outside, na.rm=TRUE),
     T_in_daily = mean(T_inside, na.rm=TRUE),
@@ -59,13 +62,16 @@ VWC_slim_RM_TRT_daily =VWC_slim_RM_HHly_slim_TRT %>%
     )
 
 
-VWC_slim_RM_TRT_daily
 
+S1check <- VWC_slim_RM_TRT_daily %>% filter(Summer=="S1")
+S4check <- VWC_slim_RM_TRT_daily %>% filter(Summer=="S4")
+
+plot(S1check$VWC_daily_top,S4check$VWC_daily_top)
 write_csv(VWC_slim_RM_TRT_daily, file="data/RM_VWC_slim_byTRT_daily.csv")
 
 
 VWC_daily_byTreat_mge <- ggplot(VWC_slim_RM_TRT_daily, 
-                                aes(x=Date10, y=VWC_daily,
+                                aes(x=Date10, y=VWC_daily_top,
                                     group=Summer, 
                                     color=Summer
                                 )) +
@@ -78,3 +84,8 @@ VWC_daily_byTreat_mge <- ggplot(VWC_slim_RM_TRT_daily,
   xlab("Date") +
   ylab("Volumetric Water Content (prop)") +
   geom_point() 
+
+
+
+
+

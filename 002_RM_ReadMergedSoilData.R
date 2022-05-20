@@ -49,7 +49,7 @@ Flux_byTreat_mge <- ggplot(flux_RM_VWC_precip,
 
 # Plot VWC by Treatment in RAINMAN  
 VWC_daily_byTreat_mge <- ggplot(flux_RM_VWC_precip, 
-                                aes(x=Date10, y=VWC_daily,
+                                aes(x=Date10, y=VWC_daily_top,
                                     group=Summer, 
                                     color=Summer
                                 )) +
@@ -84,7 +84,7 @@ RAIN_daily_byTreat_mge <- ggplot(flux_RM_VWC_precip,
 
 # Plot Flux by VWC in RAINMAN  
 Flux_VWC_daily_byTreat_mge <- ggplot(flux_RM_VWC_precip, 
-                                     aes(x=VWC_daily, y=,Fsoil_daily,
+                                     aes(x=VWC_daily_top, y=,Fsoil_daily,
                                          group=Summer, 
                                          color=Summer
                                      )) +
@@ -107,10 +107,10 @@ Flux_VWC_daily_byTreat_mge
 
 ###### Calculate main effects
 flux_RM_VWC_precip_BYTRT =flux_RM_VWC_precip %>%
-  group_by(House) %>% 
+  group_by(Summer) %>% 
   summarize(
     Mean_Fsoil_TRT = mean(Fsoil_daily, na.rm=TRUE),
-    Mean_VWC_TRT = mean(VWC_daily, na.rm=TRUE),
+    Mean_VWC_TRT = mean(VWC_daily_top, na.rm=TRUE),
     Mean_Precip_TRT = mean(Precip_daily, na.rm=TRUE),
   )
 flux_RM_VWC_precip_BYTRT
