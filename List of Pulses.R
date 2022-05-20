@@ -22,6 +22,9 @@ library(colorRamps)
 datarain=read.csv("data/datarain_processed.csv", header=TRUE, na.strings = "NaN")
 #remove unnessessary columns
 
+datarain$NEE<- as.numeric(as.character(datarain$NEE))
+datarain$RECO <- as.numeric(as.character(datarain$RECO))
+datarain$GPP <- as.numeric(as.character(datarain$GPP))
 
 
 #Create Pulses 2-18
@@ -619,7 +622,7 @@ Pulse18$Day [Pulse18$DOY_S %in% 359] = '8'
 Pulse18$Day [Pulse18$DOY_S %in% 360] = '9'
 Pulse18$Day [Pulse18$DOY_S %in% 361] = '10'
 Pulse18$Day [Pulse18$DOY_S %in% 362] = '11'
-Pulse18$Day [Pulse18$DOY_S %in% 362] = '12'
+Pulse18$Day [Pulse18$DOY_S %in% 363] = '12'
 Pulse18$Day [Pulse18$DOY_S %in% 364] = '13'
 Pulse18$Day [Pulse18$DOY_S %in% 365] = '14'
 
@@ -1147,65 +1150,93 @@ Pulse18_sum %>%
   summarise(sum=sum(CumulFlux))
 
 
-# How to write the one-row summary for each Pulse 
+# Make a new_All file with 18-rows
+
+All_yearPulses <- All_yearPulses [, c(18, 17, 1:16, 19, 20)]
+All_yearPulses[All_yearPulses == -9999] <- NA
 
 
-
-
-
-
-
-
-
-#Remove the meanday.1-.17
 All_yearPulses_new <- All_yearPulses %>%
-  select(-c(meanday.1, meanday.2,meanday.3,
-         meanday.4,meanday.5,meanday.6,meanday.7,meanday.8,
-         meanday.8,meanday.10,meanday.11,meanday.12,
-         meanday.13,meanday.14,meanday.15,meanday.16,
-         meanday.17))
+  filter(meanday %in% (-1:1))
 
-All_yearPulses_new <- subset(All_yearPulses, select = -c(meanday.1, meanday.2,meanday.3,
-                                                         meanday.4,meanday.5,meanday.6,meanday.7,meanday.8,
-                                                         meanday.8,meanday.10,meanday.11,meanday.12,
-                                                         meanday.13,meanday.14,meanday.15,meanday.16,
-                                                         meanday.17))
-
-All_yearPulses <- All_yearPulses[, -c('meanday.1', 'meanday.2','meanday.3',
-                                      'meanday.4','meanday.5','meanday.6','meanday.7','meanday.8',
-                                      'meanday.8','meanday.10','meanday.11','meanday.12',
-                                      'meanday.13','meanday.14','meanday.15','meanday.16',
-                                      'meanday.17')]
+  
+All_yearPulses_new1 <- All_yearPulses_new %>%
+  pivot_longer(names_to = "Factor",
+              values_to = "Value", 
+              'meanAT2':'DayFlux')
 
 
-#df[ , c(2, 3)] <- list(NULL)
-
-All_yearPulses[, c(34,51,68,85,102,119,136,153,170,204,
-                   221,238,255,272,289)] <- list(NULL)
+All_yearPulses_new2 <- subset(All_yearPulses_new1, select = -c (4))
 
 
-
-All_yearPulses[, c('meanday.1', 'meanday.2','meanday.3',
-                   'meanday.4','meanday.5','meanday.6','meanday.7','meanday.8',
-                   'meanday.8','meanday.10','meanday.11','meanday.12',
-                   'meanday.13','meanday.14','meanday.15','meanday.16',
-                   'meanday.17')] <- list(NULL)
+All_yearPulses_new3 <- All_yearPulses_new2 %>%
+  pivot_wider(names_from = Factor,
+               values_from = Value)
 
 
+All_yearPulses_0 <- All_yearPulses %>%
+  filter(meanday == 0) %>%
+  cbind(All_yearPulses_Init, meanAT2_I = All_yearPulses_Init$meanAT2,
+        meanAT6_I=All_yearPulses_Init$meanAT6, sum_R_I = All_yearPulses_Init$sum_R, 
+        rain_event_I = All_yearPulses_Init$rain_events,
+        meanRH2_I = All_yearPulses_Init$meanRH2, meanRH6_I = All_yearPulses_Init$meanRH6, 
+        meanSWC5_I = All_yearPulses_Init$meanSWC5, meanSWC15_I = All_yearPulses_Init$meanSWC15, 
+        meanSWC30_I = All_yearPulses_Init$meanSWC30, meanST5_I = All_yearPulses_Init$meanST5, 
+        meanST15_I = All_yearPulses_Init$meanST15, meanST30_I = All_yearPulses_Init$meanST30,
+        meanNEE_I = All_yearPulses_Init$meanNEE, meanGPP_I = All_yearPulses_Init$meanGPP, 
+        meanRECO_I = All_yearPulses_Init$meanRECO, DayFlux_I = All_yearPulses_Init$DayFlux)
 
-head(All_yearPulses)
 
-write.csv(file="data/All_yearPulses.csv", All_yearPulses)
-
-
-All_yearPulses %>%
-  filter(as.numeric(meanday) == 0)
+plot(All_yearPulses_0$meanAT2_I, All_yearPulses_0$meanRECO)
 
 
-# Plot 0-day values
+All_yearPulses_0 %>%
+  na.omit() %>% 
+  ggplot(aes(x= meanAT2_I, y = meanRECO))+
+  geom_point()+
+  geom_smooth()+
+  xlab('Initial temperature, C')+
+  ylab('Mean Reco (micromol m-2 s-1)')
 
-All_yearPulses %>%
-  filter(as.numeric(meanday) == 0)
+
+# Add Pick Flux column 
+Pulse1_pick <- Pulse1 %>%
+  filter(Day == 0) %>%
+  dplyr:: summarise(
+    Pulse=mean(Pulse1_sum$Pulse),
+    pickReco=mean(max(RECO)),
+    pickNEE=mean(max(NEE)),
+    pickGPP=mean(max(GPP))
+    )
+
+
+
+
+
+
+
+
+
+All_yearPulses_01 <- All_yearPulses_0 %>%
+  pivot_longer(names_to = "Factor",
+               values_to = "Value", 
+               'meanAT2':'DayFlux')
+
+All_yearPulses_Init1 <- All_yearPulses_Init %>%
+  pivot_longer(names_to = "Factor",
+               values_to = "Value", 
+               'meanAT2':'DayFlux')
+
+Crack_18rows <- dplyr::bind_rows (All_yearPulses_Init1, All_yearPulses_01)
+
+All_yearPulses_Init <- All_yearPulses %>%
+  filter(meanday == -1)
+
+
+Pulses_18rows <- dplyr::bind_rows (All_yearPulses_Init, All_yearPulses_0)
+
+
+
 
 
 
