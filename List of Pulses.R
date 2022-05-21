@@ -1151,10 +1151,8 @@ Pulse18_sum %>%
 
 
 # Make a new_All file with 18-rows
-
 All_yearPulses <- All_yearPulses [, c(18, 17, 1:16, 19, 20)]
 All_yearPulses[All_yearPulses == -9999] <- NA
-
 
 All_yearPulses_new <- All_yearPulses %>%
   filter(meanday %in% (-1:1))
@@ -1174,6 +1172,12 @@ All_yearPulses_new3 <- All_yearPulses_new2 %>%
                values_from = Value)
 
 
+All_yearPulses_Init <- All_yearPulses %>%
+  filter(meanday == -1)
+
+All_yearPulses_1 <- All_yearPulses %>%
+  filter(meanday == 1)
+
 All_yearPulses_0 <- All_yearPulses %>%
   filter(meanday == 0) %>%
   cbind(All_yearPulses_Init, meanAT2_I = All_yearPulses_Init$meanAT2,
@@ -1184,7 +1188,33 @@ All_yearPulses_0 <- All_yearPulses %>%
         meanSWC30_I = All_yearPulses_Init$meanSWC30, meanST5_I = All_yearPulses_Init$meanST5, 
         meanST15_I = All_yearPulses_Init$meanST15, meanST30_I = All_yearPulses_Init$meanST30,
         meanNEE_I = All_yearPulses_Init$meanNEE, meanGPP_I = All_yearPulses_Init$meanGPP, 
-        meanRECO_I = All_yearPulses_Init$meanRECO, DayFlux_I = All_yearPulses_Init$DayFlux)
+        meanRECO_I = All_yearPulses_Init$meanRECO, DayFlux_I = All_yearPulses_Init$DayFlux,
+        )
+
+All_yearPulses_0 <- All_yearPulses %>%
+  filter(meanday == 0) %>%
+  cbind(meanAT2_I = All_yearPulses_Init$meanAT2,
+        meanAT6_I=All_yearPulses_Init$meanAT6, sum_R_I = All_yearPulses_Init$sum_R, 
+        rain_event_I = All_yearPulses_Init$rain_events,
+        meanRH2_I = All_yearPulses_Init$meanRH2, meanRH6_I = All_yearPulses_Init$meanRH6, 
+        meanSWC5_I = All_yearPulses_Init$meanSWC5, meanSWC15_I = All_yearPulses_Init$meanSWC15, 
+        meanSWC30_I = All_yearPulses_Init$meanSWC30, meanST5_I = All_yearPulses_Init$meanST5, 
+        meanST15_I = All_yearPulses_Init$meanST15, meanST30_I = All_yearPulses_Init$meanST30,
+        meanNEE_I = All_yearPulses_Init$meanNEE, meanGPP_I = All_yearPulses_Init$meanGPP, 
+        meanRECO_I = All_yearPulses_Init$meanRECO, DayFlux_I = All_yearPulses_Init$DayFlux,
+# Adding the right after conditions
+        meanAT2_A = All_yearPulses_1$meanAT2,
+        meanAT6_A=All_yearPulses_1$meanAT6, sum_R_A = All_yearPulses_1$sum_R, 
+        rain_event_A = All_yearPulses_1$rain_events,
+        meanRH2_A = All_yearPulses_1$meanRH2, meanRH6_A = All_yearPulses_1$meanRH6, 
+        meanSWC5_A = All_yearPulses_1$meanSWC5, meanSWC15_A = All_yearPulses_1$meanSWC15, 
+        meanSWC30_A = All_yearPulses_1$meanSWC30, meanST5_A = All_yearPulses_1$meanST5, 
+        meanST15_A = All_yearPulses_1$meanST15, meanST30_A = All_yearPulses_1$meanST30,
+        meanNEE_A = All_yearPulses_1$meanNEE, meanGPP_A = All_yearPulses_1$meanGPP, 
+        meanRECO_A = All_yearPulses_1$meanRECO, DayFlux_A = All_yearPulses_1$DayFlux
+        
+  )
+
 
 
 plot(All_yearPulses_0$meanAT2_I, All_yearPulses_0$meanRECO)
@@ -1192,11 +1222,11 @@ plot(All_yearPulses_0$meanAT2_I, All_yearPulses_0$meanRECO)
 
 All_yearPulses_0 %>%
   na.omit() %>% 
-  ggplot(aes(x= meanAT2_I, y = meanRECO))+
+  ggplot(aes(x= meanAT2_I, y = meanRECO, size= meanSWC5_I))+
   geom_point()+
-  geom_smooth()+
   xlab('Initial temperature, C')+
-  ylab('Mean Reco (micromol m-2 s-1)')
+  ylab('Mean Reco (micromol m-2 s-1)')+
+  theme_classic()
 
 
 # Add Pick Flux column 
@@ -1212,25 +1242,6 @@ Pulse1_pick <- Pulse1 %>%
 
 
 
-
-
-
-
-
-All_yearPulses_01 <- All_yearPulses_0 %>%
-  pivot_longer(names_to = "Factor",
-               values_to = "Value", 
-               'meanAT2':'DayFlux')
-
-All_yearPulses_Init1 <- All_yearPulses_Init %>%
-  pivot_longer(names_to = "Factor",
-               values_to = "Value", 
-               'meanAT2':'DayFlux')
-
-Crack_18rows <- dplyr::bind_rows (All_yearPulses_Init1, All_yearPulses_01)
-
-All_yearPulses_Init <- All_yearPulses %>%
-  filter(meanday == -1)
 
 
 Pulses_18rows <- dplyr::bind_rows (All_yearPulses_Init, All_yearPulses_0)

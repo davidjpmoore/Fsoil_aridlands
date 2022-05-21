@@ -48,7 +48,6 @@ plot(summary2$meanRECO, dataRsoil$meanSR1)
 plot(dataRsoil$`as.numeric(DOY)`)
 
 #Create the empty rows from DOY = 331 to DOU = 354 - I need 22 empty rows == NA
-library()
 
 dataRsoil$Date = as.Date(dataRsoil$'as.numeric(DOY)'-1, '2017-01-01')
 
@@ -61,11 +60,8 @@ soildata_new$'as.numeric(DOY)' = seq(1, nrow(soildata_new), by = 1)
 soildata_new <- soildata_new %>%
   mutate(MeanReco = summary2$meanRECO)
 
-soildata_new%>%
-  na.omit() %>%
-  ggplot(aes(x=meanSR1, y=MeanReco, color = Season)) + 
-  geom_point()
-
+soildata_new <- soildata_new %>%
+  mutate(MeanGPP = summary2$meanGPP)
 
 
 soildata_new$Season = vector(mode = 'character', length = nrow(soildata_new))
@@ -73,6 +69,20 @@ soildata_new$Season = vector(mode = 'character', length = nrow(soildata_new))
 soildata_new$Season[soildata_new$`as.numeric(DOY)` %in% c(1:59,305:366)] = 'Winter'
 soildata_new$Season[soildata_new$`as.numeric(DOY)` %in% 60:181] = 'Spring'
 soildata_new$Season[soildata_new$`as.numeric(DOY)` %in% 182:304] = 'Summer'
+
+
+soildata_new%>%
+  na.omit() %>%
+  ggplot(aes(x=MeanGPP, y=meanSR1, color = Season, size = meanSM1)) + 
+  geom_point()+
+  theme_classic()
+  
+soildata_new%>%
+  na.omit() %>%
+  ggplot(aes(x=MeanGPP, y=meanSR1, size = meanSM1)) + 
+  geom_point()+
+  geom_smooth()+
+  theme_classic()
 
 
 soildata_new%>%
@@ -144,6 +154,23 @@ soildata_new%>%
   scale_colour_brewer(name = 'Trendline', palette = 'Set2')
 
 
+
+# Three figures in one
+
+soildata_new%>%
+  na.omit() %>%
+  filter(Season == 'Summer') %>%
+# Why this next pert is doesn'r work? 
+  ggplot(aes(x = Date , y1 = meanSR1, y2 = meanSM1, y3 = meanST1)) + 
+  geom_point(shape=1)+
+  theme_classic()
+  
+  
+  facet_grid(~)
+
+
+plot (soildata_new$`as.numeric(DOY)`, soildata_new$meanSR1
+    )
 
 
 
