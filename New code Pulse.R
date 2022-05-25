@@ -26,7 +26,7 @@ pacman::p_load(dlookr,
                tidyverse)
 
 #open cvs
-datarain=read.csv("data/20162017Meteo.csv", header=TRUE, na.strings = "NaN")
+datarain=read.csv("RainMan2022/Fsoil_aridlands/data/20162017Meteo.csv", header=TRUE, na.strings = "NaN")
 
 
 #Date of Start and End of Measurements 
@@ -231,7 +231,26 @@ ggplot(mapping=aes(x=summary2$meanSWC5,y=summary2$meanRECO))+
   
 mean(summary2$meanRECO, na.rm=TRUE)
 
-hist(summary2$sum_R[summary2$sum_R>5])  
+hist(summary2$sum_R[summary2$sum_R>5]) 
+
+############## Make ggplot histogram !!!
+
+ggplot(summary2, aes(x=sum_R[sum_R>5]))+
+  geom_histogram()
+
+summary2 %>%
+  filter(sum_R >5) %>%
+  ggplot(aes(x=sum_R))+
+  geom_histogram(bins = 30)+
+  theme_bw()+
+  xlab('Rain (mm)')+
+  ylab('Frequency (times)')+
+  coord_cartesian(ylim=c(0, 4), xlim = c(0,60))+
+  theme(text = element_text(size = 20))+
+  ggtitle('Rain events > 5 mm')
+
+
+
 
 summary2$Season = vector(mode = 'character', length = nrow(summary2))
 
@@ -244,13 +263,28 @@ summary2$Season[summary2$`as.numeric(DOY_S)` %in% 182:304] = 'Summer'
 yearPulses18 <- summary2 %>%
   filter(sum_R > 5)
 
+
+yearPulses18 %>%
+  ggplot(aes(x=sum_R))+
+  geom_histogram()
+
 yearPulses18 %>%
   ggplot(aes(x= meanSWC5, y= meanST5, size = meanRECO, color = Season)) + 
-  geom_point()
+  geom_point()+ 
+  theme_bw()+
+  theme(text = element_text(size = 20))+
+  xlab(label="Soil Water Content 5 cm (%)")+
+  ylab(label="Soil temperature (C)")
+  
+ 
 
 yearPulses18 %>%
   ggplot(aes(x= meanSWC5, y= meanST5, size = sum_R, color = Season)) + 
-  geom_point()
+  geom_point()+
+  theme_bw()+
+  theme(text = element_text(size = 20))+
+  xlab(label="Soil Water Content 5 cm (%)")+
+  ylab(label="Soil temperature (C)")
 
 write.csv(file="data/yearPulses18.csv", yearPulses18)
 
