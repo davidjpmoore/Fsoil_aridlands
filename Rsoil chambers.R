@@ -60,7 +60,7 @@ plot(dataRsoil$DOY)
 
 #Create the empty rows from DOY = 331 to DOU = 354 - I need 22 empty rows == NA
 
-dataRsoil$Date = as.Date(dataRsoil$DOY -1, '2017-01-01')
+dataRsoil$Date = as.Date(dataRsoil$'as.numeric(DOY)' -1, '2017-01-01')
 
 soildata_new <- dataRsoil %>%
   complete(Date = seq(as.Date('2017-01-01'),as.Date('2017-12-31'),by='day'))
@@ -84,11 +84,22 @@ soildata_new$Season[soildata_new$`as.numeric(DOY)` %in% 182:304] = 'Summer'
 
 soildata_new%>%
   na.omit() %>%
+  filter(Pulse_day == 'TRUE') %>%
   ggplot(aes(x=MeanGPP, y=meanSR1, color = Season, size = meanSM1)) + 
   geom_point()+
   theme_classic()+
-  ylab('Soil emission [micromol CO2 m-2 s-1]')+
-  xlab('GPP')
+  ylab('Rsoil (micromol CO2 m-2 s-1)')+
+  xlab('GPP')+
+  theme(text = element_text(size = 20))
+
+
+soildata_new$Pulse_day <- vector(mode = 'character', length = nrow(soildata_new))
+
+soildata_new$Pulse_day[soildata_new$`as.numeric(DOY)` %in% c(14,15,21,172,176,184,190,
+                                               193,194,198,207,208,209,213,214,222,
+                                               224,351)] = 'TRUE'
+
+
 
 soildata_new%>%
   na.omit() %>%
@@ -122,6 +133,8 @@ soildata_new%>%
   theme_bw()+
   theme(text = element_text(size = 20))
 
+soildata_new$meanSR <- rowMeans(soildata_new [, c(3,4,5,6)])
+
 
 soildata_new%>%
   na.omit() %>%
@@ -140,12 +153,6 @@ soildata_new%>%
   xlab('GPP')
 
 ############ Add Days with Pulses to the graph above
-
-soildata_new$Pulse_day <- vector(mode = 'character', length = nrow(soildata_new))
-
-soildata_new$Pulse_day[soildata_new$DOY %in% c(14,15,21,172,176,184,190,
-                                               193,194,198,207,208,209,213,214,222,
-                                               224,351)] = 'TRUE'
 
 
 #soildata_new$mean_SR <- vector(mode = 'numeric', length = nrow(soildata_new))
@@ -231,7 +238,7 @@ soildata_new%>%
 
 # Calculate the mean SR 
 
-soildata_new$meanSR <- rowMeans(soildata_new [, c(3,4,5,6)])
+
 
 soildata_new%>%
   na.omit() %>%
@@ -259,7 +266,7 @@ soildata_new%>%
   na.omit() %>%
   filter(Season == 'Summer') %>%
 # Why this next pert is doesn'r work? 
-  ggplot(aes(x = Date , y1 = meanSR1, y2 = meanSM1, y3 = meanST1)) + 
+  ggplot(aes(x = Date , y = meanSM1)) + 
   geom_point(shape=1)+
   theme_classic()
   

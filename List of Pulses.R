@@ -1194,6 +1194,10 @@ All_yearPulses_0 <- All_yearPulses %>%
         meanRECO_I = All_yearPulses_Init$meanRECO, DayFlux_I = All_yearPulses_Init$DayFlux,
         )
 
+
+#################### Now this data set includes the initial conditions of each Pulse (-1 day) 
+#and the condition after (+1 day) for all range of variables 
+
 All_yearPulses_0 <- All_yearPulses %>%
   filter(meanday == 0) %>%
   cbind(meanAT2_I = All_yearPulses_Init$meanAT2,
@@ -1214,10 +1218,11 @@ All_yearPulses_0 <- All_yearPulses %>%
         meanSWC30_A = All_yearPulses_1$meanSWC30, meanST5_A = All_yearPulses_1$meanST5, 
         meanST15_A = All_yearPulses_1$meanST15, meanST30_A = All_yearPulses_1$meanST30,
         meanNEE_A = All_yearPulses_1$meanNEE, meanGPP_A = All_yearPulses_1$meanGPP, 
-        meanRECO_A = All_yearPulses_1$meanRECO, DayFlux_A = All_yearPulses_1$DayFlux
-        
-  )
-
+        meanRECO_A = All_yearPulses_1$meanRECO, DayFlux_A = All_yearPulses_1$DayFlux,
+# Adding pick values
+pickReco = Pulses_picks$pickReco, pickGPP = Pulses_picks$pickGPP, pickNEE = Pulses_picks$pickNEE
+)
+  
 
 
 plot(All_yearPulses_0$meanAT2_I, All_yearPulses_0$meanRECO)
@@ -1244,7 +1249,7 @@ All_yearPulses_0 %>%
 
 # Add Pick Flux column 
 Pulse1_pick <- Pulse1 %>%
-  filter(Day == 0) %>%
+  filter(Day %in% 0:1) %>%
   dplyr:: summarise(
     Pulse=mean(Pulse1_sum$Pulse),
     pickReco=mean(max(RECO)),
@@ -1252,22 +1257,220 @@ Pulse1_pick <- Pulse1 %>%
     pickGPP=mean(max(GPP))
     )
 
+Pulse2_pick <- Pulse2 %>%
+  filter(Day %in% 0:1) %>%
+  dplyr:: summarise(
+    Pulse=mean(Pulse2_sum$Pulse),
+    pickReco=mean(max(RECO)),
+    pickNEE=mean(max(NEE)),
+    pickGPP=mean(max(GPP))
+  )
+
+Pulse3_pick <- Pulse3 %>%
+  filter(Day %in% 0:1) %>%
+  dplyr:: summarise(
+    Pulse=mean(Pulse3_sum$Pulse),
+    pickReco=mean(max(RECO)),
+    pickNEE=mean(max(NEE)),
+    pickGPP=mean(max(GPP))
+  )
+
+Pulse4_pick <- Pulse4 %>%
+  filter(Day %in% 0:1) %>%
+  dplyr:: summarise(
+    Pulse=mean(Pulse4_sum$Pulse),
+    pickReco=mean(max(RECO)),
+    pickNEE=mean(max(NEE)),
+    pickGPP=mean(max(GPP))
+  )
+
+Pulse5_pick <- Pulse5_pro %>%
+  filter(Day %in% 0:1) %>%
+  dplyr:: summarise(
+    Pulse=mean(Pulse5_sum$Pulse),
+    pickReco=mean(max(RECO)),
+    pickNEE=mean(max(NEE)),
+    pickGPP=mean(max(GPP))
+  )
+
+Pulse6_pick <- Pulse6 %>%
+  filter(Day %in% 0:1) %>%
+  dplyr:: summarise(
+    Pulse=mean(Pulse6_sum$Pulse),
+    pickReco=mean(max(RECO)),
+    pickNEE=mean(max(NEE)),
+    pickGPP=mean(max(GPP))
+  )
+
+Pulse7_pick <- Pulse7 %>%
+  filter(Day %in% 0:1) %>%
+  dplyr:: summarise(
+    Pulse=mean(Pulse7_sum$Pulse),
+    pickReco=mean(max(RECO)),
+    pickNEE=mean(max(NEE)),
+    pickGPP=mean(max(GPP))
+  )
+
+Pulse8_pick <- Pulse8 %>%
+  filter(Day %in% 0:1) %>%
+  dplyr:: summarise(
+    Pulse=mean(Pulse8_sum$Pulse),
+    pickReco=mean(max(RECO)),
+    pickNEE=mean(max(NEE)),
+    pickGPP=mean(max(GPP))
+  )
+
+Pulse9_pick <- Pulse9 %>%
+  filter(Day %in% 0:1) %>%
+  dplyr:: summarise(
+    Pulse=mean(Pulse9_sum$Pulse),
+    pickReco=mean(max(RECO)),
+    pickNEE=mean(max(NEE)),
+    pickGPP=mean(max(GPP))
+  )
+
+Pulse10_pick <- Pulse10 %>%
+  filter(Day %in% 0:1) %>%
+  dplyr:: summarise(
+    Pulse=mean(Pulse10_sum$Pulse),
+    pickReco=mean(max(RECO)),
+    pickNEE=mean(max(NEE)),
+    pickGPP=mean(max(GPP))
+  )
+
+Pulse11_pick <- Pulse11 %>%
+  filter(Day %in% 0:1) %>%
+  dplyr:: summarise(
+    Pulse=mean(Pulse11_sum$Pulse),
+    pickReco=mean(max(RECO)),
+    pickNEE=mean(max(NEE)),
+    pickGPP=mean(max(GPP))
+  )
+
+Pulse12_pick <- Pulse12 %>%
+  filter(Day %in% 0:1) %>%
+  dplyr:: summarise(
+    Pulse=mean(Pulse12_sum$Pulse),
+    pickReco=mean(max(RECO)),
+    pickNEE=mean(max(NEE)),
+    pickGPP=mean(max(GPP))
+  )
+
+Pulse13_pick <- Pulse13 %>%
+  filter(Day %in% 0:1) %>%
+  dplyr:: summarise(
+    Pulse=mean(Pulse13_sum$Pulse),
+    pickReco=mean(max(RECO)),
+    pickNEE=mean(max(NEE)),
+    pickGPP=mean(max(GPP))
+  )
+
+Pulse14_pick <- Pulse14 %>%
+  filter(Day %in% 0:1) %>%
+  dplyr:: summarise(
+    Pulse=mean(Pulse14_sum$Pulse),
+    pickReco=mean(max(RECO)),
+    pickNEE=mean(max(NEE)),
+    pickGPP=mean(max(GPP))
+  )
+
+Pulse15_pick <- Pulse15 %>%
+  filter(Day %in% 0:1) %>%
+  dplyr:: summarise(
+    Pulse=mean(Pulse15_sum$Pulse),
+    pickReco=mean(max(RECO)),
+    pickNEE=mean(max(NEE)),
+    pickGPP=mean(max(GPP))
+  )
+
+Pulse16_pick <- Pulse16 %>%
+  na.omit()%>%
+  filter(Day %in% 0:1) %>%
+  dplyr:: summarise(
+    Pulse=mean(Pulse16_sum$Pulse),
+    pickReco=mean(max(RECO)),
+    pickNEE=mean(max(NEE)),
+    pickGPP=mean(max(GPP))
+  )
+
+Pulse17_pick <- Pulse17 %>%
+  na.omit()%>%
+  filter(Day %in% 0:1) %>%
+  dplyr:: summarise(
+    Pulse=mean(Pulse17_sum$Pulse),
+    pickReco=mean(max(RECO)),
+    pickNEE=mean(max(NEE)),
+    pickGPP=mean(max(GPP))
+  )
+
+Pulse18_pick <- Pulse18 %>%
+  na.omit()%>%
+  filter(Day %in% 0:1) %>%
+  dplyr:: summarise(
+    Pulse=mean(Pulse18_sum$Pulse),
+    pickReco=mean(max(RECO)),
+    pickNEE=mean(max(NEE)),
+    pickGPP=mean(max(GPP))
+  )
 
 
+#### Make this procedure for all Pick-files
+#Pulses_18rows <- dplyr::bind_rows (All_yearPulses_Init, All_yearPulses_0)
+
+Pulses_picks <- dplyr::bind_rows (Pulse1_pick, Pulse2_pick, Pulse3_pick,
+                                  Pulse4_pick, Pulse5_pick, Pulse6_pick,
+                                  Pulse7_pick, Pulse8_pick, Pulse9_pick,
+                                  Pulse10_pick, Pulse11_pick, Pulse12_pick,
+                                  Pulse13_pick, Pulse14_pick, Pulse15_pick,
+                                  Pulse16_pick, Pulse17_pick, Pulse18_pick)
 
 
+######################### Add Pick-columns to the 18_rows doc - ++++ All_yearPulses_0 - RUN AGAIN
 
-Pulses_18rows <- dplyr::bind_rows (All_yearPulses_Init, All_yearPulses_0)
+############ Plot graphs Including initial conditions and pick value
+
+All_yearPulses_0 %>%
+  na.omit() %>% 
+  ggplot(aes(x= meanAT2_I, y = pickReco, size= meanSWC5_I))+
+  geom_point()+
+  xlab('Initial AT')+
+  ylab('Reco (micromol m-2 s-1)')+
+  theme_classic()
 
 
+All_yearPulses_0 %>%
+  na.omit() %>% 
+  ggplot(aes(x= meanSWC5_I, y = pickReco, size= sum_R))+
+  geom_point()+
+  xlab('Initial SWC')+
+  ylab('Reco (micromol m-2 s-1)')+
+  theme_classic()+
+  ggtitle('Reco pick')+
+  stat_smooth(method = "lm")+
+  stat_regline_equation(aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~~")))
+
+All_yearPulses_0 %>%
+  na.omit() %>% 
+  ggplot(aes(x= meanST5_I, y = pickReco, size= sum_R))+
+  geom_point()+
+  xlab('Initial Soil temperature')+
+  ylab('Pick Reco (micromol m-2 s-1)')+
+  theme_classic()+
+  ggtitle('Reco pick')+
+  stat_smooth(method = "lm")+
+  stat_regline_equation(aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~~")))
 
 
-
-
-
-
-
-
+All_yearPulses_0 %>%
+  na.omit() %>% 
+  ggplot(aes(x= DayFlux_I, y = pickReco, size= sum_R))+
+  geom_point()+
+  xlab('Initial Daily Flux')+
+  ylab('Pick Reco (micromol m-2 s-1)')+
+  theme_classic()+
+  ggtitle('Reco pick')+
+  stat_smooth(method = "lm")+
+  stat_regline_equation(aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~~")))
 
 
 
