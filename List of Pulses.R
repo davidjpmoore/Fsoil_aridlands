@@ -60,6 +60,7 @@ Pulse3 <-
           data_time_End, DOY_S, DOY_E, Rain_DOY, sum_rain) %>%
   filter(DOY_S %in% (14:35)) 
 
+
 Pulse4 <- 
   datarain %>%
   select (PA, AT2, RH2, AT6, RH6, r, SWC5, 
@@ -194,6 +195,227 @@ Pulse18 <-
           RainEvent, dateStart, dateEnd, data_time_Start,
           data_time_End, DOY_S, DOY_E, Rain_DOY, sum_rain) %>%
   filter(DOY_S %in% (344:365)) 
+
+
+###########Plotting some information inside the Pulse
+
+###### The best 3rd Pulse!
+
+Pulse3_sum$meanday <- as.numeric(as.double(Pulse3_sum$meanday))
+
+Pulse3_sum %>%
+  filter(meanday %in% 0:14)%>%
+  ggplot(aes(x=meanday, y=meanRECO))+
+  geom_point(size=2)+
+  geom_line()+
+  theme_classic()+
+  xlab('Day after Rain')+
+  ylab('Mean Reco (micromol m-2 s-1)')+
+  theme(text = element_text(size = 20))
+
+Pulse3_sum %>%
+  filter(meanday %in% 0:14)%>%
+  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanSWC5))+
+  geom_point(size=2)+
+  geom_line()+
+  theme_classic()+
+  xlab('Day after Rain')+
+  ylab('Mean SWC, 5 cm (m3 m-3)')+
+  theme(text = element_text(size = 20))+
+  ggtitle('Pulse3')
+
+Pulse2_sum %>%
+  filter(meanday %in% 0:14)%>%
+  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanSWC5))+
+  geom_point(size=2)+
+  geom_line()+
+  theme_classic()+
+  xlab('Day after Rain')+
+  ylab('Mean SWC, 5 cm (m3 m-3)')+
+  theme(text = element_text(size = 20))+
+  ggtitle('Pulse2')
+
+Pulse1_sum %>%
+  filter(meanday %in% 0:14)%>%
+  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanRECO))+
+  geom_point(size=2)+
+  geom_line()+
+  theme_classic()+
+  xlab('Day after Rain')+
+  ylab('Mean Reco (micromol m-2 s-1)')+
+  theme(text = element_text(size = 20))+
+  ggtitle('Pulse1')
+
+
+Pulse4_sum %>%
+  filter(meanday %in% 0:14)%>%
+  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanSWC5))+
+  geom_point(size=2)+
+  geom_line()+
+  theme_classic()+
+  xlab('Day after Rain')+
+  ylab('Mean SWC, 5 cm (m3 m-3)')+
+  theme(text = element_text(size = 20))+
+  ggtitle('Pulse4')
+
+Pulse5_sum %>%
+  filter(meanday %in% 0:14)%>%
+  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanSWC5))+
+  geom_point(size=2)+
+  geom_line()+
+  theme_classic()+
+  xlab('Day after Rain')+
+  ylab('Mean SWC, 5 cm (m3 m-3)')+
+  theme(text = element_text(size = 20))+
+  ggtitle('Pulse5')
+
+Pulse6_sum %>%
+  filter(meanday %in% 0:14)%>%
+  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanSWC5))+
+  geom_point(size=2)+
+  geom_line()+
+  theme_classic()+
+  xlab('Day after Rain')+
+  ylab('Mean SWC, 5 cm (m3 m-3)')+
+  theme(text = element_text(size = 20))+
+  ggtitle('Pulse6')
+
+Pulse7_sum %>%
+  filter(meanday %in% 0:14)%>%
+  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanSWC5))+
+  geom_point(size=2)+
+  geom_line()+
+  theme_classic()+
+  xlab('Day after Rain')+
+  ylab('Mean SWC, 5 cm (m3 m-3)')+
+  theme(text = element_text(size = 20))+
+  ggtitle('Pulse7')
+
+Pulse8_sum %>%
+  filter(meanday %in% 0:14)%>%
+  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanSWC5))+
+  geom_point(size=2)+
+  geom_line()+
+  theme_classic()+
+  xlab('Day after Rain')+
+  ylab('Mean SWC, 5 cm (m3 m-3)')+
+  theme(text = element_text(size = 20))+
+  ggtitle('Pulse8')
+
+Pulse9_sum %>%
+  filter(meanday %in% 0:14)%>%
+  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanSWC5))+
+  geom_point(size=2)+
+  geom_line()+
+  theme_classic()+
+  xlab('Day after Rain')+
+  ylab('Mean SWC, 5 cm (m3 m-3)')+
+  theme(text = element_text(size = 20))+
+  ggtitle('Pulse9')
+
+Pulse10_sum %>%
+  filter(meanday %in% 0:14)%>%
+  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanSWC5))+
+  geom_point(size=2)+
+  geom_line()+
+  theme_classic()+
+  xlab('Day after Rain')+
+  ylab('Mean SWC, 5 cm (m3 m-3)')+
+  theme(text = element_text(size = 20))+
+  ggtitle('Pulse10')
+
+Pulse11_sum %>%
+  filter(meanday %in% 0:14)%>%
+  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanSWC5))+
+  geom_point(size=2)+
+  geom_line()+
+  theme_classic()+
+  xlab('Day after Rain')+
+  ylab('Mean SWC, 5 cm (m3 m-3)')+
+  theme(text = element_text(size = 20))+
+  ggtitle('Pulse11')
+
+Pulse12_sum %>%
+  filter(meanday %in% 0:14)%>%
+  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanSWC5))+
+  geom_point(size=2)+
+  geom_line()+
+  theme_classic()+
+  xlab('Day after Rain')+
+  ylab('Mean SWC, 5 cm (m3 m-3)')+
+  theme(text = element_text(size = 20))+
+  ggtitle('Pulse12')
+
+Pulse13_sum %>%
+  filter(meanday %in% 0:14)%>%
+  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanSWC5))+
+  geom_point(size=2)+
+  geom_line()+
+  theme_classic()+
+  xlab('Day after Rain')+
+  ylab('Mean SWC, 5 cm (m3 m-3)')+
+  theme(text = element_text(size = 20))+
+  ggtitle('Pulse13')
+
+Pulse14_sum %>%
+  filter(meanday %in% 0:14)%>%
+  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanSWC5))+
+  geom_point(size=2)+
+  geom_line()+
+  theme_classic()+
+  xlab('Day after Rain')+
+  ylab('Mean SWC, 5 cm (m3 m-3)')+
+  theme(text = element_text(size = 20))+
+  ggtitle('Pulse14')
+
+Pulse15_sum %>%
+  filter(meanday %in% 0:14)%>%
+  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanSWC5))+
+  geom_point(size=2)+
+  geom_line()+
+  theme_classic()+
+  xlab('Day after Rain')+
+  ylab('Mean SWC, 5 cm (m3 m-3)')+
+  theme(text = element_text(size = 20))+
+  ggtitle('Pulse15')
+
+
+Pulse16_sum %>%
+  filter(meanday %in% 0:14)%>%
+  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanSWC5))+
+  geom_point(size=2)+
+  geom_line()+
+  theme_classic()+
+  xlab('Day after Rain')+
+  ylab('Mean SWC, 5 cm (m3 m-3)')+
+  theme(text = element_text(size = 20))+
+  ggtitle('Pulse16')
+
+
+Pulse17_sum %>%
+  filter(meanday %in% 0:14)%>%
+  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanSWC5))+
+  geom_point(size=2)+
+  geom_line()+
+  theme_classic()+
+  xlab('Day after Rain')+
+  ylab('Mean SWC, 5 cm (m3 m-3)')+
+  theme(text = element_text(size = 20))+
+  ggtitle('Pulse17')
+
+
+
+Pulse18_sum %>%
+  filter(meanday %in% 0:14)%>%
+  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanSWC5))+
+  geom_point(size=2)+
+  geom_line()+
+  theme_classic()+
+  xlab('Day after Rain')+
+  ylab('Mean SWC, 5 cm (m3 m-3)')+
+  theme(text = element_text(size = 20))+
+  ggtitle('Pulse18')
+
 
 
 # Make a summary table for the all 18 pulses = 16 variables + 22*18 rows should be Pulse(n)_sum files!!! = 306 columns

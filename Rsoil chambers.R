@@ -247,7 +247,8 @@ soildata_new%>%
   geom_point()+
   stat_smooth(method = 'lm')+
   theme_bw() +
-  scale_colour_brewer(name = 'Trendline', palette = 'Set2')
+  scale_colour_brewer(name = 'Trendline', palette = 'Set2')+
+  theme(text = element_text(size = 20))
 
 
 soildata_new%>%
@@ -256,7 +257,8 @@ soildata_new%>%
   geom_point()+
   stat_smooth(method = 'lm')+
   theme_bw() +
-  scale_colour_brewer(name = 'Trendline', palette = 'Set2')
+  scale_colour_brewer(name = 'Trendline', palette = 'Set2')+
+  theme(text = element_text(size = 20))
 
 
 

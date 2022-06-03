@@ -107,6 +107,9 @@ dataP$data_time_Start = as.POSIXlt(dataP$data_time_Start, format = "%Y-%m-%d %H:
 dataP$data_time_End = as.POSIXlt(dataP$data_time_End, format = "%Y-%m-%d %H:%M")
 
 
+
+
+
 #high Precipitation column
 dataP$high_precip <- dataP$r>5
 dataP$high_precip <- as.numeric(dataP$r>5)

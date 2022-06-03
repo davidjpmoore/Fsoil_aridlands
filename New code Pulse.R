@@ -84,6 +84,110 @@ datarain$RainEvent <- as.numeric(datarain$r>0)
 datarain$Rain_DOY <- as.numeric(datarain$RainEvent)*as.numeric(datarain$DOY_S)
 sum(datarain$RainEvent, na.rm=FALSE)
 
+
+#######################Calculate the rate of rain PER EVENT
+plot(datarain$r)
+
+datarain %>%
+  filter(RainEvent == 1) %>%
+  ggplot(aes(x=DOY_E, y = r))+
+  geom_col()
+
+sum(datarain$RainEvent)
+
+datarain %>%
+  filter(high_precip > 5) %>%
+  ggplot(aes(x=DOY_E, y = r))+
+  geom_col()
+
+datarain$highR_event <- datarain$high_precip>5 
+datarain$highR_event <- as.numeric(as.logical(datarain$highR_event))
+sum(datarain$highR_event) ##### now it's 15 Pulses?! 
+
+datarain$Rain_DOY_high <- as.numeric(datarain$highR_event)*as.numeric(datarain$DOY_S)
+
+New_list_Pulses <- datarain %>%
+  filter(highR_event == "TRUE")
+
+######### Loops to Calculate intensity
+
+days = seq(as.Date('2017-01-01'), as.Date('2017-12-31'), by = 'day')
+
+pulse.intensity.fun = function(days) {
+  
+  # Initialize output data frame
+  output = data.frame(matrix(nrow = 0, ncol = 7))
+  colnames(output) = c('Date','DOY','RainEvent','n','TotalHours','TotalPrecip','Intensity')
+  
+  # Loop through days
+  for (i in 1 : length(days)){
+    
+    # Subset by day
+    date = days[i]
+    datarain.sub = datarain[datarain$dateStart == date, ]
+    
+    # Get day of year (DOY)
+    doy = unique(datarain.sub$DOY_S)
+    
+    # Get rain event column
+    re = datarain.sub$RainEvent
+    
+    # Get precip column
+    r = datarain.sub$r
+    
+    # Get list of repeating values and corresponding lengths
+    re.rle = rle(re)
+    
+    # Get the total number of events
+    nre = sum(re.rle$values)
+    
+    if (nre != 0) {
+      
+      print(paste('Calculating pulse intensity for', date))
+      # Get start/end index values for each event
+      re.end = cumsum(re.rle$lengths)
+      re.start = c(1, (re.end[-1] - (re.rle$lengths[-1] - 1)))
+      
+      # Creat data frame and reduce to only rain events
+      re.indices = data.frame(Value = re.rle$values,
+                              Length = re.rle$lengths,
+                              Index_Start = re.start,
+                              Index_End = re.end)
+      re.indices = re.indices[re.indices$Value != 0, ]
+      
+      # Create output data frame for the current day
+      output.temp = data.frame(matrix(nrow = nre, ncol = 7))
+      colnames(output.temp) = c('Date','DOY','RainEvent','n','TotalHours','TotalPrecip','Intensity')
+      output.temp$Date = rep(date, nre)
+      output.temp$DOY = rep(doy, nre)
+      output.temp$RainEvent = seq(1,nre,1)
+      output.temp$n = re.rle$lengths[which(re.rle$values == 1)]
+      output.temp$TotalHours = output.temp$n / 2
+      
+      # Loop through rain events and calculate total precip per each using the predetermined index values
+      for (j in 1 : nrow(output.temp)) {
+        output.temp$TotalPrecip[j] = sum(r[re.indices$Index_Start[j] : re.indices$Index_End[j]])
+      }
+      
+      # Calculate precip intensity (total precip / total time) for each event
+      output.temp$Intensity = output.temp$TotalPrecip / output.temp$TotalHours
+      
+      # Append output
+      output = rbind(output, output.temp)
+    }
+  }
+  print('Done!')
+  return(output)
+}
+
+pulse.intensity.2017 = pulse.intensity.fun(days)
+
+
+
+
+
+
+
 # Create a data set for a one pulse 
 Pulse5 <- 
   datarain_pro %>%
@@ -165,9 +269,10 @@ nrow(summaryrains)
 summaryrains$rain_intens_per_day <- summaryrains$sum_R/summaryrains$rain_events
 summaryrains$DeltaRains <- vector(mode="integer", length = length(summaryrains$`as.numeric(DOY_S)`))
 
-for (i in 2: length(DeltaRains)){
+for (i in 2: length(summaryrains$DeltaRains)){
   summaryrains$DeltaRains[i]=summaryrains$`as.numeric(DOY_S)`[i]-summaryrains$`as.numeric(DOY_S)`[i-1]
 }
+
 
 plot(summaryrains$DeltaRains, summaryrains$rain_events)
 
