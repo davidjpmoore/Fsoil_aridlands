@@ -182,6 +182,36 @@ pulse.intensity.fun = function(days) {
 
 pulse.intensity.2017 = pulse.intensity.fun(days)
 
+hist(pulse.intensity.2017$TotalPrecip)
+
+pulse.intensity.2017 %>%
+  filter(TotalPrecip > 5) %>%
+  ggplot(aes(x = DOY, y = TotalPrecip))+
+  geom_col()
+
+pulse.intensity.2017 %>%
+  filter(TotalPrecip > 5) %>%
+  ggplot(aes(x = DOY, y = Intensity))+
+  geom_col()
+
+
+pulse.intensity.2017 %>%
+  filter(TotalPrecip > 5) %>%
+  ggplot(aes(x = Intensity, y = TotalPrecip))+
+  geom_point(size = 3)+
+  stat_smooth(method = "lm")+
+  theme_bw()+
+  theme(text = element_text(size = 20))
+
+
+write.csv(file = "pulse.intensity.2017.csv", pulse.intensity.2017)
+
+
+hist(pulse.intensity.2017$Intensity[pulse.intensity.2017$Intensity>5])
+
+
+
+
 
 
 

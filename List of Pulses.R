@@ -219,7 +219,7 @@ Pulse3_sum %>%
   geom_point(size=2)+
   geom_line()+
   theme_classic()+
-  xlab('Day after Rain')+
+  xlab('DOY')+
   ylab('Mean SWC, 5 cm (m3 m-3)')+
   theme(text = element_text(size = 20))+
   ggtitle('Pulse3')
@@ -230,18 +230,18 @@ Pulse2_sum %>%
   geom_point(size=2)+
   geom_line()+
   theme_classic()+
-  xlab('Day after Rain')+
+  xlab('DOY')+
   ylab('Mean SWC, 5 cm (m3 m-3)')+
   theme(text = element_text(size = 20))+
   ggtitle('Pulse2')
 
 Pulse1_sum %>%
   filter(meanday %in% 0:14)%>%
-  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanRECO))+
+  ggplot(aes(x=`as.numeric(DOY_S)`, y=meanSWC5))+
   geom_point(size=2)+
   geom_line()+
   theme_classic()+
-  xlab('Day after Rain')+
+  xlab('DOY')+
   ylab('Mean Reco (micromol m-2 s-1)')+
   theme(text = element_text(size = 20))+
   ggtitle('Pulse1')
@@ -253,7 +253,7 @@ Pulse4_sum %>%
   geom_point(size=2)+
   geom_line()+
   theme_classic()+
-  xlab('Day after Rain')+
+  xlab('DOY')+
   ylab('Mean SWC, 5 cm (m3 m-3)')+
   theme(text = element_text(size = 20))+
   ggtitle('Pulse4')
@@ -264,7 +264,7 @@ Pulse5_sum %>%
   geom_point(size=2)+
   geom_line()+
   theme_classic()+
-  xlab('Day after Rain')+
+  xlab('DOY')+
   ylab('Mean SWC, 5 cm (m3 m-3)')+
   theme(text = element_text(size = 20))+
   ggtitle('Pulse5')
@@ -275,7 +275,7 @@ Pulse6_sum %>%
   geom_point(size=2)+
   geom_line()+
   theme_classic()+
-  xlab('Day after Rain')+
+  xlab('DOY')+
   ylab('Mean SWC, 5 cm (m3 m-3)')+
   theme(text = element_text(size = 20))+
   ggtitle('Pulse6')
@@ -286,7 +286,7 @@ Pulse7_sum %>%
   geom_point(size=2)+
   geom_line()+
   theme_classic()+
-  xlab('Day after Rain')+
+  xlab('DOY')+
   ylab('Mean SWC, 5 cm (m3 m-3)')+
   theme(text = element_text(size = 20))+
   ggtitle('Pulse7')
@@ -297,7 +297,7 @@ Pulse8_sum %>%
   geom_point(size=2)+
   geom_line()+
   theme_classic()+
-  xlab('Day after Rain')+
+  xlab('DOY')+
   ylab('Mean SWC, 5 cm (m3 m-3)')+
   theme(text = element_text(size = 20))+
   ggtitle('Pulse8')
@@ -308,7 +308,7 @@ Pulse9_sum %>%
   geom_point(size=2)+
   geom_line()+
   theme_classic()+
-  xlab('Day after Rain')+
+  xlab('DOY')+
   ylab('Mean SWC, 5 cm (m3 m-3)')+
   theme(text = element_text(size = 20))+
   ggtitle('Pulse9')
@@ -319,7 +319,7 @@ Pulse10_sum %>%
   geom_point(size=2)+
   geom_line()+
   theme_classic()+
-  xlab('Day after Rain')+
+  xlab('DOY')+
   ylab('Mean SWC, 5 cm (m3 m-3)')+
   theme(text = element_text(size = 20))+
   ggtitle('Pulse10')
@@ -330,7 +330,7 @@ Pulse11_sum %>%
   geom_point(size=2)+
   geom_line()+
   theme_classic()+
-  xlab('Day after Rain')+
+  xlab('DOY')+
   ylab('Mean SWC, 5 cm (m3 m-3)')+
   theme(text = element_text(size = 20))+
   ggtitle('Pulse11')
@@ -341,7 +341,7 @@ Pulse12_sum %>%
   geom_point(size=2)+
   geom_line()+
   theme_classic()+
-  xlab('Day after Rain')+
+  xlab('DOY')+
   ylab('Mean SWC, 5 cm (m3 m-3)')+
   theme(text = element_text(size = 20))+
   ggtitle('Pulse12')
@@ -352,7 +352,7 @@ Pulse13_sum %>%
   geom_point(size=2)+
   geom_line()+
   theme_classic()+
-  xlab('Day after Rain')+
+  xlab('DOY')+
   ylab('Mean SWC, 5 cm (m3 m-3)')+
   theme(text = element_text(size = 20))+
   ggtitle('Pulse13')
@@ -363,7 +363,7 @@ Pulse14_sum %>%
   geom_point(size=2)+
   geom_line()+
   theme_classic()+
-  xlab('Day after Rain')+
+  xlab('DOY')+
   ylab('Mean SWC, 5 cm (m3 m-3)')+
   theme(text = element_text(size = 20))+
   ggtitle('Pulse14')
@@ -374,11 +374,10 @@ Pulse15_sum %>%
   geom_point(size=2)+
   geom_line()+
   theme_classic()+
-  xlab('Day after Rain')+
+  xlab('DOY')+
   ylab('Mean SWC, 5 cm (m3 m-3)')+
   theme(text = element_text(size = 20))+
   ggtitle('Pulse15')
-
 
 Pulse16_sum %>%
   filter(meanday %in% 0:14)%>%
@@ -386,11 +385,10 @@ Pulse16_sum %>%
   geom_point(size=2)+
   geom_line()+
   theme_classic()+
-  xlab('Day after Rain')+
+  xlab('DOY')+
   ylab('Mean SWC, 5 cm (m3 m-3)')+
   theme(text = element_text(size = 20))+
   ggtitle('Pulse16')
-
 
 Pulse17_sum %>%
   filter(meanday %in% 0:14)%>%
@@ -398,12 +396,10 @@ Pulse17_sum %>%
   geom_point(size=2)+
   geom_line()+
   theme_classic()+
-  xlab('Day after Rain')+
+  xlab('DOY')+
   ylab('Mean SWC, 5 cm (m3 m-3)')+
   theme(text = element_text(size = 20))+
   ggtitle('Pulse17')
-
-
 
 Pulse18_sum %>%
   filter(meanday %in% 0:14)%>%
@@ -411,7 +407,7 @@ Pulse18_sum %>%
   geom_point(size=2)+
   geom_line()+
   theme_classic()+
-  xlab('Day after Rain')+
+  xlab('DOY')+
   ylab('Mean SWC, 5 cm (m3 m-3)')+
   theme(text = element_text(size = 20))+
   ggtitle('Pulse18')
