@@ -293,8 +293,8 @@ summary2 <- datarain %>%
   
 
 # Exclude "-9999" value from the calculations
-##### Works just after the next command - 
-options(dplyr.summarise.inform = TRUE)
+
+
 
 summary2 <- datarain %>%
   group_by(as.numeric(DOY_S)) %>%
