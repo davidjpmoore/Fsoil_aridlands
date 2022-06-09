@@ -109,7 +109,7 @@ datarain$Rain_DOY_high <- as.numeric(datarain$highR_event)*as.numeric(datarain$D
 New_list_Pulses <- datarain %>%
   filter(highR_event == "TRUE")
 
-######### Loops to Calculate intensity
+######### Loops to Calculate Rain intensity
 
 days = seq(as.Date('2017-01-01'), as.Date('2017-12-31'), by = 'day')
 
@@ -212,8 +212,29 @@ hist(pulse.intensity.2017$Intensity[pulse.intensity.2017$Intensity>5])
 
 
 
+############## Try to get Night-time Reco by using incoming "photosynthetic photon flux density"
+####### As I understood it should be == 0
 
-
+summary3 <- datarain %>%
+  group_by(as.numeric(DOY_S)) %>%
+  filter(PPFD_IN_F == 0) %>%
+  dplyr :: summarise(meanPhoto = mean(PPFD_IN_F, na.rm=TRUE),
+                     timeSS = timeStart,
+                     meanAT2=mean(replace(AT2, AT2== -9999, NA),na.rm=TRUE), 
+                     meanAT6=mean(replace(AT6, AT6== -9999, NA),na.rm=TRUE),
+                     sum_R=mean(sum_rain, na.rm=TRUE),
+                     rain_events=sum(RainEvent, na.rm=TRUE),
+                     meanRH2=mean(replace(RH2, RH2== -9999, NA),na.rm=TRUE),
+                     meanRH6=mean(replace(RH6, RH6== -9999, NA),na.rm=TRUE),
+                     meanSWC5=mean(replace(SWC5, SWC5== -9999, NA),na.rm=TRUE),
+                     meanSWC15=mean(replace(SWC15, SWC15== -9999, NA),na.rm=TRUE),
+                     meanSWC30=mean(replace(SWC30, SWC30== -9999, NA),na.rm=TRUE), 
+                     meanST5=mean(replace(ST5, ST5== -9999, NA),na.rm=TRUE),
+                     meanST15=mean(replace(ST15, ST15== -9999, NA),na.rm=TRUE),
+                     meanST30=mean(replace(ST30, ST30== -9999, NA),na.rm=TRUE),
+                     meanNEE=mean(NEE, na.rm=TRUE), 
+                     meanGPP=mean(GPP, na.rm=TRUE),
+                     meanRECO=mean(RECO, na.rm=TRUE), sdReco=sd(RECO, na.rm=TRUE))
 
 
 
@@ -272,6 +293,9 @@ summary2 <- datarain %>%
   
 
 # Exclude "-9999" value from the calculations
+##### Works just after the next command - 
+options(dplyr.summarise.inform = TRUE)
+
 summary2 <- datarain %>%
   group_by(as.numeric(DOY_S)) %>%
   dplyr :: summarise(meanAT2=mean(replace(AT2, AT2== -9999, NA),na.rm=TRUE), 
@@ -288,7 +312,30 @@ summary2 <- datarain %>%
             meanST30=mean(replace(ST30, ST30== -9999, NA),na.rm=TRUE),
             meanNEE=mean(NEE, na.rm=TRUE), 
             meanGPP=mean(GPP, na.rm=TRUE),
-            meanRECO=mean(RECO, na.rm=TRUE), sdReco=sd(RECO, na.rm=TRUE))
+            meanRECO=mean(RECO, na.rm=TRUE), sdReco=sd(RECO, na.rm=TRUE),
+            #meanReco_N= summary3$meanRECO, sdReco_N = summary3$sdReco
+            )
+
+
+summary2$meanReco_N <- summary3$meanRECO
+summary2$sdReco_N <- summary3$sdReco
+
+summary2 %>%
+  #filter(sum_R >5) %>%
+  na.omit()%>%
+  ggplot(aes(x=meanRECO, y =meanReco_N))+
+  geom_point(size = 3)+
+  theme_bw()+
+  xlab('Reco')+
+  ylab('Reco Night')+
+  #coord_cartesian(ylim=c(0, 4), xlim = c(0,5))+
+  theme(text = element_text(size = 20))+
+  ggtitle('All Reco VS Reco_Night')
+
+
+
+
+
 
 
 summaryrains <- summary2 %>%
@@ -346,7 +393,6 @@ diagnose <- function(summary2) {
 
 
 sum(summary2$sum_R)
-sum(datarain_pro$r)
 
 t.test(summary2$meanRECO)
 

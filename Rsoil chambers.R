@@ -55,7 +55,7 @@ write.csv(file="data/dataRsoil.csv", dataRsoil)
 
 
 
-plot(summary2$meanRECO, dataRsoil$meanSR1)
+#plot(summary2$meanRECO, dataRsoil$meanSR1)
 plot(dataRsoil$DOY)
 
 #Create the empty rows from DOY = 331 to DOU = 354 - I need 22 empty rows == NA
@@ -73,6 +73,8 @@ soildata_new <- soildata_new %>%
 
 soildata_new <- soildata_new %>%
   mutate(MeanGPP = summary2$meanGPP)
+
+soildata_new$meanReco_N <- summary3$meanRECO
 
 
 soildata_new$Season = vector(mode = 'character', length = nrow(soildata_new))
@@ -179,9 +181,6 @@ soildata_new%>%
   xlab('GPP')
 
 
-
-
-  
 soildata_new%>%
   na.omit() %>%
   ggplot(aes(x=MeanGPP, y=meanSR1, size = meanSM1)) + 
@@ -259,6 +258,39 @@ soildata_new%>%
   theme_bw() +
   scale_colour_brewer(name = 'Trendline', palette = 'Set2')+
   theme(text = element_text(size = 20))
+
+
+soildata_new%>%
+  na.omit() %>%
+  ggplot(aes(x=meanSR, y=meanReco_N, color = Season)) + 
+  geom_point()+
+  stat_smooth(method = 'lm')+
+  theme_bw() +
+  scale_colour_brewer(name = 'Trendline', palette = 'Set2')+
+  theme(text = element_text(size = 20))+
+  xlab('Mean Soil Respiration')+
+  ylab('Reco Night')+
+  #coord_cartesian(ylim=c(0, 4), xlim = c(0,5))+
+  theme(text = element_text(size = 20))+
+  ggtitle('SR VS Reco_Night')+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))
+  
+  
+soildata_new%>%
+  na.omit() %>%
+  ggplot(aes(x=meanSR, y=meanReco_N)) + 
+  geom_point()+
+  stat_smooth(method = 'lm')+
+  theme_bw() +
+  scale_colour_brewer(name = 'Trendline', palette = 'Set2')+
+  theme(text = element_text(size = 20))+
+  xlab('Mean Soil Respiration')+
+  ylab('Reco Night')+
+  #coord_cartesian(ylim=c(0, 4), xlim = c(0,5))+
+  theme(text = element_text(size = 20))+
+  ggtitle('SR VS Reco_Night')+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))
+
 
 
 
