@@ -116,8 +116,10 @@ days = seq(as.Date('2017-01-01'), as.Date('2017-12-31'), by = 'day')
 pulse.intensity.fun = function(days) {
   
   # Initialize output data frame
-  output = data.frame(matrix(nrow = 0, ncol = 7))
-  colnames(output) = c('Date','DOY','RainEvent','n','TotalHours','TotalPrecip','Intensity')
+  output = data.frame(matrix(nrow = 0, ncol = 16))
+  colnames(output) = c('Date','DOY','RainEvent','n','TotalHours','TotalPrecip','Intensity', 'Mean_SWC5cm',
+                       'Mean_SWC30cm', 'Mean_SWC15cm', 'Mean_ST5cm', 'Mean_ST30cm', 'Mean_ST15cm',
+                       'Mean_GPP', 'Mean_NEE', 'Mean_Reco')
   
   # Loop through days
   for (i in 1 : length(days)){
@@ -134,12 +136,24 @@ pulse.intensity.fun = function(days) {
     
     # Get precip column
     r = datarain.sub$r
+   
     
     # Get list of repeating values and corresponding lengths
     re.rle = rle(re)
     
     # Get the total number of events
     nre = sum(re.rle$values)
+     
+    # Get other variables
+    swc5 = datarain.sub$SWC5
+    swc30 = datarain.sub$SWC30
+    swc15 = datarain.sub$SWC15
+    st5 = datarain.sub$ST5
+    st30 = datarain.sub$ST30
+    st15 = datarain.sub$ST15
+    GPP = datarain.sub$GPP
+    NEE = datarain.sub$NEE
+    Reco = datarain.sub$RECO
     
     if (nre != 0) {
       
@@ -156,8 +170,10 @@ pulse.intensity.fun = function(days) {
       re.indices = re.indices[re.indices$Value != 0, ]
       
       # Create output data frame for the current day
-      output.temp = data.frame(matrix(nrow = nre, ncol = 7))
-      colnames(output.temp) = c('Date','DOY','RainEvent','n','TotalHours','TotalPrecip','Intensity')
+      output.temp = data.frame(matrix(nrow = nre, ncol = 16))
+      colnames(output.temp) = c('Date','DOY','RainEvent','n','TotalHours','TotalPrecip','Intensity', 'Mean_SWC5cm',
+                                'Mean_SWC30cm', 'Mean_SWC15cm', 'Mean_ST5cm', 'Mean_ST30cm', 'Mean_ST15cm',
+                                'Mean_GPP', 'Mean_NEE', 'Mean_Reco')
       output.temp$Date = rep(date, nre)
       output.temp$DOY = rep(doy, nre)
       output.temp$RainEvent = seq(1,nre,1)
@@ -167,6 +183,16 @@ pulse.intensity.fun = function(days) {
       # Loop through rain events and calculate total precip per each using the predetermined index values
       for (j in 1 : nrow(output.temp)) {
         output.temp$TotalPrecip[j] = sum(r[re.indices$Index_Start[j] : re.indices$Index_End[j]])
+        output.temp$Mean_SWC5cm[j] = mean(swc5[re.indices$Index_Start[j] : re.indices$Index_End[j]])
+        output.temp$Mean_SWC30cm[j] = mean(swc30[re.indices$Index_Start[j] : re.indices$Index_End[j]])
+        output.temp$Mean_SWC15cm[j] = mean(swc15[re.indices$Index_Start[j] : re.indices$Index_End[j]])
+        output.temp$Mean_ST5cm[j] = mean(st5[re.indices$Index_Start[j] : re.indices$Index_End[j]])
+        output.temp$Mean_ST30cm[j] = mean(st30[re.indices$Index_Start[j] : re.indices$Index_End[j]])
+        output.temp$Mean_ST15cm[j] = mean(st15[re.indices$Index_Start[j] : re.indices$Index_End[j]])
+        output.temp$Mean_GPP[j] = mean(GPP[re.indices$Index_Start[j] : re.indices$Index_End[j]])
+        output.temp$Mean_NEE[j] = mean(NEE[re.indices$Index_Start[j] : re.indices$Index_End[j]])
+        output.temp$Mean_Reco[j] = mean(Reco[re.indices$Index_Start[j] : re.indices$Index_End[j]])
+        
       }
       
       # Calculate precip intensity (total precip / total time) for each event
@@ -202,6 +228,33 @@ pulse.intensity.2017 %>%
   stat_smooth(method = "lm")+
   theme_bw()+
   theme(text = element_text(size = 20))
+
+pulse.intensity.2017 %>%
+  filter(TotalPrecip > 5) %>%
+  ggplot(aes(x = Mean_GPP, y = Mean_Reco))+
+  geom_point(size = 3)+
+  stat_smooth(method = "lm")+
+  theme_bw()+
+  theme(text = element_text(size = 20))+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  xlab('Mean GPP')+
+  ylab('Mean Reco')
+  
+pulse.intensity.2017 %>%
+  #filter(TotalPrecip > 5) %>%
+  ggplot(aes(x = Intensity, y = Mean_Reco))+
+  geom_point(size = 3)+
+  stat_smooth(method = "lm")+
+  theme_bw()+
+  theme(text = element_text(size = 20))+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  xlab('Intensity')+
+  ylab('Mean Reco')
+
+########### Make doc for Intensity > 5mm 
+
+
+
 
 
 write.csv(file = "pulse.intensity.2017.csv", pulse.intensity.2017)
@@ -487,6 +540,42 @@ yearPulses18 %>%
   ggplot(aes(x=Timeinbetween))+
   geom_histogram()+
   theme_classic()
+
+###################### ANOVA ###############################################
+
+
+
+
+
+
+
+
+
+
+
+
+###################### Me trying the Linear regression ##########################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
