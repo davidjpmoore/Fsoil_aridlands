@@ -1,0 +1,48 @@
+﻿1,TIMESTAMP_START,timestamp beginning,YYYYMMDDHHMM
+2,TIMESTAMP_END,timestamp_end at end of halfhour,YYYYMMDDHHMM
+3,NETRAD,net radiation,W m-2
+4,G,ground heat flux,W m-2
+5,LE,Latent Heat Flux,W m-2
+6,H,Sensible Heat flux,W m-2
+7,FC,CO2 flux No storage correction,micromol CO2 m-2 s-1
+8,USTAR,friction velocity,m s-1
+9,CO2,CO2 mole fraction,micromolCO2 mol-1
+10,H2O,H2O mole fraction,millimol H2O mol-1
+11,T_SONIC,sonic temperature,deg C
+12,PA,air pressure,kPA
+13,TA_1_2_1,"air temperature, 2m",deg C
+14,RH_1_2_1,"relative humidity, 2m",%
+15,WS_1_2_1,"wind speed, 3.5 m",m s-1
+16,WD_1_2_1,"wind direction, 3.5m",degrees from N
+17,TA_1_1_1,"air temperature, 6m",deg C
+18,RH_1_1_1,"relative humidity, 6m",%
+19,WS_1_1_1,"wind speed, 6.4m",m s-1
+20,WD_1_1_1,"wind direction,6.4m",degrees from N
+21,P,precipitation,mm
+22,SW_IN,incoming solar radiation,W m-2
+23,SW_OUT,outgoing solar radiation,W m-2
+24,LW_IN,incoming longwave radiation,W m-2
+25,LW_OUT,outgoing longwave radiation,W m-2
+26,T_CANOPY_1_1_1,"infrared surface temp, mainly bare soil temp",deg C
+27,T_CANOPY_2_1_1,"infrared surface temp, not installed",deg C
+28,PPFD_IN_F,"incoming photosynthetic photon flux density, gap-filled where necessary",micromoles m-2 s-1
+29,PPFD_OUT,Outgoing photosynthetic photon flux density,micromoles m-2 s-1
+30,PPFD_IN,"incoming photosynthetic photon flux density, not gap filled",
+31,SWC_1_1_1,"Vol. Soil Water Content, 5 cm depth",%
+32,SWC_1_2_1,"Vol. Soil Water Content, 15 cm depth",%
+33,SWC_1_3_1,"Vol. Soil Water Content, 30 cm depth",%
+34,TS_1_1_1,"Soil Temperature, 5 cm ",deg C
+35,TS_1_2_1,"Soil Temperature, 15 cm ",deg C
+36,TS_1_3_1,"Soil Temperature, 30 cm ",deg C
+37,SWC_2_1_A,"Vol. Soil Water Content, 5 cm depth",%
+38,SWC_2_2_A,"Vol. Soil Water Content, 10 cm depth",%
+39,SWC_2_3_A,"Vol. Soil Water Content, 30 cm depth",%
+40,SWC_2_4_A,"Vol. Soil Water Content, 50 cm depth",%
+41,SWC_2_5_A,"Vol. Soil Water Content, 75 cm depth",%
+42,SWC_2_6_A,"Vol. Soil Water Content, 100 cm depth",%
+43,TS_2_1_A,"Soil Temperature, 5 cm ",deg C
+44,TS_2_2_A,"Soil Temperature, 10 cm ",deg C
+45,TS_2_3_A,"Soil Temperature, 30 cm ",deg C
+46,TS_2_4_A,"Soil Temperature, 50 cm ",deg C
+47,TS_2_5_A,"Soil Temperature, 75 cm ",deg C
+48,TS_2_6_A,"Soil Temperature, 100 cm ",deg C

@@ -41,6 +41,8 @@ WkgFluxes_19_20=read.csv("data/Wkg_Ameriflux_2017-2020 with added partitioning/G
 #load SoiR data from Wkg
 WkgSoilR_17_20 =read.csv("data/KN_soil_resp17_20_longHead.csv", header=TRUE, na.strings = "NaN")
 
+plot(WkgSoilR_17_20$Port.4Soil.Resp.um.co2.m2.s)
+
 
 # US-WKG	Walnut Gulch Grassland																					
 # Ports 1 - 4	no treatment																					
