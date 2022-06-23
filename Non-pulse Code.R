@@ -16,7 +16,7 @@ library(ggpubr)
 library(ggplot2)
 library(colorRamps)
 library(reshape2)
-
+library(zoo)
 
 
 #open cvs
@@ -98,6 +98,30 @@ summary5 <- summary4 %>%
   filter(Pulse_DOY == 0) 
 
 
+summary4 %>%
+  #filter(Pulse_Days ==1 ) %>%
+  filter(Pulse_DOY == 0 ) %>%
+  ggplot(aes(x=DOY, y = meanRECO))+
+  geom_point(size=2, shape = 1)+
+  #geom_smooth()+
+  theme_bw()+
+  theme(text = element_text(size = 20))+
+  #stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))
+  #stat_smooth(method = "lm", 
+  #formula = y ~ poly(x, 2),size = 1)
+  geom_errorbar(aes(ymin = meanRECO- sdReco, ymax= meanRECO+sdReco), width = 3)
+
+
+Deviation <- mean(summary4$meanRECO) - mean(summary5$meanRECO)
+
+Per_Pulse <- 100 - (mean(summary5$meanRECO)*100)/mean(summary4$meanRECO)
+
+mean(summary4$meanRECO[summary4$Pulse_DOY > 0])
+
+Per_Pulse1 <- 100 - (mean(summary5$meanRECO)*100)/mean(summary4$meanRECO[summary4$Pulse_DOY > 0])
+
+
+
 summary5 %>%
   ggplot(aes(x=DOY, y = meanRECO))+
   geom_point(size=2, shape = 1)+
@@ -134,6 +158,52 @@ summary5 %>%
   stat_smooth(method = "lm", 
               #formula = y ~ poly(x, 2),size = 1
               )
+
+
+
+############ moving average ++++ other smooothing functions - Smoothing 3 non-pulse Reco
+plot(summary5$DOY, summary5$meanRECO)
+lines(lowess(summary5$DOY, summary5$meanRECO), col='red')
+
+summary5 %>%
+  ggplot(aes(x=DOY, y = meanRECO))+
+  geom_point(size=2, shape = 1)+
+  geom_smooth(span=0.1)+
+  theme_bw()+
+  theme(text = element_text(size = 20))+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))
+  #stat_smooth(method = "lm", 
+  #formula = y ~ poly(x, 2),size = 1)
+  #geom_errorbar(aes(ymin = meanRECO- sdReco, ymax= meanRECO+sdReco), width = 3)
+
+
+
+summary5$date<- as.Date(summary5$DOY,  origin = "2017-01-01")
+
+
+plot(df.ts)
+lines(ts.2day.mean, col = 'red')
+
+require(dplyr)
+
+summary6 <- summary5 %>% 
+  group_by(DOY) %>% 
+  mutate(rec = 1) %>% 
+  mutate(rollavg = cumsum(meanRECO)/cumsum(rec)) %>% 
+  select(-rec)
+
+
+plot(summary6$DOY, summary6$rollavg)
+
+
+
+
+
+
+
+
+
+
 
 
 
