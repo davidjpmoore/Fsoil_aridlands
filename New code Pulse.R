@@ -26,7 +26,7 @@ pacman::p_load(dlookr,
                tidyverse)
 
 #open cvs
-datarain=read.csv("RainMan2022/Fsoil_aridlands/data/20162017Meteo.csv", header=TRUE, na.strings = "NaN")
+datarain=read.csv("data/20162017Meteo.csv", header=TRUE, na.strings = "NaN")
 
 
 #Date of Start and End of Measurements 
@@ -107,7 +107,7 @@ sum(datarain$highR_event) ##### now it's 15 Pulses?!
 datarain$Rain_DOY_high <- as.numeric(datarain$highR_event)*as.numeric(datarain$DOY_S)
 
 New_list_Pulses <- datarain %>%
-  filter(highR_event == "TRUE")
+  filter(highR_event == 1)
 
 ######### Loops to Calculate Rain intensity
 
@@ -258,7 +258,7 @@ pulse.intensity.2017 %>%
 
 
 write.csv(file = "pulse.intensity.2017.csv", pulse.intensity.2017)
-
+write.csv(file = "datarain.csv", datarain)
 
 hist(pulse.intensity.2017$Intensity[pulse.intensity.2017$Intensity>5])
 
@@ -287,7 +287,8 @@ summary3 <- datarain %>%
                      meanST30=mean(replace(ST30, ST30== -9999, NA),na.rm=TRUE),
                      meanNEE=mean(NEE, na.rm=TRUE), 
                      meanGPP=mean(GPP, na.rm=TRUE),
-                     meanRECO=mean(RECO, na.rm=TRUE), sdReco=sd(RECO, na.rm=TRUE))
+                     meanRECO=mean(RECO, na.rm=TRUE), sdReco=sd(RECO, na.rm=TRUE),
+                     .groups = "drop_last")
 
 
 
