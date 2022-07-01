@@ -114,11 +114,13 @@ summary4 %>%
 
 Deviation <- mean(summary4$meanRECO) - mean(summary5$meanRECO)
 
-Per_Pulse <- 100 - (mean(summary5$meanRECO)*100)/mean(summary4$meanRECO)
+Percent_Pulse <- 100 - (mean(summary5$meanRECO)*100)/mean(summary4$meanRECO)
 
 mean(summary4$meanRECO[summary4$Pulse_DOY > 0])
 
-Per_Pulse1 <- 100 - (mean(summary5$meanRECO)*100)/mean(summary4$meanRECO[summary4$Pulse_DOY > 0])
+Percent_Pulse1 <- 100 - (mean(summary5$meanRECO)*100)/mean(summary4$meanRECO[summary4$Pulse_DOY > 0])
+
+
 
 
 
@@ -161,6 +163,9 @@ summary5 %>%
 
 
 
+
+
+
 ############ moving average ++++ other smooothing functions - Smoothing 3 non-pulse Reco
 plot(summary5$DOY, summary5$meanRECO)
 lines(lowess(summary5$DOY, summary5$meanRECO), col='red')
@@ -175,6 +180,37 @@ summary5 %>%
   #stat_smooth(method = "lm", 
   #formula = y ~ poly(x, 2),size = 1)
   #geom_errorbar(aes(ymin = meanRECO- sdReco, ymax= meanRECO+sdReco), width = 3)
+
+summary5 %>%
+  ggplot(aes(x= meanGPP, y = meanRECO))+
+  geom_point(size=2, shape = 1)+
+  #geom_smooth(span=0.1)+
+  stat_smooth(method = "lm", #formula = y ~ poly(x, 2),size = 1
+              )+
+  theme_bw()+
+  theme(text = element_text(size = 20))+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  ggtitle('Non-pulse time')
+
+
+Pulses %>%
+  ggplot(aes(x= meanGPP, y = meanRECO))+
+  geom_point(size=2, shape = 1)+
+  #geom_smooth(span=0.1)+
+  stat_smooth(method = "lm", #formula = y ~ poly(x, 2),size = 1
+  )+
+  theme_bw()+
+  theme(text = element_text(size = 20))+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  ggtitle('Pulse time')
+
+
+
+
+
+
+
+
 
 
 
