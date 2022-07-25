@@ -25,10 +25,27 @@ datarain=read.csv("data/datarain.csv",
 
 
 datarain$DOY_S <- as.numeric(as.integer(datarain$DOY_S))
- 
+
+#### We need to simplify this step - just make all of these columns to numeric type
+datarain$AT2 <- as.numeric(as.character(datarain$AT2))
+datarain$AT6 <- as.numeric(as.character(datarain$AT6))
+datarain$RH2 <- as.numeric(as.character(datarain$RH2))
+datarain$RH6 <- as.numeric(as.character(datarain$RH6))
+datarain$SWC5 <- as.numeric(as.character(datarain$SWC5))
+datarain$SWC15 <- as.numeric(as.character(datarain$SWC15))
+datarain$SWC30 <- as.numeric(as.character(datarain$SWC30))
+datarain$ST5 <- as.numeric(as.character(datarain$ST5))
+datarain$ST15 <- as.numeric(as.character(datarain$ST15))
+datarain$ST30 <- as.numeric(as.character(datarain$ST30))
+datarain$NEE <- as.numeric(as.character(datarain$NEE))
+datarain$GPP <- as.numeric(as.character(datarain$GPP))
+datarain$RECO <- as.numeric(as.character(datarain$RECO))
+
+
 summary2 <- datarain %>%
-  group_by(as.numeric(DOY_S)) %>%
-  dplyr :: summarise(meanAT2=mean(replace(AT2, AT2== -9999, NA),na.rm=TRUE), 
+  group_by(DOY_S) %>%
+  na.omit() %>%
+  dplyr :: summarise(meanAT2 = mean (replace(AT2, AT2 == -9999, NA),na.rm=TRUE),                     , 
                      meanAT6=mean(replace(AT6, AT6== -9999, NA),na.rm=TRUE),
                      sum_R=mean(sum_rain, na.rm=TRUE),
                      rain_events=sum(RainEvent, na.rm=TRUE),
@@ -42,13 +59,14 @@ summary2 <- datarain %>%
                      meanST30=mean(replace(ST30, ST30== -9999, NA),na.rm=TRUE),
                      meanNEE=mean(NEE, na.rm=TRUE), 
                      meanGPP=mean(GPP, na.rm=TRUE),
-                     meanRECO=mean(RECO, na.rm=TRUE), sdReco=sd(RECO, na.rm=TRUE))
+                     meanRECO=mean(RECO, na.rm=TRUE), 
+                     sdReco=sd(RECO, na.rm=TRUE))
 
 
 summary2$Season = vector(mode = 'character', length = nrow(summary2))
-summary2$Season[summary2$`as.numeric(DOY_S)` %in% c(1:59,305:366)] = 'Winter'
-summary2$Season[summary2$`as.numeric(DOY_S)` %in% 60:181] = 'Spring'
-summary2$Season[summary2$`as.numeric(DOY_S)` %in% 182:304] = 'Summer'
+summary2$Season[summary2$DOY_S %in% c(1:59,305:366)] = 'Winter'
+summary2$Season[summary2$DOY_S %in% 60:181] = 'Spring'
+summary2$Season[summary2$DOY_S %in% 182:304] = 'Summer'
 
 
 #Exclude the rows with Pulses and 5 days after 
@@ -57,7 +75,7 @@ summary2$Season[summary2$`as.numeric(DOY_S)` %in% 182:304] = 'Summer'
 summary2$high_day <- paste(summary2$sum_R>5)
 summary2$high_day <- as.numeric(summary2$sum_R>5)
 
-summary2$Rain_DOY <- summary2$high_day*as.numeric(summary2$`as.numeric(DOY_S)`)
+summary2$Rain_DOY <- summary2$high_day*summary2$DOY_S
 
 summary2$Pulse_Days <- summary2$high_day 
 
@@ -66,17 +84,17 @@ Pulses <- summary2 %>%
 ############# LONGER WAY
 
 summary2$Pulse1 = vector(mode = 'numeric', length = nrow(summary2))
-summary2$Pulse1 [summary2$`as.numeric(DOY_S)` %in% 14] = '1'
-summary2$Pulse1 [summary2$`as.numeric(DOY_S)` %in% 15] = '2'
-summary2$Pulse1 [summary2$`as.numeric(DOY_S)` %in% 16] = '3'
-summary2$Pulse1 [summary2$`as.numeric(DOY_S)` %in% 17] = '4'
-summary2$Pulse1 [summary2$`as.numeric(DOY_S)` %in% 18] = '5'
+summary2$Pulse1 [summary2$DOY_S %in% 14] = '1'
+summary2$Pulse1 [summary2$DOY_S %in% 15] = '2'
+summary2$Pulse1 [summary2$DOY_S %in% 16] = '3'
+summary2$Pulse1 [summary2$DOY_S %in% 17] = '4'
+summary2$Pulse1 [summary2$DOY_S %in% 18] = '5'
 
 
 ###################### FASTER WAY
 
 colnames(summary2)[1]<-'DOY'
-test <- data.frame(DOY=Pulses$`as.numeric(DOY_S)`)
+test <- data.frame(DOY=Pulses$DOY_S)
 test$day1<-test$DOY+1
 test$day2<-test$DOY+2
 test$day3<-test$DOY+3
@@ -132,7 +150,7 @@ summary5 %>%
   theme(text = element_text(size = 20))+
   #stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))
   #stat_smooth(method = "lm", 
-              #formula = y ~ poly(x, 2),size = 1)
+  #formula = y ~ poly(x, 2),size = 1)
   geom_errorbar(aes(ymin = meanRECO- sdReco, ymax= meanRECO+sdReco), width = 3)
 
 
@@ -144,10 +162,10 @@ summary5 %>%
   theme_bw()+
   theme(text = element_text(size = 20))
 
-  #stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))
-  #stat_smooth(method = "lm", 
-  #formula = y ~ poly(x, 2),size = 1)
-  #geom_errorbar(aes(ymin = meanRECO- sdReco, ymax= meanRECO+sdReco), width = 3)
+#stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))
+#stat_smooth(method = "lm", 
+#formula = y ~ poly(x, 2),size = 1)
+#geom_errorbar(aes(ymin = meanRECO- sdReco, ymax= meanRECO+sdReco), width = 3)
 
 
 summary5 %>%
@@ -159,7 +177,7 @@ summary5 %>%
   stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
   stat_smooth(method = "lm", 
               #formula = y ~ poly(x, 2),size = 1
-              )
+  )
 
 
 
@@ -177,16 +195,16 @@ summary5 %>%
   theme_bw()+
   theme(text = element_text(size = 20))+
   stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))
-  #stat_smooth(method = "lm", 
-  #formula = y ~ poly(x, 2),size = 1)
-  #geom_errorbar(aes(ymin = meanRECO- sdReco, ymax= meanRECO+sdReco), width = 3)
+#stat_smooth(method = "lm", 
+#formula = y ~ poly(x, 2),size = 1)
+#geom_errorbar(aes(ymin = meanRECO- sdReco, ymax= meanRECO+sdReco), width = 3)
 
 summary5 %>%
   ggplot(aes(x= meanGPP, y = meanRECO))+
   geom_point(size=2, shape = 1)+
   #geom_smooth(span=0.1)+
   stat_smooth(method = "lm", #formula = y ~ poly(x, 2),size = 1
-              )+
+  )+
   theme_bw()+
   theme(text = element_text(size = 20))+
   stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
@@ -214,6 +232,14 @@ Pulses %>%
 
 
 
+
+
+
+
+
+
+
+#### Here it looks like the next step
 summary5$date<- as.Date(summary5$DOY,  origin = "2017-01-01")
 
 
