@@ -18,7 +18,7 @@ library(colorRamps)
 library(reshape2)
 library(zoo)
 
-# upload 2018 fluxes and meteo
+# upload 2020 fluxes and meteo
 datarain20 =read.csv("data/Wkg_Ameriflux_2017-2020 with added partitioning/GapfilledPartitionedFluxes_US-Wkg_HH_201912312330_202012302330.csv",
                      header=TRUE, na.strings = "NaN")
 
