@@ -22,6 +22,7 @@ library(zoo)
 datarain20 =read.csv("data/Wkg_Ameriflux_2017-2020 with added partitioning/GapfilledPartitionedFluxes_US-Wkg_HH_201912312330_202012302330.csv",
                      header=TRUE, na.strings = "NaN")
 
+
 # Make all steps to clean the initial document
 datarain20$year=substr(datarain20$TIMESTAMP_START,1,4)
 datarain20$month=substr(datarain20$TIMESTAMP_START, 5,6)
