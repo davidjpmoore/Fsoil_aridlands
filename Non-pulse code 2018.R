@@ -11,12 +11,14 @@ library(corrplot)
 library(scales)
 library(PerformanceAnalytics)
 library(xtable)
-library(Hmisc)
+#library(Hmisc)
 library(ggpubr)
 library(ggplot2)
 library(colorRamps)
 library(reshape2)
 library(zoo)
+
+# install.packages("Hmisc")
 
 # upload 2018 fluxes and meteo
 datarain18 =read.csv("data/Wkg_Ameriflux_2017-2020 with added partitioning/AddedPartionedCflux_US-Wkg_HH_201712312330_201812312330.csv", 
@@ -130,7 +132,7 @@ Pulses_2018_n <- summary2018_all %>%
   filter(sum_R > 5)
 
 colnames(summary2018_all)[1]<-'DOY'
-test <- data.frame(DOY=Pulses$DOY_S)
+test <- data.frame(DOY=Pulses_2018_n$DOY_S)
 test$day1<-test$DOY+1
 test$day2<-test$DOY+2
 test$day3<-test$DOY+3
