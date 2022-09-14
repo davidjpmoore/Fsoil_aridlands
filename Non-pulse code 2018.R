@@ -278,11 +278,15 @@ cor.test(summary2018_Pulse1$meanRECO, summary2018_Pulse1$meanSWC15)
 cor.test(summary2018_Pulse1$meanRECO, summary2018_Pulse1$meanSWC30)
 cor.test(summary2018_Pulse1$meanRECO, summary2018_Pulse1$meanGPP)
 
+# 
+# git config --global user.email "sunlife1408@yandex.ru"
+# git config --global user.name "Anastasia Makhnykina"
+# 
+# 
 
-git config --global user.email "sunlife1408@yandex.ru"
-git config --global user.name "Anastasia Makhnykina"
+write_csv(summary2018_Pulse0, "data/NONpulse2018.csv")
 
-
+summary2018_Pulse0
 
 
 
