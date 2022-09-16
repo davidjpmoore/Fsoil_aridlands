@@ -159,6 +159,7 @@ summary2018_Pulse1 <- summary2018_new %>%
 
 
 plot(summary2018_all$DOY)
+plot(summary2018_all$meanSWC30)
 
 summary2018_new %>%
   #filter(Pulse_Days ==1 ) %>%
@@ -173,6 +174,24 @@ summary2018_new %>%
   #formula = y ~ poly(x, 2),size = 1)
   geom_errorbar(aes(ymin = meanRECO- sdReco, ymax= meanRECO+sdReco), width = 3)+
   ggtitle("Reco 2018")
+
+
+summary2018_new %>%
+  #filter(Pulse_Days ==1 ) %>%
+  filter(Pulse_DOY == 0 ) %>%
+  ggplot(aes(x=DOY, y = meanSWC5))+
+  geom_point(size=2, shape = 1)+
+  #geom_smooth()+
+  theme_bw()+
+  theme(text = element_text(size = 20))+
+  #stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  #stat_smooth(method = "lm", 
+  #formula = y ~ poly(x, 2),size = 1)
+  #geom_errorbar(aes(ymin = meanRECO- sdReco, ymax= meanRECO+sdReco), width = 3)+
+  ggtitle("Reco 2018")
+
+
+
 
 summary2018_new %>%
   #filter(Pulse_Days ==1 ) %>%
@@ -190,7 +209,7 @@ summary2018_new %>%
 
 summary2018_new %>%
   #filter(Pulse_Days ==1 ) %>%
-  filter(Pulse_DOY >= 15 ) %>%
+  filter(Pulse_DOY >= 46 ) %>%
   ggplot(aes(x=meanST30, y = meanRECO))+
   geom_point(size=2, shape = 1)+
   #geom_smooth()+
@@ -223,7 +242,7 @@ summary2018_Pulse0 %>%
 
 
 summary2018_Pulse0 %>%
-  ggplot(aes(x=DOY, y = meanSWC30))+
+  ggplot(aes(x=DOY, y = meanSWC5))+
   geom_point(size=2, shape = 1)+
   geom_smooth()+
   theme_bw()+
