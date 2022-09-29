@@ -270,6 +270,9 @@ cor.test(summary2019_Pulse1$meanRECO, summary2019_Pulse1$meanGPP)
 
 
 
+################ Linear model ##############
+model1 <- lm(RECO ~ SWC30 + ST30 + GPP, data = datarain19)
+summary(model1)
 
 
 
