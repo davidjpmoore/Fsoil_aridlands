@@ -274,6 +274,52 @@ cor.test(summary2019_Pulse1$meanRECO, summary2019_Pulse1$meanGPP)
 model1 <- lm(RECO ~ SWC30 + ST30 + GPP, data = datarain19)
 summary(model1)
 
+RECOmod <- 7.312e-01 - 8.723e-06*datarain19$SWC30+7.938e-05*datarain19$ST30+1.548e-01*datarain19$GPP
+plot(RECOmod)
+
+plot(RECOmod [RECOmod>1], datarain19$RECO [RECOmod>1])
+
+
+############### Non-linear model ########################
+library(deSolve)
+library(stats)
+Fref = 0.75
+SWCopt = 0.25
+model2 <- nls(RECO ~ Fref*(1-(SWC30-SWCopt)^2) * exp(ST30) * GPP, data = datarain19,
+              start = list(SWCopt = 0.25, Fref=0.75)
+              )
+                    
+summary(model2)
+SWC30 = datarain19$SWC30
+ST30 = datarain19$ST30
+GPP = datarain19$GPP
+
+RECOmod2 <- -6.150e-20*Fref*(1-(SWC30+2.673e+03*SWCopt)^2) * exp(ST30) * GPP
+plot(RECOmod2)
+
+plot(RECOmod2 [RECOmod2>1], datarain19$RECO [RECOmod2>1])
+
+########## Non-linear model for daily data ##################
+
+library(stats)
+Fref = 0.75
+SWCopt = 0.25
+model3 <- nls(meanRECO ~ Fref*(1-(meanSWC30-SWCopt)^2) * exp(meanST30) * meanGPP, 
+              data = summary2019_new,
+              start = list(SWCopt = 0.25, Fref=0.75)
+)
+
+summary(model3)
+meanSWC30 =  summary2019_new$meanSWC30
+meanST30 =  summary2019_new$meanST30
+meanGPP =  summary2019_new$meanGPP
+
+RECOmod3 <- -5.566e-14*Fref*(1-(meanSWC30-1.030e+01*SWCopt)^2) * exp(meanST30) * meanGPP
+plot(RECOmod3)
+
+plot(RECOmod3 [RECOmod3>1],summary2019_new$meanRECO [RECOmod3>1])
+
+
 
 
 
