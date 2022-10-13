@@ -294,6 +294,8 @@ SWC30 = datarain19$SWC30
 ST30 = datarain19$ST30
 GPP = datarain19$GPP
 
+
+
 RECOmod2 <- -6.150e-20*Fref*(1-(SWC30+2.673e+03*SWCopt)^2) * exp(ST30) * GPP
 plot(RECOmod2)
 
@@ -313,16 +315,18 @@ summary(model3)
 meanSWC30 =  summary2019_new$meanSWC30
 meanST30 =  summary2019_new$meanST30
 meanGPP =  summary2019_new$meanGPP
+Fref = -5.566e-14
+SWCopt = 1.030e+01
 
-RECOmod3 <- -5.566e-14*Fref*(1-(meanSWC30-1.030e+01*SWCopt)^2) * exp(meanST30) * meanGPP
+RECOmod3 <- Fref*(1-(meanSWC30-SWCopt)^2) * exp(meanST30) * meanGPP
 plot(RECOmod3)
 
-plot(RECOmod3 [RECOmod3>1],summary2019_new$meanRECO [RECOmod3>1])
+cor(RECOmod3,summary2019_new$meanRECO)
+
+plot(RECOmod3,summary2019_new$meanRECO)
 
 
-
-
-
+lines(summary2019_new$meanRECO,predict(RECOmod3), lty=2,col="red",lwd=3)
 
 
 
