@@ -119,7 +119,7 @@ Pulses_2018_n <- summary2018_all %>%
   filter(sum_R > 5)
 
 colnames(summary2018_all)[1]<-'DOY'
-test <- data.frame(DOY=Pulses$DOY_S)
+test <- data.frame(DOY=Pulses_2018_n$DOY_S)
 test$day1<-test$DOY+1
 test$day2<-test$DOY+2
 test$day3<-test$DOY+3
@@ -272,6 +272,11 @@ git config --global user.name "Anastasia Makhnykina"
 
 
 
+write.csv(datarain18, file="datarain18.csv")
+
+################ Linear model ##############
+model1 <- lm(RECO ~ SWC30 + ST30 + GPP, data = datarain18)
+summary(model1)
 
 
 
