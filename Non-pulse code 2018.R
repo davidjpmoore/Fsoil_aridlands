@@ -11,29 +11,42 @@ library(corrplot)
 library(scales)
 library(PerformanceAnalytics)
 library(xtable)
-library(Hmisc)
+#library(Hmisc)
 library(ggpubr)
 library(ggplot2)
 library(colorRamps)
 library(reshape2)
 library(zoo)
 
+# install.packages("Hmisc")
+
 # upload 2018 fluxes and meteo
-datarain18 =read.csv("data/Wkg_Ameriflux_2017-2020 with added partitioning/GapfilledPartitionedFluxes_US-Wkg_HH_201812312330_201912312330.csv", 
+datarain18 =read.csv("data/Wkg_Ameriflux_2017-2020 with added partitioning/AddedPartionedCflux_US-Wkg_HH_201712312330_201812312330.csv", 
                      header=TRUE, na.strings = "NaN")
 
-# Make all steps to clean the initial document
-datarain18$year=substr(datarain18$TIMESTAMP_START,1,4)
-datarain18$month=substr(datarain18$TIMESTAMP_START, 5,6)
-datarain18$day=substr(datarain18$TIMESTAMP_START, 7,8)
-datarain18$hour=substr(datarain18$TIMESTAMP_START,9,10)
-datarain18$min=substr(datarain18$TIMESTAMP_START,11,12)
 
-datarain18$year1=substr(datarain18$TIMESTAMP_END,1,4)
-datarain18$month1=substr(datarain18$TIMESTAMP_END, 5,6)
-datarain18$day1=substr(datarain18$TIMESTAMP_END, 7,8)
-datarain18$hour1=substr(datarain18$TIMESTAMP_END,9,10)
-datarain18$min1=substr(datarain18$TIMESTAMP_END,11,12)
+datarainXX =read.csv("data/Wkg_Ameriflux_2017-2020 with added partitioning/AddedPartionedCflux_US-Wkg_HH_201612312330_201712312330.csv", 
+                     header=TRUE, na.strings = "NaN")
+
+
+########### Here I tried to use the sate code as for other years but the date format here is different 
+########### and the next steps are not possible yet.
+
+
+
+# Make all steps to clean the initial document
+
+datarain18$year=as.numeric(substr(datarainXX$TIMESTAMP_START,1,4))+1
+datarain18$month=substr(datarainXX$TIMESTAMP_START, 5,6)
+datarain18$day=substr(datarainXX$TIMESTAMP_START, 7,8)
+datarain18$hour=substr(datarainXX$TIMESTAMP_START,9,10)
+datarain18$min=substr(datarainXX$TIMESTAMP_START,11,12)
+
+datarain18$year1=as.numeric(substr(datarainXX$TIMESTAMP_END,1,4))+1
+datarain18$month1=substr(datarainXX$TIMESTAMP_END, 5,6)
+datarain18$day1=substr(datarainXX$TIMESTAMP_END, 7,8)
+datarain18$hour1=substr(datarainXX$TIMESTAMP_END,9,10)
+datarain18$min1=substr(datarainXX$TIMESTAMP_END,11,12)
 
 datarain18 <-  rename(datarain18, r=P, 
                       SWC5=SWC_1_1_1,
@@ -146,6 +159,7 @@ summary2018_Pulse1 <- summary2018_new %>%
 
 
 plot(summary2018_all$DOY)
+plot(summary2018_all$meanSWC30)
 
 summary2018_new %>%
   #filter(Pulse_Days ==1 ) %>%
@@ -160,6 +174,24 @@ summary2018_new %>%
   #formula = y ~ poly(x, 2),size = 1)
   geom_errorbar(aes(ymin = meanRECO- sdReco, ymax= meanRECO+sdReco), width = 3)+
   ggtitle("Reco 2018")
+
+
+summary2018_new %>%
+  #filter(Pulse_Days ==1 ) %>%
+  filter(Pulse_DOY == 0 ) %>%
+  ggplot(aes(x=DOY, y = meanSWC5))+
+  geom_point(size=2, shape = 1)+
+  #geom_smooth()+
+  theme_bw()+
+  theme(text = element_text(size = 20))+
+  #stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  #stat_smooth(method = "lm", 
+  #formula = y ~ poly(x, 2),size = 1)
+  #geom_errorbar(aes(ymin = meanRECO- sdReco, ymax= meanRECO+sdReco), width = 3)+
+  ggtitle("Reco 2018")
+
+
+
 
 summary2018_new %>%
   #filter(Pulse_Days ==1 ) %>%
@@ -177,7 +209,7 @@ summary2018_new %>%
 
 summary2018_new %>%
   #filter(Pulse_Days ==1 ) %>%
-  filter(Pulse_DOY >= 15 ) %>%
+  filter(Pulse_DOY >= 46 ) %>%
   ggplot(aes(x=meanST30, y = meanRECO))+
   geom_point(size=2, shape = 1)+
   #geom_smooth()+
@@ -210,7 +242,7 @@ summary2018_Pulse0 %>%
 
 
 summary2018_Pulse0 %>%
-  ggplot(aes(x=DOY, y = meanSWC30))+
+  ggplot(aes(x=DOY, y = meanSWC5))+
   geom_point(size=2, shape = 1)+
   geom_smooth()+
   theme_bw()+
@@ -265,11 +297,15 @@ cor.test(summary2018_Pulse1$meanRECO, summary2018_Pulse1$meanSWC15)
 cor.test(summary2018_Pulse1$meanRECO, summary2018_Pulse1$meanSWC30)
 cor.test(summary2018_Pulse1$meanRECO, summary2018_Pulse1$meanGPP)
 
+# 
+# git config --global user.email "sunlife1408@yandex.ru"
+# git config --global user.name "Anastasia Makhnykina"
+# 
+# 
 
-git config --global user.email "sunlife1408@yandex.ru"
-git config --global user.name "Anastasia Makhnykina"
+write_csv(summary2018_Pulse0, "data/NONpulse2018.csv")
 
-
+summary2018_Pulse0
 
 
 write.csv(datarain18, file="datarain18.csv")

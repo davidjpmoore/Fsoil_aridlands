@@ -18,9 +18,10 @@ library(colorRamps)
 library(reshape2)
 library(zoo)
 
-# upload 2018 fluxes and meteo
+# upload 2019 fluxes and meteo
 datarain19 =read.csv("data/Wkg_Ameriflux_2017-2020 with added partitioning/GapfilledPartitionedFluxes_US-Wkg_HH_201812312330_201912312330.csv", 
                      header=TRUE, na.strings = "NaN")
+
 
 # Make all steps to clean the initial document
 datarain19$year=substr(datarain19$TIMESTAMP_START,1,4)

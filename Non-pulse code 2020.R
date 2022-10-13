@@ -11,16 +11,17 @@ library(corrplot)
 library(scales)
 library(PerformanceAnalytics)
 library(xtable)
-library(Hmisc)
+#library(Hmisc)
 library(ggpubr)
 library(ggplot2)
 library(colorRamps)
 library(reshape2)
 library(zoo)
 
-# upload 2018 fluxes and meteo
+# upload 2020 fluxes and meteo
 datarain20 =read.csv("data/Wkg_Ameriflux_2017-2020 with added partitioning/GapfilledPartitionedFluxes_US-Wkg_HH_201912312330_202012302330.csv",
                      header=TRUE, na.strings = "NaN")
+
 
 # Make all steps to clean the initial document
 datarain20$year=substr(datarain20$TIMESTAMP_START,1,4)
@@ -146,6 +147,8 @@ summary2020_Pulse1 <- summary2020_new %>%
 
 
 plot(summary2020_all$DOY)
+plot(summary2020_all$meanSWC30)
+
 
 summary2020_new %>%
   #filter(Pulse_Days ==1 ) %>%
@@ -160,6 +163,23 @@ summary2020_new %>%
   #formula = y ~ poly(x, 2),size = 1)
   geom_errorbar(aes(ymin = meanRECO- sdReco, ymax= meanRECO+sdReco), width = 3)+
   ggtitle("Reco 2020")
+
+
+summary2020_new %>%
+  #filter(Pulse_Days ==1 ) %>%
+  filter(Pulse_DOY == 0 ) %>%
+  ggplot(aes(x= DOY, y = meanSWC5))+
+  geom_point(size=2, shape = 1)+
+  #geom_smooth()+
+  theme_bw()+
+  theme(text = element_text(size = 20))+
+  #stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))
+  #stat_smooth(method = "lm", 
+  #formula = y ~ poly(x, 2),size = 1)
+  #geom_errorbar(aes(ymin = meanRECO- sdReco, ymax= meanRECO+sdReco), width = 3)+
+  ggtitle("Reco 2020")
+
+
 
 summary2020_new %>%
   #filter(Pulse_Days ==1 ) %>%
@@ -264,3 +284,5 @@ cor.test(summary2020_Pulse1$meanRECO, summary2020_Pulse1$meanSWC5)
 cor.test(summary2020_Pulse1$meanRECO, summary2020_Pulse1$meanSWC15)
 cor.test(summary2020_Pulse1$meanRECO, summary2020_Pulse1$meanSWC30)
 cor.test(summary2020_Pulse1$meanRECO, summary2020_Pulse1$meanGPP)
+
+write.csv(summary2020_Pulse0, file = "data/NONpulse2020.csv")  
