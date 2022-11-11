@@ -25,10 +25,10 @@ library(stats)
  
 cat("summary2017_all.csv", "summary2019_all.csv", "summary2020_all.csv", file = "3years_sum")
 
-years_sum <- rbind(summary2017_all, summary2019_all, summary2020_all)
+years_sum <- rbind(summary2017_all, summary2018_all, summary2019_all, summary2020_all)
 
 
-years_sum1 <- rbind(summary2017_new, summary2019_new, summary2020_new)
+years_sum1 <- rbind(summary2017_new,  summary2018_new, summary2019_new, summary2020_new)
 
 years_sum1[is.na(years_sum1)] = 0
 
@@ -77,8 +77,8 @@ summary(model5)
 meanSWC30 =  years_sum_Pulse0$meanSWC30
 meanST30 =  years_sum_Pulse0$meanST30
 meanGPP =  years_sum_Pulse0$meanGPP
-Fref = -1.669e-15
-SWCopt = 3.132e+01
+Fref = -1.089e-15
+SWCopt = 2.372e+01
 
 RECOmod5 <- Fref*(1-(meanSWC30-SWCopt)^2) * exp(meanST30) * meanGPP
 plot(RECOmod5)
@@ -106,8 +106,8 @@ summary(model6)
 meanSWC30 =  years_sum_Pulse1$meanSWC30
 meanST30 =  years_sum_Pulse1$meanST30
 meanGPP =  years_sum_Pulse1$meanGPP
-Fref = -2.437e-15
-SWCopt = 1.719e+01
+Fref = -2.585e-15
+SWCopt = 1.827e+01
 
 RECOmod6 <- Fref*(1-(meanSWC30-SWCopt)^2) * exp(meanST30) * meanGPP
 plot(RECOmod6)
