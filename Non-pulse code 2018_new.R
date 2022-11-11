@@ -24,8 +24,10 @@ library(zoo)
 datarain18 =read.csv("data/Wkg_Ameriflux_2017-2020 with added partitioning/AddedPartionedCflux_US-Wkg_HH_201712312330_201812312330_1.csv", 
                      header=TRUE, na.strings = "NaN")
 
+
 ########### Here I tried to use the sate code as for other years but the date format here is different 
 ########### and the next steps are not possible yet.
+
 
 
 

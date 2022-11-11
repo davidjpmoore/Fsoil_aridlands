@@ -80,6 +80,8 @@ meanGPP =  years_sum_Pulse0$meanGPP
 Fref = -1.089e-15
 SWCopt = 2.372e+01
 
+
+
 RECOmod5 <- Fref*(1-(meanSWC30-SWCopt)^2) * exp(meanST30) * meanGPP
 plot(RECOmod5)
 
@@ -87,6 +89,7 @@ plot(RECOmod5)
 cor(RECOmod5,years_sum_Pulse0$meanRECO)
 
 plot(years_sum_Pulse0$meanRECO [RECOmod5>1], RECOmod5 [RECOmod5>1])
+
 
 
 ############ Something happened with Predict
