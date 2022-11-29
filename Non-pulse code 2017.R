@@ -76,6 +76,13 @@ sum(datarain17$highR_event)
 
 datarain17$Rain_DOY_high <- as.numeric(datarain17$highR_event)*as.numeric(datarain17$DOY_S)
 
+########## Night time
+write.csv(datarain17, file = "datarain17_new.csv")
+Night17 <- datarain17 %>%
+  filter(PPFD_IN == 0)
+
+
+
 Pulses_2017 <- datarain17 %>%
   filter(highR_event == 1)
 
