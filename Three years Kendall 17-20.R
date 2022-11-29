@@ -22,11 +22,6 @@ library(stats)
 
 
 #### cat - put together 3 years
- 
-cat("summary2017_all.csv", "summary2019_all.csv", "summary2020_all.csv", file = "3years_sum")
-
-years_sum <- rbind(summary2017_all, summary2018_all, summary2019_all, summary2020_all)
-
 
 years_sum1 <- rbind(summary2017_new,  summary2018_new, summary2019_new, summary2020_new)
 
@@ -42,9 +37,11 @@ years_sum_Pulse1 <- years_sum1 %>%
 
 Fref = 0.75
 SWCopt = 0.25
+
 model4 <- nls(meanRECO ~ Fref*(1-(meanSWC30-SWCopt)^2) * exp(meanST30) * meanGPP, 
               data = years_sum1,
-              start = list(SWCopt = 0.25, Fref=0.75)
+              start = list(SWCopt = 0.25, Fref=0.75),
+              control = list(tolerance =100)
 )
 
 summary(model4)
@@ -72,6 +69,10 @@ model5 <- nls(meanRECO ~ Fref*(1-(meanSWC30-SWCopt)^2) * exp(meanST30) * meanGPP
               data = years_sum_Pulse0,
               start = list(SWCopt = 0.25, Fref=0.75)
 )
+library(bbmle)
+logLik(model5)
+AIC(model5)
+BIC (model5)
 
 summary(model5)
 meanSWC30 =  years_sum_Pulse0$meanSWC30
@@ -138,12 +139,15 @@ ylab = "Modelled")
 # lines(dat$year, dat$n, col = "red")
 # lines(dat3$year, dat3$n, col = "orange")
 
-plot(RECOmod4, type = "l", col = "blue",
+plot(years_sum1$DOY+(years_sum1$YEAR-2017)*365, RECOmod4, type = "l", col = "blue",
      main = "SWC-Temp-GPP Model",
      xlab = "Data",
      ylab = "Fluxes")
-lines(RECOmod5, col = "red")
-lines(years_sum1$meanRECO, col = "orange")
+
+
+
+lines(years_sum_Pulse0$DOY, RECOmod5, col = "red")
+lines(years_sum1$DOY, years_sum1$meanRECO, col = "orange")
 
 legend("topright", c("Modelled All", "Modelled Non-Pulse", "Measured"),
        lty = c(1,1,1),
