@@ -280,3 +280,4 @@ cor.test(summary2017_Pulse1$meanRECO, summary2017_Pulse1$meanSWC5)
 cor.test(summary2017_Pulse1$meanRECO, summary2017_Pulse1$meanSWC15)
 cor.test(summary2017_Pulse1$meanRECO, summary2017_Pulse1$meanSWC30)
 cor.test(summary2017_Pulse1$meanRECO, summary2017_Pulse1$meanGPP)
+

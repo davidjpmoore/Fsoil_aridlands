@@ -21,7 +21,7 @@ library(zoo)
 # install.packages("Hmisc")
 
 # upload 2018 fluxes and meteo
-datarain18 =read.csv("data/Wkg_Ameriflux_2017-2020 with added partitioning/AddedPartionedCflux_US-Wkg_HH_201712312330_201812312330_1.csv", 
+datarain18 =read.csv("data/Wkg_Ameriflux_2017-2020 with added partitioning/AddedPartionedCflux_US-Wkg_HH_201712312330_201812312330_new.csv", 
                      header=TRUE, na.strings = "NaN")
 
 
@@ -33,13 +33,13 @@ datarain18 =read.csv("data/Wkg_Ameriflux_2017-2020 with added partitioning/Added
 
 # Make all steps to clean the initial document
 
-datarain18$year=as.numeric(substr(datarain18$TIMESTAMP_START,1,4))+1
+datarain18$year=as.numeric(substr(datarain18$TIMESTAMP_START,1,4))
 datarain18$month=substr(datarain18$TIMESTAMP_START, 5,6)
 datarain18$day=substr(datarain18$TIMESTAMP_START, 7,8)
 datarain18$hour=substr(datarain18$TIMESTAMP_START,9,10)
 datarain18$min=substr(datarain18$TIMESTAMP_START,11,12)
 
-datarain18$year1=as.numeric(substr(datarain18$TIMESTAMP_END,1,4))+1
+datarain18$year1=as.numeric(substr(datarain18$TIMESTAMP_END,1,4))
 datarain18$month1=substr(datarain18$TIMESTAMP_END, 5,6)
 datarain18$day1=substr(datarain18$TIMESTAMP_END, 7,8)
 datarain18$hour1=substr(datarain18$TIMESTAMP_END,9,10)
@@ -305,7 +305,6 @@ cor.test(summary2018_Pulse1$meanRECO, summary2018_Pulse1$meanGPP)
 
 write_csv(summary2018_Pulse0, "data/NONpulse2018.csv")
 
-summary2018_Pulse0
 
 
 

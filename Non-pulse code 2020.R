@@ -293,3 +293,4 @@ cor.test(summary2020_Pulse1$meanRECO, summary2020_Pulse1$meanSWC30)
 cor.test(summary2020_Pulse1$meanRECO, summary2020_Pulse1$meanGPP)
 
 write.csv(summary2020_Pulse0, file = "data/NONpulse2020.csv")  
+
