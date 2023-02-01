@@ -11,7 +11,6 @@ library(corrplot)
 library(scales)
 library(PerformanceAnalytics)
 library(xtable)
-library(Hmisc)
 library(ggpubr)
 library(ggplot2)
 library(colorRamps)
@@ -20,6 +19,8 @@ library(zoo)
 library(deSolve)
 library(stats)
 library(drc)
+
+# need to add code to OPEN the csv files for the summary data called below
 
 years_sum1 <- rbind(summary2017_new,  summary2018_new, summary2019_new, summary2020_new)
 
