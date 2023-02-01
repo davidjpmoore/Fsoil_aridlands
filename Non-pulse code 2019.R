@@ -11,7 +11,6 @@ library(corrplot)
 library(scales)
 library(PerformanceAnalytics)
 library(xtable)
-library(Hmisc)
 library(ggpubr)
 library(ggplot2)
 library(colorRamps)
@@ -273,6 +272,7 @@ cor.test(summary2019_Pulse1$meanRECO, summary2019_Pulse1$meanSWC30)
 cor.test(summary2019_Pulse1$meanRECO, summary2019_Pulse1$meanGPP)
 
 
+write_csv(summary2019_Pulse0, "data/NONpulse2019.csv")
 
 
 
@@ -334,7 +334,6 @@ plot(RECOmod3,summary2019_new$meanRECO)
 
 
 lines(summary2019_new$meanRECO,predict(RECOmod3), lty=2,col="red",lwd=3)
-
 
 
 
