@@ -20,6 +20,16 @@ library(zoo)
 library(deSolve)
 library(stats)
 
+####### Open Summary files
+summary2017_new <- read.csv("summary2017_new.csv", 
+                            header=TRUE, na.strings = "NaN")
+summary2018_new <- read.csv("summary2018_new.csv", 
+                            header=TRUE, na.strings = "NaN")
+summary2019_new <-read.csv("summary2019_new.csv", 
+                           header=TRUE, na.strings = "NaN")
+summary2020_new <- read.csv("summary2020_new.csv", 
+                            header=TRUE, na.strings = "NaN")
+  
 
 #### cat - put together 3 years
 
