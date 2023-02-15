@@ -78,7 +78,6 @@ soildata_new$meanReco_N <- summary3$meanRECO
 
 
 soildata_new$Season = vector(mode = 'character', length = nrow(soildata_new))
-
 soildata_new$Season[soildata_new$`as.numeric(DOY)` %in% c(1:59,305:366)] = 'Winter'
 soildata_new$Season[soildata_new$`as.numeric(DOY)` %in% 60:181] = 'Spring'
 soildata_new$Season[soildata_new$`as.numeric(DOY)` %in% 182:304] = 'Summer'
