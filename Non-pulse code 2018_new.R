@@ -143,7 +143,7 @@ test2$Pulse_DOY <- test2$DOY
 
 
 summary2018_new <- merge(summary2018_all,test2,by="DOY",all.x=TRUE)
-write.csv(summary2018_new, file = "summary2018_new.csv")
+write.csv(summary2018_new, file = "data/summary2018_new.csv")
 
 ######## Make table just with NA-Pulse_DOY
 

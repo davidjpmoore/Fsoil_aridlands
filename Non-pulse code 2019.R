@@ -116,7 +116,7 @@ summary2019_all$Rain_DOY <- summary2019_all$high_day*summary2019_all$DOY_S
 summary2019_all$Pulse_Days <- summary2019_all$high_day
 
 ### write summary file 
-write.csv(summary2019_all, file = "summary2019_all.csv")
+write.csv(summary2019_all, file = "data/summary2019_all.csv")
 
 Pulses_2019_n <- summary2019_all %>%
   filter(sum_R > 5)
@@ -137,7 +137,7 @@ test2$Pulse_DOY <- test2$DOY
 summary2019_new <- merge(summary2019_all,test2,by="DOY",all.x=TRUE)
 
 ### write summary file 
-write.csv(summary2019_new,  file = "summary2019_new.csv")
+write.csv(summary2019_new,  file = "data/summary2019_new.csv")
 
 ######## Make table just with NA-Pulse_DOY
 

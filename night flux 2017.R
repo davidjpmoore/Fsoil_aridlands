@@ -19,7 +19,7 @@ library(reshape2)
 library(zoo)
 
 # upload 2017 fluxes and meteo
-datarain17 =read.csv("datarain17_new.csv", header=TRUE, na.strings = "NaN")
+datarain17 =read.csv("data/datarain17_new1.csv", header=TRUE, na.strings = "NaN")
 
 Night17 <- datarain17 %>%
   filter(PPFD_IN == 0)
@@ -72,7 +72,7 @@ summary2017_all_night$Rain_DOY <- summary2017_all_night$high_day*summary2017_all
 summary2017_all_night$Pulse_Days <- summary2017_all_night$high_day
 
 ### write summary file 
-write.csv(summary2017_all_night, file = "summary2017_all_night.csv")
+write.csv(summary2017_all_night, file = "data/summary2017_all_night.csv")
 
 
 Pulses_2017_night <- summary2017_all_night %>%
@@ -94,7 +94,7 @@ test2$Pulse_DOY <- test2$DOY
 summary2017_new_night <- merge(summary2017_all_night,test2,by="DOY",all.x=TRUE)
 
 ### write summary file 
-write.csv(summary2017_new_night,  file = "summary2017_new_night.csv")
+write.csv(summary2017_new_night,  file = "data/summary2017_new_night.csv")
 
 
 Fref = 0.75

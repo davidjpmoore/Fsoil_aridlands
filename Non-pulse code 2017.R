@@ -76,7 +76,7 @@ sum(datarain17$highR_event)
 datarain17$Rain_DOY_high <- as.numeric(datarain17$highR_event)*as.numeric(datarain17$DOY_S)
 
 ########## Night time
-write.csv(datarain17, file = "datarain17_new.csv")
+write.csv(datarain17, file = "data/datarain17_new.csv")
 Night17 <- datarain17 %>%
   filter(PPFD_IN == 0)
 
@@ -122,7 +122,7 @@ summary2017_all$Rain_DOY <- summary2017_all$high_day*summary2017_all$DOY_S
 summary2017_all$Pulse_Days <- summary2017_all$high_day
 
 ### write summary file 
-write.csv(summary2017_all, file = "summary2017_all.csv")
+write.csv(summary2017_all, file = "data/summary2017_all.csv")
 
 
 Pulses_2017_n <- summary2017_all %>%
@@ -144,7 +144,7 @@ test2$Pulse_DOY <- test2$DOY
 summary2017_new <- merge(summary2017_all,test2,by="DOY",all.x=TRUE)
 
 ### write summary file 
-write.csv(summary2017_new,  file = "summary2017_new.csv")
+write.csv(summary2017_new,  file = "data/summary2017_new.csv")
 
 
 ######## Make table just with NA-Pulse_DOY
