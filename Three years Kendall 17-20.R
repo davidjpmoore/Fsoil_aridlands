@@ -21,13 +21,13 @@ library(deSolve)
 library(stats)
 
 ####### Open Summary files
-summary2017_new <- read.csv("summary2017_new.csv", 
+summary2017_new <- read.csv("data/summary2017_new.csv", 
                             header=TRUE, na.strings = "NaN")
-summary2018_new <- read.csv("summary2018_new.csv", 
+summary2018_new <- read.csv("data/summary2018_new.csv", 
                             header=TRUE, na.strings = "NaN")
-summary2019_new <-read.csv("summary2019_new.csv", 
+summary2019_new <-read.csv("data/summary2019_new.csv", 
                            header=TRUE, na.strings = "NaN")
-summary2020_new <- read.csv("summary2020_new.csv", 
+summary2020_new <- read.csv("data/summary2020_new.csv", 
                             header=TRUE, na.strings = "NaN")
   
 
@@ -35,16 +35,35 @@ summary2020_new <- read.csv("summary2020_new.csv",
 
 years_sum1 <- rbind(summary2017_new,  summary2018_new, summary2019_new, summary2020_new)
 
-years_sum1[is.na(years_sum1)] = 0
-
-
-
+years_sum1$Pulse_DOY <- as.numeric(as.character(years_sum1$Pulse_DOY, na.rm = TRUE))
+years_sum1[is.na(years_sum1)] <- 0
 
 years_sum_Pulse0 <- years_sum1 %>%
   filter(Pulse_DOY == 0)
 
+write.csv(years_sum_Pulse0, "data/years_sum_Pulse0.csv")
+
 years_sum_Pulse1 <- years_sum1 %>%
   filter(Pulse_DOY > 0)
+
+write.csv(years_sum_Pulse1, "data/years_sum_Pulse1.csv")
+
+########## Temper VS Moist Space for all 4 years ########################
+
+
+years_sum_Pulse0$meanSWC5 <- as.numeric(as.character(years_sum_Pulse0$meanSWC5))
+
+years_sum_Pulse0 %>%
+  #filter(RainEvent==1)%>%
+  ggplot(aes(x= meanSWC5, y= meanST5, size = meanRECO, color = Season)) + 
+  geom_point()
+
+years_sum_Pulse1 %>%
+  #filter(RainEvent==1)%>%
+  ggplot(aes(x= meanSWC5, y= meanST5, size = meanRECO, color = Season)) + 
+  geom_point()
+
+
 
 ########## Non-linear model for daily data ##################
 

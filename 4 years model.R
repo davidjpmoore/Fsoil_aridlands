@@ -21,20 +21,21 @@ library(stats)
 library(drc)
 
 ####### Open Summary files
-summary2017_new <- read.csv("summary2017_new.csv", 
+summary2017_new <- read.csv("data/summary2017_new.csv", 
                             header=TRUE, na.strings = "NaN")
-summary2018_new <- read.csv("summary2018_new.csv", 
+summary2018_new <- read.csv("data/summary2018_new.csv", 
                             header=TRUE, na.strings = "NaN")
-summary2019_new <-read.csv("summary2019_new.csv", 
+summary2019_new <-read.csv("data/summary2019_new.csv", 
                            header=TRUE, na.strings = "NaN")
-summary2020_new <- read.csv("summary2020_new.csv", 
+summary2020_new <- read.csv("data/summary2020_new.csv", 
                             header=TRUE, na.strings = "NaN")
 
 # need to add code to OPEN the csv files for the summary data called below
 
 years_sum1 <- rbind(summary2017_new,  summary2018_new, summary2019_new, summary2020_new)
 
-years_sum1[is.na(years_sum1)] = 0
+years_sum1$Pulse_DOY <- as.numeric(as.character(years_sum1$Pulse_DOY, na.rm = TRUE))
+years_sum1[is.na(years_sum1)] <- 0
 
 years_sum_Pulse0 <- years_sum1 %>%
   filter(Pulse_DOY == 0)

@@ -295,7 +295,7 @@ summary3 <- datarain %>%
 
 # Create a data set for a one pulse 
 Pulse5 <- 
-  datarain_pro %>%
+  datarain %>%
   filter(DOY_S %in% (169:190)) 
 
 # Calculate the summary for initial conditions one the time after the rain event
@@ -310,9 +310,9 @@ datarain <- datarain %>%
 # Save new csv files
 write.csv(file="data/Pulse5.csv", Pulse5)
 
-# My version of R does not work with this comand - write_csv >- I made new Pulse5 by using write.csv
+ # My version of R does not work with this comand - write_csv >- I made new Pulse5 by using write.csv
 write_csv(file="data/datarain_processed.csv", datarain)
-write_csv(file="data/Pulse5.csv", Pulse1)
+write_csv(file="data/Pulse5.csv", Pulse5)
 
 
 #Plotting SM VS ST for rain events
