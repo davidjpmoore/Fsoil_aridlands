@@ -58,10 +58,41 @@ years_sum_Pulse0 %>%
   ggplot(aes(x= meanSWC5, y= meanST5, size = meanRECO, color = Season)) + 
   geom_point()
 
+years_sum_Pulse0 %>%
+  #filter(RainEvent==1)%>%
+  ggplot(aes(x= meanGPP, y= meanRECO, #size = meanSWC5, #color = Season
+             )) + 
+  geom_point(size = 3, shape = 1
+    )+
+  stat_smooth(method = "lm")+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  xlab('Mean GPP')+
+  ylab('Mean Reco')+
+  ggtitle('Non-Pulse time')
+
+
+
 years_sum_Pulse1 %>%
   #filter(RainEvent==1)%>%
   ggplot(aes(x= meanSWC5, y= meanST5, size = meanRECO, color = Season)) + 
   geom_point()
+
+years_sum_Pulse1 %>%
+  #filter(RainEvent==1)%>%
+  ggplot(aes(x= meanGPP, y= meanRECO, #size = meanSWC5, #color = Season
+  )) + 
+  geom_point(size = 3, shape = 1
+  )+
+  stat_smooth(method = "lm")+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  xlab('Mean GPP')+
+  ylab('Mean Reco')+
+  ggtitle('Pulse time')
+
 
 
 
