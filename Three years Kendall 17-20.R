@@ -112,6 +112,7 @@ model2 = Fref*(1-c2*(meanSWC5-SWCopt)^2)*exp(b2*meanST5)* (a2*meanGPP)
 
 plot(model2)
 
+
 plot(years_sum_Pulse0$meanRECO)
 
 
