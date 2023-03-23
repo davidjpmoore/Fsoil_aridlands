@@ -100,27 +100,45 @@ years_sum_Pulse1 %>%
 ########## Non-linear model for daily data ##################
 
 Fref = 0.75
-SWCopt = 5
-a2=-0.03
-b2=0.06
-c2=0.05
-meanSWC5 = years_sum_Pulse0$meanSWC5
+SMopt = 0.125
+c4 = 56.54
+b4 = 0.04
+n=0.84
+
+years_sum_Pulse0$SoilMoisture =years_sum_Pulse0$meanSWC5/100
+meanSWC5 = years_sum_Pulse0$SoilMoisture
 meanST5 = years_sum_Pulse0$meanST5
 meanGPP = years_sum_Pulse0$meanGPP
+GPPmax = max(years_sum_Pulse0$meanGPP)
 
-model2 = Fref*(1-c2*(meanSWC5-SWCopt)^2)*exp(b2*meanST5)* (a2*meanGPP)
+model2 = Fref*((meanGPP/GPPmax +n)/1+n) *(1-c4*(SMopt-meanSWC5)^2)*exp(b4*meanST5)
 
 plot(model2)
+
+summary(model2)
 
 
 plot(years_sum_Pulse0$meanRECO)
 
+############ Unofortunately my solver does not work here ########
+
+###ERROR : Error in nlsModel(formula, mf, start, wts, scaleOffset = scOff, 
+### nDcentral = nDcntr) : singular gradient matrix in initial parameter estimation
+
+log_model3 <- nls(meanRECO ~ Fref*((meanGPP/GPPmax +n)/1+n) *(1-c4*(SMopt-meanSWC5)^2)*exp(b4*meanST5), 
+              data = years_sum_Pulse0,
+              start = list(SWCopt = 0.125, Fref=0.75,
+                           c4 = 56.54, b4 = 0.04, n=0.84),
+              control = nls.control(maxiter = 100)
+)
+
+summary(model3)
 
 
 
 
 
-
+years_sum1$meanSWC31 <- as.numeric(as.character(years_sum1$meanSWC30))
 
 model4 <- nls(meanRECO ~ Fref*(1-(meanSWC30-SWCopt)^2) * exp(meanST30) * meanGPP, 
               data = years_sum1,
