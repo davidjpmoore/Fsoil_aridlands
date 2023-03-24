@@ -180,6 +180,45 @@ plot(years_sum_Pulse0$meanRECO,model4, xlab = "Observation", ylab = "Model4")
 # 
 # plot(years_sum1$meanRECO [RECOmod4>1], RECOmod4 [RECOmod4>1])
 
+# ########################################################################## #
+#                                                                            #
+#       Calculate the modeled Respiration for the full timeseries            #
+#                                                                            #
+# ########################################################################## #
+
+Fref = 1.061e+00 #0.75
+SMopt =0.125 #Note that we FIXED SMopt at the value used in Roby et al 2019
+c4 = -4.974e-04  #56.54
+b4 =  3.672e-02 #0.04
+n=  6.667e-02  #0.84
+
+# Setting up drivers for all time
+All_meanSWC5 =years_sum1$meanSWC5/100
+All_meanST5 = years_sum1$meanST5
+All_meanGPP = years_sum1$meanGPP
+All_GPPmax = max(years_sum1$meanGPP)
+
+ALL_model4 = Fref*((All_meanGPP/All_GPPmax +n)/1+n) *(1-c4*(SMopt-All_meanSWC5)^2)*exp(b4*All_meanST5)
+
+
+
+# Plot the RECO time series for the full timeseries
+plot(years_sum1$meanRECO, type = "p", col = "blue", 
+     main = "Non-Pulse Model at Kendall Grassland", 
+     xlab = "Timestamp", ylab = "RECO" )
+# Add the model output time series to the plot
+lines( ALL_model4, type = "l", col = "red")
+#legend
+legend("topright", legend = c("Obs", "non-pulse model"), 
+       col = c("blue", "red"), lwd = 2, bty = "n")
+
+
+
+# Calulate the model residual and investigate whether residuals are higher during pulse times. 
+Model_residual = years_sum1$meanRECO-ALL_model4
+plot(years_sum1$meanSWC5,Model_residual, xlab = "SWC", ylab = "Model Error")
+
+
 
 ########### For Non-pulse time
 
