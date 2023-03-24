@@ -98,76 +98,87 @@ years_sum_Pulse1 %>%
 
 
 ########## Non-linear model for daily data ##################
+# Fitting parameters for model4 from Roby et al 2019
 
-Fref = 0.75
-SMopt = 0.125
-c4 = 56.54
-b4 = 0.04
-n=0.84
+Param_model4 <- nls(meanRECO ~ Fref*((meanGPP/GPPmax +n)/1+n) *(1-c4*(0.1-meanSWC5)^2)*exp(b4*meanST5), 
+                    data = years_sum_Pulse0,
+                    start = list(Fref=0.75,  c4=56.54, b4=0.04, n=0.84),
+                    control = nls.control(maxiter = 1000, minFactor = 0.01)
+)
+
+Summary_Model4 = summary(log_model)
+
+
+# Parameters:(Summary_Model4)
+#   Estimate Std. Error t value Pr(>|t|)    
+# Fref  1.061e+00  6.586e-02  16.112  < 2e-16 ***
+#   c4   -4.974e-04  9.878e-05  -5.035 5.54e-07 ***
+#   b4    3.672e-02  1.885e-03  19.476  < 2e-16 ***
+#   n     6.667e-02  3.318e-03  20.096  < 2e-16 ***
+
+Fref = 1.061e+00 #0.75
+SMopt =0.125 #Note that we FIXED SMopt at the value used in Roby et al 2019
+c4 = -4.974e-04  #56.54
+b4 =  3.672e-02 #0.04
+n=  6.667e-02  #0.84
 
 years_sum_Pulse0$SoilMoisture =years_sum_Pulse0$meanSWC5/100
 meanSWC5 = years_sum_Pulse0$SoilMoisture
+
 meanST5 = years_sum_Pulse0$meanST5
 meanGPP = years_sum_Pulse0$meanGPP
 GPPmax = max(years_sum_Pulse0$meanGPP)
 
-model2 = Fref*((meanGPP/GPPmax +n)/1+n) *(1-c4*(SMopt-meanSWC5)^2)*exp(b4*meanST5)
+model4 = Fref*((meanGPP/GPPmax +n)/1+n) *(1-c4*(SMopt-meanSWC5)^2)*exp(b4*meanST5)
 
-plot(model2)
-
-summary(model2)
+plot(model4)
 
 
-plot(years_sum_Pulse0$meanRECO)
+# Plot the RECO time series
+plot(years_sum_Pulse0$meanRECO, type = "p", col = "blue", xlab = "Timestamp", ylab = "RECO")
+# Add the model output time series to the plot
+lines( model4, type = "l", col = "red")
 
-############ Unofortunately my solver does not work here ########
 
-###ERROR : Error in nlsModel(formula, mf, start, wts, scaleOffset = scOff, 
-### nDcentral = nDcntr) : singular gradient matrix in initial parameter estimation
-
-log_model3 <- nls(meanRECO ~ Fref*((meanGPP/GPPmax +n)/1+n) *(1-c4*(SMopt-meanSWC5)^2)*exp(b4*meanST5), 
-              data = years_sum_Pulse0,
-              start = list(SWCopt = 0.125, Fref=0.75,
-                           c4 = 56.54, b4 = 0.04, n=0.84),
-              control = nls.control(maxiter = 100)
-)
-
-summary(model3)
+plot(years_sum_Pulse0$meanRECO,model4, xlab = "Observation", ylab = "Model4")
 
 
 
 
 
-years_sum1$meanSWC31 <- as.numeric(as.character(years_sum1$meanSWC30))
 
-model4 <- nls(meanRECO ~ Fref*(1-(meanSWC30-SWCopt)^2) * exp(meanST30) * meanGPP, 
-              data = years_sum1,
-              start = list(SWCopt = 0.25, Fref=0.75)
-)
-
-
-model4 <- nls(meanRECO ~ Fref*(1-(meanSWC30-SWCopt)^2) * exp(meanST30) * meanGPP, 
-              data = years_sum1,
-              start = list(SWCopt = 0.25, Fref=0.75),
-              control = nls.control(maxiter = 100)
-)
-
-
-summary(model4)
-meanSWC30 =  years_sum1$meanSWC30
-meanST30 =  years_sum1$meanST30
-meanGPP =  years_sum1$meanGPP
-Fref = -1.119e-15
-SWCopt = 2.385e+01
-
-RECOmod4 <- Fref*(1-(meanSWC30-SWCopt)^2) * exp(meanST30) * meanGPP
-plot(RECOmod4)
-plot(years_sum1$meanRECO)
-
-
-cor(RECOmod4,years_sum1$meanRECO)
-
-plot(years_sum1$meanRECO [RECOmod4>1], RECOmod4 [RECOmod4>1])
+# 
+# 
+# years_sum1$meanSWC31 <- as.numeric(as.character(years_sum1$meanSWC30))
+# 
+# model4 <- nls(meanRECO ~ Fref*(1-(meanSWC30-SWCopt)^2) * exp(meanST30) * meanGPP, 
+#               data = years_sum1,
+#               start = list(SWCopt = 0.25, Fref=0.75)
+# )
+# 
+# 
+# model4 <- nls(meanRECO ~ Fref*(1-(meanSWC30-SWCopt)^2) * exp(meanST30) * meanGPP, 
+#               data = years_sum1,
+#               start = list(SWCopt = 0.25, Fref=0.75),
+#               control = nls.control(maxiter = 100)
+# )
+# 
+# 
+# summary(model4)
+# meanSWC30 =  years_sum1$meanSWC30
+# meanST30 =  years_sum1$meanST30
+# meanGPP =  years_sum1$meanGPP
+# Fref = -1.119e-15
+# SWCopt = 2.385e+01
+# 
+# RECOmod4 <- Fref*(1-(meanSWC30-SWCopt)^2) * exp(meanST30) * meanGPP
+# plot(RECOmod4)
+# plot(years_sum1$meanRECO)
+# 
+# 
+# cor(RECOmod4,years_sum1$meanRECO)
+# 
+# plot(years_sum1$meanRECO [RECOmod4>1], RECOmod4 [RECOmod4>1])
 
 
 ########### For Non-pulse time
