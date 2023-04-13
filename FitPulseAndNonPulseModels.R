@@ -7,51 +7,72 @@ years_sum_Pulse0 <- read.csv("data/years_sum_Pulse0_DM.csv", header = TRUE, na.s
 years_sum_Pulse1<- read.csv("data/years_sum_Pulse1_DM.csv", header = TRUE, na.strings = "NaN")
 years_sum1<- read.csv("data/years_sum1_DM.csv", header = TRUE, na.strings = "NaN")
 
-# STARTING PARAMETERS
-
-SMopt =0.125 #Note that we FIXED SMopt at the value used in Roby et al 2019
 
 
-SoilMoisture =years_sum_Pulse0$meanSWC5/100
-meanSWC5_NP = SoilMoisture
-meanST5_NP = years_sum_Pulse0$meanST5
-meanGPP_NP = years_sum_Pulse0$meanGPP
-GPPmax_NP = max(years_sum_Pulse0$meanGPP)
+library(readr)
 
-Param_model4_NP <- nls(meanRECO ~ Fref*((meanGPP_NP/GPPmax_NP +n)/1+n) *(1-c4*(0.1-meanSWC5_NP)^2)*exp(b4*meanST5_NP), 
-                    data = years_sum_Pulse0,
-                    start = list(Fref=0.75,  c4=56.54, b4=0.04, n=0.84),
-                    control = nls.control(maxiter = 1000, minFactor = 0.01)
+# READ IN FILES
+years_sum_Pulse0 <- read_csv("data/years_sum_Pulse0_DM.csv")
+years_sum_Pulse1 <- read_csv("data/years_sum_Pulse1_DM.csv")
+years_sum1 <- read_csv("data/years_sum1_DM.csv")
+
+# CHECK COLUMN NAMES AND DATA TYPES
+str(years_sum_Pulse0)
+str(years_sum_Pulse1)
+str(years_sum1)
+
+# Remove rows with missing values
+years_sum_Pulse0 <- na.omit(years_sum_Pulse0)
+
+# Calculate Soil Moisture
+SoilMoisture <- years_sum_Pulse0$meanSWC5/100
+
+# Assign variables
+meanSWC5_NP <- SoilMoisture
+meanST5_NP <- years_sum_Pulse0$meanST5
+meanGPP_NP <- years_sum_Pulse0$meanGPP
+GPPmax_NP <- max(years_sum_Pulse0$meanGPP)
+
+# Fit model
+Param_model4_NP <- nls(meanRECO ~ Fref*((meanGPP_NP/GPPmax_NP +n)/1+n) *
+                         (1-c4*(0.1-meanSWC5_NP)^2)*exp(b4*meanST5_NP), 
+                       data = years_sum_Pulse0,
+                       start = list(Fref=0.75, c4=56.54, b4=0.04, n=0.84),
+                       control = nls.control(maxiter = 1000, minFactor = 0.01)
 )
 Summary_Model4_NP = summary(Param_model4_NP)
 
+
+# 
 # Formula: meanRECO ~ Fref * ((meanGPP_NP/GPPmax_NP + n)/1 + n) * (1 - c4 * 
 #                                                                    (0.1 - meanSWC5_NP)^2) * exp(b4 * meanST5_NP)
 # 
 # Parameters:
 #   Estimate Std. Error t value Pr(>|t|)    
-# Fref  0.556847   0.032703  17.027   <2e-16 ***
-#   c4   -0.176707   5.661176  -0.031    0.975    
-# b4    0.030299   0.002087  14.515   <2e-16 ***
-#   n     0.145719   0.007544  19.316   <2e-16 ***
+# Fref  1.180490   0.069982  16.869  < 2e-16 ***
+#   c4   11.457981   3.531174   3.245  0.00121 ** 
+#   b4    0.038775   0.002127  18.232  < 2e-16 ***
+#   n     0.054269   0.002775  19.558  < 2e-16 ***
 #   ---
 #   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 # 
-# Residual standard error: 0.1902 on 886 degrees of freedom
+# Residual standard error: 0.252 on 1002 degrees of freedom
 # 
-# Number of iterations to convergence: 6 
-# Achieved convergence tolerance: 3.229e-06
+# Number of iterations to convergence: 7 
+# Achieved convergence tolerance: 3.386e-06
 
 # NON_Pulse parameters
-FrefNP = 0.556847 
+FrefNP = 1.180490 
 SMoptNP =0.125 
-c4NP = -0.176707   
-b4NP =  0.030299
-nNP=  0.145719
+c4NP = 11.457981   
+b4NP =  0.038775
+nNP=  0.054269
 
 
 
 
+# Remove rows with missing values
+years_sum_Pulse1 <- na.omit(years_sum_Pulse1)
 
 SoilMoisture_P =years_sum_Pulse1$meanSWC5/100
 meanSWC5_P = SoilMoisture_P
@@ -65,23 +86,27 @@ Param_model4_P <- nls(meanRECO ~ Fref*((meanGPP_P/GPPmax_P +n)/1+n) *(1-c4*(0.1-
                        control = nls.control(maxiter = 1000, minFactor = 0.01)
 )
 Summary_Model4_P = summary(Param_model4_P)
-# 
+# # 
 # Parameters:
 #   Estimate Std. Error t value Pr(>|t|)    
-# Fref  0.907670   0.076816   11.82   <2e-16 ***
-#   c4   -1.975783   1.647082   -1.20    0.231    
-# b4    0.037579   0.002554   14.71   <2e-16 ***
-#   n     0.176306   0.012290   14.35   <2e-16 ***
+# Fref   0.616634   0.045269  13.621  < 2e-16 ***
+#   c4   -10.431847   1.596214  -6.535 1.01e-10 ***
+#   b4     0.044407   0.002129  20.862  < 2e-16 ***
+#   n      0.243863   0.014703  16.586  < 2e-16 ***
 # Pulse parameters
-FrefP = 0.907670 
+FrefP = 0.616634 
 SMoptP =0.125 
-c4P = -1.975783   
-b4P =   0.037579
-nP=  0.176306
+c4P = -10.431847   
+b4P =   0.044407
+nP=  0.243863
 
 
 
 
+complete.cases(years_sum1)
+
+# Remove rows with missing values
+years_sum1 <- na.omit(years_sum1)
 
 # Setting up drivers for all time
 All_meanSWC5 =years_sum1$meanSWC5/100
@@ -96,17 +121,26 @@ All_model4_P = FrefP*((All_meanGPP/All_GPPmax +nP)/1+nP) *(1-c4P*(SMoptP-All_mea
 
 
 # Plot the RECO time series
-plot(years_sum1$meanRECO, type = "p", col = "blue", xlab = "Timestamp", ylab = "RECO")
+plot(years_sum1$date, years_sum1$meanRECO, type = "p", col = "blue", xlab = "Timestamp", ylab = "RECO", cex = 0.8)
+
 # Add the model output time series to the plot
-lines( ALL_model4_NP, type = "l", col = "red")
-lines( All_model4_P, type = "l", col = "cyan")
+points(years_sum1$date, ALL_model4_NP, col = "red", pch = 16, cex = 0.4)
+points(years_sum1$date, All_model4_P, col = "cyan", pch = 16, cex = 0.4, alpha=0.5)
+
 # create the legend
 legend(x = "topright",
        legend = c("Measured RECO", "Pulse Model", "Non-Pulse Model"),
-       pch = c(1, NA, NA),
+       pch = c(1, 16, 16),
        col = c("blue", "cyan", "red"),
        lty = c(NA, 1, 1),
        bty = "n")
+
+# Add another x-axis with the year
+par(new=TRUE)
+plot(years_sum1$date, years_sum1$meanRECO, type = "n", axes=FALSE, xlab="", ylab="")
+axis(side=3)
+mtext("Year",side=3,line=2)
+axis(side=1, at = as.numeric(format(years_sum1$date, "%Y")), labels = format(years_sum1$date, "%Y"))
 
 
 
@@ -123,5 +157,43 @@ points( years_sum1$meanRECO,years_sum1$meanRECO,  type = "l", col = "cyan")
 
 
 # Calulate the model residual and investigate whether residuals are higher during pulse times. 
-Model_residual = years_sum1$meanRECO-ALL_model4_NP
+Model_residual_NP = years_sum1$meanRECO-ALL_model4_NP
 plot(years_sum1$meanSWC5,Model_residual, xlab = "SWC", ylab = "Model Error")
+
+
+# calculate RMSE
+rmse_NP <- sqrt(mean((ALL_model4_NP - years_sum1$meanRECO)^2))
+rmse_P <- sqrt(mean((All_model4_P - years_sum1$meanRECO)^2))
+# calculate MAPE
+mape_NP <- mean(abs(ALL_model4_NP - years_sum1$meanRECO) / years_sum1$meanRECO) * 100
+mape_P <- mean(abs(All_model4_P - years_sum1$meanRECO) / years_sum1$meanRECO) * 100
+# calculate R-squared
+r_squared_NP <- cor(ALL_model4_NP, years_sum1$meanRECO)^2
+r_squared_P <- cor(All_model4_P, years_sum1$meanRECO)^2
+
+Reco_NP = sum(ALL_model4_NP)
+Reco_P = sum(All_model4_P)
+Reco_obs = sum(years_sum1$meanRECO)
+
+
+plot(ALL_model4_NP,All_model4_P, xlab = "Non-Pulse Model Reco", ylab = "Pulse Model Reco")
+
+
+# Set the plot size and resolution
+png("model_comparison.png", width = 800, height = 800, units = "px", res = 300)
+
+# Create a blank plot with axis labels and limits
+plot(ALL_model4_NP, All_model4_P, xlab = "Non-Pulse Model Reco", ylab = "Pulse Model Reco", 
+     xlim = c(0, 5), ylim = c(0, 5), cex.lab = 1.5, cex.axis = 1.2)
+
+# Add a 1:1 line to the plot
+abline(a = 0, b = 1, lty = 2)
+
+# Add points to the plot
+points(ALL_model4_NP, All_model4_P, pch = 16, col = "black", cex = 1.2)
+
+
+
+# Save the plot
+dev.off()
+
