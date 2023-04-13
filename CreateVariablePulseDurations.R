@@ -19,34 +19,35 @@ library(zoo)
 library(deSolve)
 library(stats)
 
-####### Open Summary files
-summary2017_new <- read.csv("data/summary2017_new.csv", 
-                            header=TRUE, na.strings = "NaN")
-summary2017_new$YEAR = 2017
-summary2018_new <- read.csv("data/summary2018_new.csv", 
-                            header=TRUE, na.strings = "NaN")
-summary2018_new$YEAR = 2018
-
-summary2019_new <-read.csv("data/summary2019_new.csv", 
-                           header=TRUE, na.strings = "NaN")
-summary2019_new$YEAR = 2019
-
-summary2020_new <- read.csv("data/summary2020_new.csv", 
-                            header=TRUE, na.strings = "NaN")
-summary2020_new$YEAR = 2020  
-
-#### cat - put together 3 years
-
-years_sum1 <- rbind(summary2017_new,  summary2018_new, summary2019_new, summary2020_new)
-
-years_sum1$Pulse_DOY <- as.numeric(as.character(years_sum1$Pulse_DOY, na.rm = TRUE))
-years_sum1[is.na(years_sum1)] <- 0
-years_sum1$date <- as.Date(paste(years_sum1$YEAR, years_sum1$DOY), format = "%Y %j")
+# ####### Open Summary files
+# summary2017_new <- read.csv("data/summary2017_new.csv", 
+#                             header=TRUE, na.strings = "NaN")
+# summary2017_new$YEAR = 2017
+# summary2018_new <- read.csv("data/summary2018_new.csv", 
+#                             header=TRUE, na.strings = "NaN")
+# summary2018_new$YEAR = 2018
+# 
+# summary2019_new <-read.csv("data/summary2019_new.csv", 
+#                            header=TRUE, na.strings = "NaN")
+# summary2019_new$YEAR = 2019
+# 
+# summary2020_new <- read.csv("data/summary2020_new.csv", 
+#                             header=TRUE, na.strings = "NaN")
+# summary2020_new$YEAR = 2020  
+# 
+# #### cat - put together 3 years
+# 
+# years_sum1 <- rbind(summary2017_new,  summary2018_new, summary2019_new, summary2020_new)
+# 
+# years_sum1$Pulse_DOY <- as.numeric(as.character(years_sum1$Pulse_DOY, na.rm = TRUE))
+# years_sum1[is.na(years_sum1)] <- 0
+# years_sum1$date <- as.Date(paste(years_sum1$YEAR, years_sum1$DOY), format = "%Y %j")
+# 
+# 
+# years_sum1 <- years_sum1 %>% arrange(date)
 
 # sort data by date
-years_sum1 <- years_sum1 %>% arrange(date)
-
-
+years_sum1 <- USWkg12_20_summary %>% arrange(date)
 
 # Initialize the pulseduration_S variable as a vector of 0's
 years_sum1$pulseduration_S <- rep(0, nrow(years_sum1))
@@ -137,11 +138,17 @@ years_sum_Pulse0 <- years_sum1 %>%
 # Create years_sum_Pulse1 dataframe
 years_sum_Pulse1 <- years_sum1 %>%
   filter(days_since_rain_event < max_pulse_duration)
+# 
+# # WRITE OUT NEW FILES
+# write.csv(years_sum_Pulse0, "data/years_sum_Pulse0_DM.csv")
+# write.csv(years_sum_Pulse1, "data/years_sum_Pulse1_DM.csv")
+# write.csv(years_sum1, "data/years_sum1_DM.csv")
+
 
 # WRITE OUT NEW FILES
-write.csv(years_sum_Pulse0, "data/years_sum_Pulse0_DM.csv")
-write.csv(years_sum_Pulse1, "data/years_sum_Pulse1_DM.csv")
-write.csv(years_sum1, "data/years_sum1_DM.csv")
+write_csv(years_sum_Pulse0, "data/years_sum_Pulse0_DM.csv")
+write_csv(years_sum_Pulse1, "data/years_sum_Pulse1_DM.csv")
+write_csv(years_sum1, "data/years_sum1_DM.csv")
 
 
 library(ggplot2)
