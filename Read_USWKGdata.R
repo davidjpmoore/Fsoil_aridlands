@@ -25,9 +25,6 @@ USWkg19_20 <- read.csv("data/GapfilledPartitionedFluxes_US-Wkg_HH_201912312330_2
   
 
 USWkg12_18$T_CANOPY_2_1_1 <- as.numeric(USWkg12_18$T_CANOPY_2_1_1)
-
-
-
 USWkg18_19$T_CANOPY_2_1_1 <- as.numeric(USWkg18_19$T_CANOPY_2_1_1)
 USWkg19_20$T_CANOPY_2_1_1 <- as.numeric(USWkg19_20$T_CANOPY_2_1_1)
 USWkg12_20 <- bind_rows(USWkg12_18, USWkg18_19, USWkg19_20)
@@ -71,6 +68,15 @@ USWkg12_20<-  rename(USWkg12_20,
            RH6=RH_1_1_1)
 
 
+plot(USWkg12_20$GPP)
+
+# Aggregate daily values of FC by Date
+GPP_date <- aggregate(GPP ~ date, data = (USWkg12_20), FUN = mean, na.rm = TRUE)
+
+# Plot yearly time series of FC
+plot(GPP_date$date, GPP_date$GPP, type = "l", xlab = "Year", ylab = "FC")
+
+
 USWkg12_20_summary <- USWkg12_20 %>%
   mutate(RainEvent_0 = as.numeric(RainEvent_0)) %>%
   group_by(date) %>%
@@ -93,11 +99,21 @@ USWkg12_20_summary <- USWkg12_20 %>%
     sdReco = sd(RECO, na.rm = TRUE)
   )
 
+
+
+
+
+par(mfrow=c(4,1), mar=c(0,4,0,0), oma=c(5,5,5,5))
+
+plot(USWkg12_20_summary$date, USWkg12_20_summary$meanGPP, xaxt="n", xlab="", ylab="GPP")
+plot(USWkg12_20_summary$date, USWkg12_20_summary$meanRECO, xaxt="n", xlab="", ylab="RECO")
+plot(USWkg12_20_summary$date, USWkg12_20_summary$meanNEE, xaxt="n", xlab="", ylab="NEE")
+plot(USWkg12_20_summary$date, USWkg12_20_summary$meanST15, xlab="Time", ylab="ST15")
+
+
 write_csv(USWkg12_20_summary, "data/USWkg12_20_summary.csv")
  
 
-# Aggregate daily values of FC by Date
-GPP_date <- aggregate(GPP ~ date, data = (USWkg12_20), FUN = mean, na.rm = TRUE)
 
-# Plot yearly time series of FC
-plot(GPP_date$date, GPP_date$GPP, type = "l", xlab = "Year", ylab = "FC")
+
+
