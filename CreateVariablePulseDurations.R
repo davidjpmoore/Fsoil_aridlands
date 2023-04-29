@@ -1,50 +1,30 @@
 # 19-10-2022
-# Anastasia Makhnykina
+# Anastasia Makhnykina & Dave Moore
 
 #packages we need
-library(dplyr)
-library(tidyverse)
-library(lubridate)
-library(skimr)
-library(data.table)
-library(corrplot)
-library(scales)
-library(PerformanceAnalytics)
-library(xtable)
-library(ggpubr)
-library(ggplot2)
-library(colorRamps)
-library(reshape2)
-library(zoo)
-library(deSolve)
-library(stats)
+# library(dplyr)
+# library(tidyverse)
+# library(lubridate)
+# library(skimr)
+# library(data.table)
+# library(corrplot)
+# library(scales)
+# library(PerformanceAnalytics)
+# library(xtable)
+# library(ggpubr)
+# library(ggplot2)
+# library(colorRamps)
+# library(reshape2)
+# library(zoo)
+# library(deSolve)
+# library(stats)
 
-# ####### Open Summary files
-# summary2017_new <- read.csv("data/summary2017_new.csv", 
-#                             header=TRUE, na.strings = "NaN")
-# summary2017_new$YEAR = 2017
-# summary2018_new <- read.csv("data/summary2018_new.csv", 
-#                             header=TRUE, na.strings = "NaN")
-# summary2018_new$YEAR = 2018
-# 
-# summary2019_new <-read.csv("data/summary2019_new.csv", 
-#                            header=TRUE, na.strings = "NaN")
-# summary2019_new$YEAR = 2019
-# 
-# summary2020_new <- read.csv("data/summary2020_new.csv", 
-#                             header=TRUE, na.strings = "NaN")
-# summary2020_new$YEAR = 2020  
-# 
-# #### cat - put together 3 years
-# 
-# years_sum1 <- rbind(summary2017_new,  summary2018_new, summary2019_new, summary2020_new)
-# 
-# years_sum1$Pulse_DOY <- as.numeric(as.character(years_sum1$Pulse_DOY, na.rm = TRUE))
-# years_sum1[is.na(years_sum1)] <- 0
-# years_sum1$date <- as.Date(paste(years_sum1$YEAR, years_sum1$DOY), format = "%Y %j")
-# 
-# 
-# years_sum1 <- years_sum1 %>% arrange(date)
+library(tidyverse)
+library(ggplot2)
+
+USWkg12_20_summary<- read.csv("data/USWkg12_20_summary.csv", header=TRUE, na.strings="NA", skip=0)
+USWkg12_20_summary$date <- as.Date(USWkg12_20_summary$date)
+
 
 # sort data by date
 years_sum1 <- USWkg12_20_summary %>% arrange(date)
@@ -105,6 +85,7 @@ for (i in 21:nrow(years_sum1)) {
 # create a new variable called max_pulse_duration that is the maximum of pulseduration_S, pulseduration_M, and pulseduration_L
 years_sum1$max_pulse_duration <- pmax(years_sum1$pulseduration_S, years_sum1$pulseduration_M, years_sum1$pulseduration_L)
 
+plot(years_sum1$pulseduration_S)
 
 # 
 # count the days since a rain event
@@ -135,9 +116,33 @@ for (i in 2:nrow(years_sum1)) {
 years_sum_Pulse0 <- years_sum1 %>%
   filter(days_since_rain_event > max_pulse_duration)
 
+
+
 # Create years_sum_Pulse1 dataframe
 years_sum_Pulse1 <- years_sum1 %>%
   filter(days_since_rain_event < max_pulse_duration)
+
+
+hist(subset(years_sum_Pulse0$sum_R, years_sum_Pulse0$sum_R != 0), 
+     breaks = seq(0, 60, length.out = 30),
+     main = "Non-pulse time", 
+     xlab = "Rainfall total", 
+     ylab = "Frequency",
+     col = "red", 
+     border = "white",
+     lty = "solid",
+ylim = c(0, 100))
+
+hist(subset(years_sum_Pulse1$sum_R, years_sum_Pulse1$sum_R != 0), 
+     breaks = seq(min(years_sum_Pulse1$sum_R), max(years_sum_Pulse1$sum_R), length.out = 30),
+     main = "Pulse time", 
+     xlab = "Rainfall total", 
+     ylab = "Frequency",
+     col = "cyan", 
+     border = "white",
+     lty = "solid",
+ylim = c(0, 100))
+
 # 
 # # WRITE OUT NEW FILES
 # write.csv(years_sum_Pulse0, "data/years_sum_Pulse0_DM.csv")
@@ -145,13 +150,14 @@ years_sum_Pulse1 <- years_sum1 %>%
 # write.csv(years_sum1, "data/years_sum1_DM.csv")
 
 
-# WRITE OUT NEW FILES
+# # WRITE OUT NEW FILES
 write_csv(years_sum_Pulse0, "data/years_sum_Pulse0_DM.csv")
 write_csv(years_sum_Pulse1, "data/years_sum_Pulse1_DM.csv")
 write_csv(years_sum1, "data/years_sum1_DM.csv")
 
+# 
+# library(ggplot2)
 
-library(ggplot2)
 
 ggplot(years_sum1, aes(x = date)) +
   geom_point(aes(y = pulseduration_S, color = "Short Pulses"), size = 2) +
@@ -165,4 +171,9 @@ ggplot(years_sum1, aes(x = date)) +
                                 "Long Pulses" = "red",
                                 "Max Pulse Duration" = "black")) +
   labs(x = "Date", y = "Pulse Duration (days)") +
-  guides(color = guide_legend(title = "Pulse Duration", ncol = 2))
+  guides(color = guide_legend(title = "Pulse Duration", ncol = 2)) +
+  
+  scale_y_continuous(limits = c(0.1, NA))
+
+
+
