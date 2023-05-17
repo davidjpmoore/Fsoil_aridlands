@@ -114,7 +114,7 @@ for (i in 2:nrow(years_sum1)) {
 
 # Create years_sum_Pulse0 dataframe
 years_sum_Pulse0 <- years_sum1 %>%
-  filter(days_since_rain_event > max_pulse_duration)
+  filter(days_since_rain_event >= max_pulse_duration)
 
 
 
