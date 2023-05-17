@@ -151,9 +151,13 @@ text(x = 3, y = 0.5, labels = "Under estimation")
 points( years_sum1$meanRECO,years_sum1$meanRECO,  type = "l", col = "cyan")
 
 
+
 # Calulate the model residual and investigate whether residuals are higher during pulse times. 
 Model_residual_NP = years_sum1$meanRECO-ALL_model4_NP
-plot(years_sum1$meanSWC5,Model_residual, xlab = "SWC", ylab = "Model Error")
+hist(Model_residual_NP, col = "red")
+
+Model_residual_P = years_sum1$meanRECO - All_model4_P
+hist(Model_residual_P, col = "cyan")
 
 
 # calculate RMSE
