@@ -81,6 +81,28 @@ CH_USWkg17_20$date = as.Date(paste(CH_USWkg17_20$Year+2000, CH_USWkg17_20$DOY, s
           Rsoil7 = ifelse(Rsoil7 < 0, NA, Rsoil7),
           Rsoil7 = ifelse(is.na(Rsoil7), NA, Rsoil7))
  
+ Cham_USWKG_PULSETIME <- Cham_USWKG_pulsedata[Cham_USWKG_pulsedata$days_since_rain_event <= Cham_USWKG_pulsedata$max_pulse_duration, ]
+ Cham_USWKG_NON_PULSETIME <- Cham_USWKG_pulsedata[Cham_USWKG_pulsedata$days_since_rain_event > Cham_USWKG_pulsedata$max_pulse_duration, ]
+ 
+ ####
+ ## Chamber 1
+ ####
+ 
+ # Assign variables
+ meanSWC5_NP <- Cham_USWKG_PULSETIME$VWC1
+ meanST5_NP <- Cham_USWKG_PULSETIME$Tsoil1
+ meanGPP_NP <- Cham_USWKG_PULSETIME$meanGPP
+ GPPmax_NP <- max(Cham_USWKG_PULSETIME$meanGPP)
+ 
+ # Fit model
+ Param_model4_NP_CH <- nls(Rsoil1 ~ Fref*((meanGPP_NP/GPPmax_NP +n)/1+n) *
+                          (1-c4*(0.1-meanSWC5_NP)^2)*exp(b4*meanST5_NP), 
+                        data = Cham_USWKG_PULSETIME,
+                        start = list(Fref=0.75, c4=56.54, b4=0.04, n=0.84),
+                        control = nls.control(maxiter = 1000, minFactor = 0.01)
+ )
+ Summary_Model4_NP_CH = summary(Param_model4_NP_CH)
+ 
  
   # 
   # # Create a directory to save the PNG files
@@ -151,9 +173,6 @@ CH_USWkg17_20$date = as.Date(paste(CH_USWkg17_20$Year+2000, CH_USWkg17_20$DOY, s
            x = "Measurement point", y = "Temperature (C)") +
       theme_minimal()
   
-  
-    Cham_USWKG_PULSETIME <- Cham_USWKG_pulsedata[Cham_USWKG_pulsedata$days_since_rain_event <= Cham_USWKG_pulsedata$max_pulse_duration, ]
-    Cham_USWKG_NON_PULSETIME <- Cham_USWKG_pulsedata[Cham_USWKG_pulsedata$days_since_rain_event > Cham_USWKG_pulsedata$max_pulse_duration, ]
   
 
   # Plot the box plot for the selected variables
