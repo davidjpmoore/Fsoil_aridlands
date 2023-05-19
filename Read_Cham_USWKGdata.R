@@ -88,21 +88,53 @@ CH_USWkg17_20$date = as.Date(paste(CH_USWkg17_20$Year+2000, CH_USWkg17_20$DOY, s
  ## Chamber 1
  ####
  
- # Assign variables
- meanSWC5_NP <- Cham_USWKG_PULSETIME$VWC1
- meanST5_NP <- Cham_USWKG_PULSETIME$Tsoil1
- meanGPP_NP <- Cham_USWKG_PULSETIME$meanGPP
- GPPmax_NP <- max(Cham_USWKG_PULSETIME$meanGPP)
+ #PULSETIME set up columns to pull to run the model for chamber 1
+ Cham1 <- c("meanGPP", "Rsoil1", "VWC1", "Tsoil1")
+ subset_Cham1P_holes <- Cham_USWKG_PULSETIME[, Cham1]
+ complete_rows <- complete.cases(subset_Cham1P_holes)
+ subset_Cham1P = subset_Cham1P_holes[complete_rows, ]
+ 
+ #PULSETIME Assign variables
+ meanSWC5_P <- subset_Cham1P$VWC1
+ meanST5_P <- subset_Cham1P$Tsoil1
+ meanGPP_P <- subset_Cham1P$meanGPP
+ GPPmax_P <- max(subset_Cham1P$meanGPP)
  
  # Fit model
- Param_model4_NP_CH <- nls(Rsoil1 ~ Fref*((meanGPP_NP/GPPmax_NP +n)/1+n) *
-                          (1-c4*(0.1-meanSWC5_NP)^2)*exp(b4*meanST5_NP), 
-                        data = Cham_USWKG_PULSETIME,
+ Param_model4_P_CH1 <- nls(Rsoil1 ~ Fref*((meanGPP_P/GPPmax_P +n)/1+n) *
+                          (1-c4*(0.1-meanSWC5_P)^2)*exp(b4*meanST5_P), 
+                        data = subset_Cham1P,
                         start = list(Fref=0.75, c4=56.54, b4=0.04, n=0.84),
                         control = nls.control(maxiter = 1000, minFactor = 0.01)
  )
- Summary_Model4_NP_CH = summary(Param_model4_NP_CH)
+ Summary_Model4_P_CH1 = summary(Param_model4_P_CH1)
+ estimates_P_CH1 <- coef(Summary_Model4_P_CH1)
  
+ #NON-PULSETIME set up columns to pull to run the model for chamber 1
+ subset_Cham1NP_holes <- Cham_USWKG_NON_PULSETIME[, Cham1]
+ complete_rowsNP <- complete.cases(subset_Cham1NP_holes)
+ subset_Cham1NP = subset_Cham1NP_holes[complete_rowsNP, ]
+ 
+ #NON-PULSETIME Assign variables
+ meanSWC5_NP <- subset_Cham1NP$VWC1
+ meanST5_NP <- subset_Cham1NP$Tsoil1
+ meanGPP_NP <- subset_Cham1NP$meanGPP
+ GPPmax_NP <- max(subset_Cham1NP$meanGPP)
+ 
+ 
+ # Fit model
+ Param_model4_NP_CH1 <- nls(Rsoil1 ~ Fref*((meanGPP_NP/GPPmax_NP +n)/1+n) *
+                             (1-c4*(0.1-meanSWC5_NP)^2)*exp(b4*meanST5_NP), 
+                           data = subset_Cham1NP,
+                           start = list(Fref=0.75, c4=56.54, b4=0.04, n=0.84),
+                           control = nls.control(maxiter = 1000, minFactor = 0.01)
+ )
+ Summary_Model4_NP_CH1 = summary(Param_model4_NP_CH1)
+ estimates_NP_CH1 <- coef(Summary_Model4_NP_CH1)
+ 
+#### Chamber 1 summaries
+ Summary_Model4_NP_CH1
+ Summary_Model4_P_CH1
  
   # 
   # # Create a directory to save the PNG files
