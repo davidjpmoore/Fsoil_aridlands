@@ -25,8 +25,8 @@ CH_USWkg17_20 <- read.csv("data/KN_soil_resp17_20_longHead.csv", header=TRUE, na
 CH_USWkg17_20$date = as.Date(paste(CH_USWkg17_20$Year+2000, CH_USWkg17_20$DOY, sep = "-"), format = "%Y-%j")
 
   # Merge data frames by date
-Cham_USWKG_pulsedata <- merge(CH_USWkg17_20, pulsedefinitions,  by = "date", all.x = TRUE) 
-       
+Cham_USWKG_pulsedata <- CH_USWkg17_20 %>%
+  left_join(mutate(pulsedefinitions, date = as.Date(date)), by = "date")
 
   
  RchamberVariables= colnames(Cham_USWKG_pulsedata)
