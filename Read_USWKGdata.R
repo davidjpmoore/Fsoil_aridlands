@@ -115,6 +115,157 @@ plot(USWkg12_20_summary$date, USWkg12_20_summary$meanST15, xlab="Time", ylab="ST
 write_csv(USWkg12_20_summary, "data/USWkg12_20_summary.csv")
  
 
+USWkg12_20_summary$bigR <- as.numeric(USWkg12_20_summary$sum_R>5)
+
+USWkg12_20_summary$bigRmm <- as.numeric(USWkg12_20_summary$bigR)*as.numeric(USWkg12_20_summary$sum_R)
+
+hist(USWkg12_20_summary$bigRmm) 
+
+USWkg12_20_summary$DOY <- paste(yday(USWkg12_20_summary$date))
+
+USWkg12_20_summary$observation <- 1:nrow(USWkg12_20_summary)
+
+USW9sum <- USWkg12_20_summary%>%
+  filter(bigRmm > 0)
+
+USW9sum %>%
+  #group_by(DOY) %>%
+  arrange(date) %>%
+  mutate(diff = observation - lag(observation, default = first(observation)))
+
+USW9sum$diff <- USW9sum$observation - lag(USW9sum$observation, 
+                                          default = first(USW9sum$observation))
+
+hist(USW9sum$diff)
+
+hist(USWkg12_20_summary$meanRECO)
+
+######Make seasons #############
+
+USWkg12_20_summary$Season = vector(mode = 'character', length = nrow(USWkg12_20_summary))
+USWkg12_20_summary$Season[USWkg12_20_summary$DOY %in% c(1:59,305:366)] = 'Winter'
+USWkg12_20_summary$Season[USWkg12_20_summary$DOY %in% 60:181] = 'Spring'
+USWkg12_20_summary$Season[USWkg12_20_summary$DOY %in% 182:304] = 'Summer'
+
+
+Pulse_Win <- USW9sum %>%
+  filter(Season == 'Winter')
+
+Pulse_Spr <- USW9sum %>%
+  filter(Season == 'Spring')
+
+Pulse_Sum <- USW9sum %>%
+  filter(Season == 'Summer')
+
+
+########## Pulse behavior for each season #########
+
+USWkg12_20_summary$year <- substr(USWkg12_20_summary$date, 1,4)
+
+USWkg12_20_summary$year <- as.numeric(as.character(USWkg12_20_summary$year))
+
+
+######Spring Pulses ##########
+plot(Pulse_Spr$meanRECO)
+
+Pulse1Spr <- USWkg12_20_summary %>%
+  filter(year == 2014) %>%
+  filter(DOY %in% (57:74))
+plot(Pulse1Spr$meanRECO)
+
+Pulse2Spr <- USWkg12_20_summary %>%
+  filter(year == 2019) %>%
+  filter(DOY %in% (68:84))
+plot(Pulse2Spr$meanRECO)
+
+Pulse3Spr <- USWkg12_20_summary %>%
+  filter(year == 2020) %>%
+  filter(DOY %in% (65:82))
+plot(Pulse3Spr$meanRECO)
+
+Pulse4Spr <- USWkg12_20_summary %>%
+  filter(year == 2018) %>%
+  filter(DOY %in% (164:181))
+plot(Pulse4Spr$meanRECO)
+
+
+######### Summer Pulses ######
+Pulse_Sum %>%
+  ggplot(aes(x=sum_R, y = meanRECO))+
+  geom_point()
+
+Pulse1Sum <- USWkg12_20_summary %>%
+  filter(year == 2015) %>%
+  filter(DOY %in% (181:198))
+plot(Pulse1Sum$meanRECO)
+
+Pulse2Sum <- USWkg12_20_summary %>%
+  filter(year == 2016) %>%
+  filter(DOY %in% (196:213))
+plot(Pulse2Sum$meanRECO)
+
+Pulse3Sum <- USWkg12_20_summary %>%
+  filter(year == 2019) %>%
+  filter(DOY %in% (237:254))
+plot(Pulse3Sum$meanRECO)
+
+########## Winter Pulses ##########
+plot(Pulse_Win$meanRECO)
+
+Pulse1Win <- USWkg12_20_summary %>%
+  filter(year == 2017) %>%
+  filter(DOY %in% (11:28))
+plot(Pulse1Win$meanRECO)
+
+Pulse2Win <- USWkg12_20_summary %>%
+  filter(year == 2017) %>%
+  filter(DOY %in% (348:365))
+plot(Pulse2Win$meanRECO)
+
+Pulse3Win <- USWkg12_20_summary %>%
+  filter(year == 2019) %>%
+  filter(DOY %in% (47:64))
+plot(Pulse3Win$meanRECO)
+
+##### plot graphs with Reco and GPP for pulse and non-pulse time and together ####
+USWkg12_20_summary %>%
+  ggplot(aes(x=meanGPP, y = meanRECO))+
+  geom_point()+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  stat_smooth(method = "lm",formula = y ~ x ,size = 1)
+
+####### Make 2 more ##########
+
+USW1220_Pulse <- USWkg12_20_summary %>%
+  filter(bigRmm > 0)
+
+USW1220_PulseNon <- USWkg12_20_summary %>%
+  filter(bigRmm == 0)  
+
+USW1220_Pulse %>%
+  ggplot(aes(x=meanGPP, y = meanRECO))+
+  geom_point()+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  stat_smooth(method = "lm",formula = y ~ x ,size = 1)
+
+USW1220_PulseNon %>%
+  ggplot(aes(x=meanGPP, y = meanRECO))+
+  geom_point()+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  stat_smooth(method = "lm",formula = y ~ x ,size = 1)
+
+#### Next step - add graphs for Rsoil
+
+
+
+
+
 
 
 
