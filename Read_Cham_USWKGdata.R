@@ -48,15 +48,15 @@ Cham_USWKG_pulsedata <- CH_USWkg17_20 %>%
  #.    WARNING THIS CHANGES THE COLUMN NAMES BASED ON THE ORDER THEY ARE READ
  #          CHECK THEM!
  
- newnames = c("date",	"Year",	"DOY",	"Rsoil1",	"VWC1",	"Tsoil1",	"Rsoil2",	"VWC2",	"Tsoil2",	
+ newnames = c("Year",	"DOY",	"Rsoil1",	"VWC1",	"Tsoil1",	"Rsoil2",	"VWC2",	"Tsoil2",	
  "Rsoil3",	"VWC3",	"Tsoil3",	"Rsoil4",	"VWC4",	"Tsoil4",	 "Rsoil5",	"VWC5",	"Tsoil5",	
- "Rsoil6",	"VWC6",	"Tsoil6",	"Rsoil7",	"VWC7",	"Tsoil7",	"days_since_rain_event",
+ "Rsoil6",	"VWC6",	"Tsoil6",	"Rsoil7",	"VWC7",	"Tsoil7","date",	"days_since_rain_event",
  "max_pulse_duration",	"sum_R",	"meanSWC5",	"meanST5",	"meanGPP", "meanRECO",	"pulseIND")
  
  
- column_units = list("days",	"years",	"days",	"µmol_CO2_m2_s",	"VWC",	"degC",	"µmol_CO2_m2_s",	"VWC",	"degC",
+ column_units = list("years",	"days",	"µmol_CO2_m2_s",	"VWC",	"degC",	"µmol_CO2_m2_s",	"VWC",	"degC",
                      "µmol_CO2_m2_s",	 "VWC",	"degC",	"µmol_CO2_m2_s",	"VWC",	"degC",	"µmol_CO2_m2_s",	
-                     "VWC",	"degC",	"µmol_CO2_m2_s",	"VWC",	"degC",	 "µmol_CO2_m2_s",	"VWC",	"degC",	
+                     "VWC",	"degC",	"µmol_CO2_m2_s",	"VWC",	"degC","days",	 "µmol_CO2_m2_s",	"VWC",	"degC",	
                      "days",	"days",	"mm",	"VWC",	"degC",	"gCmd","µmol_CO2_m2_s",	"TF")
  
  for (col in names(column_units)) {
@@ -261,4 +261,85 @@ Cham_USWKG_pulsedata <- CH_USWkg17_20 %>%
   
   
   
+Cham_USWKG_pulsedata$meanRsoil <- rowMeans(Cham_USWKG_pulsedata[c('Rsoil1','Rsoil2',
+                                                          'Rsoil3','Rsoil4',
+                                                          'Rsoil5','Rsoil6','Rsoil7')],na.rm = TRUE)
+Cham_USWKG_pulsedata$DOY1 <- round(Cham_USWKG_pulsedata$Year, digits = 0)
+
+Cham_USWKG_PULSETIME <- Cham_USWKG_pulsedata[Cham_USWKG_pulsedata$days_since_rain_event <= Cham_USWKG_pulsedata$max_pulse_duration, ]
+Cham_USWKG_NON_PULSETIME <- Cham_USWKG_pulsedata[Cham_USWKG_pulsedata$days_since_rain_event > Cham_USWKG_pulsedata$max_pulse_duration, ]  
+
+
+#### Graphs with GPP and Reco #######
+Cham_USWKG_PULSETIME %>%
+  ggplot(aes(x=meanGPP, y = meanRsoil))+
+  geom_point(shape=1)+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  stat_smooth(method = "lm",formula = y ~ x ,size = 1)
+
+Cham_USWKG_NON_PULSETIME %>%
+  ggplot(aes(x=meanGPP, y = meanRsoil))+
+  geom_point(shape=1)+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  stat_smooth(method = "lm",formula = y ~ x ,size = 1)
+
+Cham_USWKG_pulsedata %>%
+  ggplot(aes(x=meanGPP, y = meanRsoil))+
+  geom_point(shape=1)+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  stat_smooth(method = "lm",formula = y ~ x ,size = 1)
+
+
+###### Make Summary for 3 df ######### We need GPP, date, Rsoil
+Cham_mean <- Cham_USWKG_pulsedata %>%
+  group_by(date) %>%
+  summarise(meanGPP = mean (meanGPP, na.rm=TRUE),
+            meanRsoil = mean(meanRsoil, na.rm = TRUE))
+
+Cham_meanPulse <- Cham_USWKG_PULSETIME %>%
+  group_by(date) %>%
+  summarise(meanGPP = mean (meanGPP, na.rm=TRUE),
+            meanRsoil = mean(meanRsoil, na.rm = TRUE))
   
+Cham_meanPulseNon <- Cham_USWKG_NON_PULSETIME %>%
+  group_by(date) %>%
+  summarise(meanGPP = mean (meanGPP, na.rm=TRUE),
+            meanRsoil = mean(meanRsoil, na.rm = TRUE))
+
+
+Cham_mean %>%
+  ggplot(aes(x=meanGPP, y = meanRsoil))+
+  geom_point(shape=1)+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  stat_smooth(method = "lm",formula = y ~ x ,size = 1)
+
+Cham_meanPulse %>%
+  ggplot(aes(x=meanGPP, y = meanRsoil))+
+  geom_point(shape=1)+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  stat_smooth(method = "lm",formula = y ~ x ,size = 1)
+
+Cham_meanPulseNon %>%
+  ggplot(aes(x=meanGPP, y = meanRsoil))+
+  geom_point(shape=1)+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  stat_smooth(method = "lm",formula = y ~ x ,size = 1)
+
+
+
+
+
+
+
