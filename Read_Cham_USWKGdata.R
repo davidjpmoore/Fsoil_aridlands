@@ -319,7 +319,10 @@ Cham_mean %>%
   theme_bw()+
   theme(text = element_text(size = 15))+
   stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
-  stat_smooth(method = "lm",formula = y ~ x ,size = 1)
+  stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
+  ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
+  xlab(~paste("GPP, ", mu, "mol m"^-2,"s"^-1))+
+  ggtitle('All data')
 
 Cham_meanPulse %>%
   ggplot(aes(x=meanGPP, y = meanRsoil))+
@@ -327,7 +330,10 @@ Cham_meanPulse %>%
   theme_bw()+
   theme(text = element_text(size = 15))+
   stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
-  stat_smooth(method = "lm",formula = y ~ x ,size = 1)
+  stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
+  ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
+  xlab(~paste("GPP, ", mu, "mol m"^-2,"s"^-1))+
+  ggtitle('Pulse time')
 
 Cham_meanPulseNon %>%
   ggplot(aes(x=meanGPP, y = meanRsoil))+
@@ -335,8 +341,11 @@ Cham_meanPulseNon %>%
   theme_bw()+
   theme(text = element_text(size = 15))+
   stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
-  stat_smooth(method = "lm",formula = y ~ x ,size = 1)
-
+  stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
+  ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
+  xlab(~paste("GPP, ", mu, "mol m"^-2,"s"^-1))+
+  ggtitle('Non-pulse time')
+ 
 
 
 

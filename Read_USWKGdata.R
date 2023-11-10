@@ -19,9 +19,9 @@ library(reshape2)
 library(zoo)
 
 #read all AMF fluxes and meteo observations from US-Wkg 
-USWkg12_18 <- read.csv("data/AddedPartionedCflux_US-Wkg_HH_201212312330_201812312330.csv", header=TRUE, na.strings="NaN", skip=0)
-USWkg18_19 <- read.csv("data/GapfilledPartitionedFluxes_US-Wkg_HH_201812312330_201912312330.csv", header=TRUE, na.strings="NaN", skip=0)
-USWkg19_20 <- read.csv("data/GapfilledPartitionedFluxes_US-Wkg_HH_201912312330_202012302330.csv", header=TRUE, na.strings="NaN", skip=0)
+USWkg12_18 <- read.csv("C:/Users/user/Documents/Data Fsoil/AddedPartionedCflux_US-Wkg_HH_201212312330_201812312330.csv", header=TRUE, na.strings="NaN", skip=0)
+USWkg18_19 <- read.csv("data/Wkg_Ameriflux_2017-2020 with added partitioning/GapfilledPartitionedFluxes_US-Wkg_HH_201812312330_201912312330.csv", header=TRUE, na.strings="NaN", skip=0)
+USWkg19_20 <- read.csv("data/Wkg_Ameriflux_2017-2020 with added partitioning/GapfilledPartitionedFluxes_US-Wkg_HH_201912312330_202012302330.csv", header=TRUE, na.strings="NaN", skip=0)
   
 
 
@@ -137,6 +137,15 @@ USW9sum$diff <- USW9sum$observation - lag(USW9sum$observation,
                                           default = first(USW9sum$observation))
 
 hist(USW9sum$diff)
+USW9sum %>%
+  ggplot(aes(x=bigRmm))+
+  geom_histogram(color="black", fill="white")+
+  ggtitle('Rain > 5 mm')+
+  ylab('Frequency')+
+  xlab('Rain, mm')+
+  theme_gray()+
+  theme(text = element_text(size = 12))
+
 
 hist(USWkg12_20_summary$meanRECO)
 
@@ -148,14 +157,45 @@ USWkg12_20_summary$Season[USWkg12_20_summary$DOY %in% 60:181] = 'Spring'
 USWkg12_20_summary$Season[USWkg12_20_summary$DOY %in% 182:304] = 'Summer'
 
 
+#### Pulse Seasons ####
 Pulse_Win <- USW9sum %>%
   filter(Season == 'Winter')
+
+hist(Pulse_Win$meanRECO)
+Pulse_Win %>%
+  ggplot(aes(x=meanRECO))+
+  geom_histogram(color="black", fill="white")+
+  ggtitle('Winter pulses')+
+  ylab('Frequency')+
+  xlab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  theme_gray()+
+  theme(text = element_text(size = 12))
 
 Pulse_Spr <- USW9sum %>%
   filter(Season == 'Spring')
 
+hist(Pulse_Spr$meanRECO)
+Pulse_Spr %>%
+  ggplot(aes(x=meanRECO))+
+  geom_histogram(color="black", fill="white")+
+  ggtitle('Spring pulses')+
+  ylab('Frequency')+
+  xlab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  theme_gray()+
+  theme(text = element_text(size = 12))
+
 Pulse_Sum <- USW9sum %>%
   filter(Season == 'Summer')
+
+hist(Pulse_Sum$meanRECO)
+Pulse_Sum %>%
+  ggplot(aes(x=meanRECO))+
+  geom_histogram(color="black", fill="white")+
+  ggtitle('Summer pulses')+
+  ylab('Frequency')+
+  xlab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  theme_gray()+
+  theme(text = element_text(size = 12))
 
 
 ########## Pulse behavior for each season #########
@@ -173,31 +213,94 @@ Pulse1Spr <- USWkg12_20_summary %>%
   filter(DOY %in% (57:74))
 plot(Pulse1Spr$meanRECO)
 
+Pulse1Spr %>%
+  ggplot(aes(x=DOY))+
+  geom_point(aes(y = meanRECO),size=2)+
+  geom_point(aes(y=meanSWC5/20), color = 'blue', size=2)+
+  theme(text = element_text(size = 15), plot.background = element_rect(fill = "white"),
+        panel.background = element_rect(fill = "white", colour = "black",
+                                        size = 2, linetype = "solid")
+        #plot.background = element_rect(fill = "#BFD5E3")
+        )+
+  #theme_get()+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('DOY')+
+  ggtitle('Spring pulse1')+
+  scale_y_continuous(name="Reco",
+                     sec.axis = sec_axis( trans=~.*20, name="SWC")
+  )
+  #theme(panel.background = element_blank())
+  
+
 Pulse2Spr <- USWkg12_20_summary %>%
   filter(year == 2019) %>%
   filter(DOY %in% (68:84))
 plot(Pulse2Spr$meanRECO)
+
+Pulse2Spr %>%
+  ggplot(aes(x=DOY, y = meanRECO))+
+  geom_point()+
+  theme(text = element_text(size = 15))+
+  theme_bw()+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('DOY')+
+  ggtitle('Spring pulse2')
 
 Pulse3Spr <- USWkg12_20_summary %>%
   filter(year == 2020) %>%
   filter(DOY %in% (65:82))
 plot(Pulse3Spr$meanRECO)
 
+Pulse3Spr %>%
+  ggplot(aes(x=DOY, y = meanRECO))+
+  geom_point()+
+  theme(text = element_text(size = 15))+
+  theme_bw()+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('DOY')+
+  ggtitle('Spring pulse3')
+
 Pulse4Spr <- USWkg12_20_summary %>%
   filter(year == 2018) %>%
   filter(DOY %in% (164:181))
 plot(Pulse4Spr$meanRECO)
 
+Pulse4Spr %>%
+  ggplot(aes(x=DOY, y = meanRECO))+
+  geom_point()+
+  theme(text = element_text(size = 15))+
+  theme_bw()+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('DOY')+
+  ggtitle('Spring pulse4')
+
 
 ######### Summer Pulses ######
 Pulse_Sum %>%
   ggplot(aes(x=sum_R, y = meanRECO))+
-  geom_point()
+  geom_point()  
 
 Pulse1Sum <- USWkg12_20_summary %>%
   filter(year == 2015) %>%
   filter(DOY %in% (181:198))
 plot(Pulse1Sum$meanRECO)
+
+Pulse3Sum %>%
+  ggplot(aes(x=DOY))+
+  geom_point(aes(y = meanRECO),size=2)+
+  geom_point(aes(y=meanSWC5/5), color = 'blue', size=2)+
+  theme(text = element_text(size = 15), plot.background = element_rect(fill = "white"),
+        panel.background = element_rect(fill = "white", colour = "black",
+                                        size = 2, linetype = "solid")
+        #plot.background = element_rect(fill = "#BFD5E3")
+  )+
+  #theme_get()+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('DOY')+
+  ggtitle('Summer pulse1')+
+  scale_y_continuous(name="Reco",
+                     sec.axis = sec_axis( trans=~.*5, name="SWC")
+  )
 
 Pulse2Sum <- USWkg12_20_summary %>%
   filter(year == 2016) %>%
@@ -217,6 +320,25 @@ Pulse1Win <- USWkg12_20_summary %>%
   filter(DOY %in% (11:28))
 plot(Pulse1Win$meanRECO)
 
+
+Pulse2Win %>%
+  ggplot(aes(x=DOY))+
+  geom_point(aes(y = meanRECO),size=2)+
+  geom_point(aes(y=meanSWC5/10), color = 'blue', size=2)+
+  theme(text = element_text(size = 15), plot.background = element_rect(fill = "white"),
+        panel.background = element_rect(fill = "white", colour = "black",
+                                        size = 2, linetype = "solid")
+        #plot.background = element_rect(fill = "#BFD5E3")
+  )+
+  #theme_get()+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('DOY')+
+  ggtitle('Winter pulse1')+
+  scale_y_continuous(name="Reco",
+                     sec.axis = sec_axis( trans=~.*10, name="SWC")
+  )
+
+
 Pulse2Win <- USWkg12_20_summary %>%
   filter(year == 2017) %>%
   filter(DOY %in% (348:365))
@@ -230,11 +352,14 @@ plot(Pulse3Win$meanRECO)
 ##### plot graphs with Reco and GPP for pulse and non-pulse time and together ####
 USWkg12_20_summary %>%
   ggplot(aes(x=meanGPP, y = meanRECO))+
-  geom_point()+
+  geom_point(shape = 1)+
   theme_bw()+
   theme(text = element_text(size = 15))+
   stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
-  stat_smooth(method = "lm",formula = y ~ x ,size = 1)
+  stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab(~paste("GPP, ", mu, "mol m"^-2,"s"^-1))+
+  ggtitle('All data')
 
 ####### Make 2 more ##########
 
@@ -246,19 +371,26 @@ USW1220_PulseNon <- USWkg12_20_summary %>%
 
 USW1220_Pulse %>%
   ggplot(aes(x=meanGPP, y = meanRECO))+
-  geom_point()+
+  geom_point(shape=1)+
   theme_bw()+
   theme(text = element_text(size = 15))+
   stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
-  stat_smooth(method = "lm",formula = y ~ x ,size = 1)
+  stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab(~paste("GPP, ", mu, "mol m"^-2,"s"^-1))+
+  ggtitle('Pulse time')
+
 
 USW1220_PulseNon %>%
   ggplot(aes(x=meanGPP, y = meanRECO))+
-  geom_point()+
+  geom_point(shape=1)+
   theme_bw()+
   theme(text = element_text(size = 15))+
   stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
-  stat_smooth(method = "lm",formula = y ~ x ,size = 1)
+  stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab(~paste("GPP, ", mu, "mol m"^-2,"s"^-1))+
+  ggtitle('Non-pulse time')
 
 #### Next step - add graphs for Rsoil
 
