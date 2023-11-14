@@ -84,6 +84,70 @@ Cham_USWKG_pulsedata <- CH_USWkg17_20 %>%
  Cham_USWKG_PULSETIME <- Cham_USWKG_pulsedata[Cham_USWKG_pulsedata$days_since_rain_event <= Cham_USWKG_pulsedata$max_pulse_duration, ]
  Cham_USWKG_NON_PULSETIME <- Cham_USWKG_pulsedata[Cham_USWKG_pulsedata$days_since_rain_event > Cham_USWKG_pulsedata$max_pulse_duration, ]
  
+ 
+Sum_Chamber <- Cham_USWKG_pulsedata %>%
+   group_by(date) %>%
+   summarise(meanGPP = mean (meanGPP, na.rm=TRUE),
+             meanRsoil = mean(meanRsoil, na.rm = TRUE),
+             sumRain = mean(sum_R, na.rm=TRUE),
+             DOY = mean(DOY1)
+             )
+ 
+Sum_Chamber$DOYn <- yday(Sum_Chamber$date)
+Sum_Chamber <- Sum_Chamber[-c(5)] 
+Sum_Chamber$DOY <- Sum_Chamber$DOYn
+
+Sum_Chamber_P <- Sum_Chamber %>%
+  filter(sumRain>5)
+
+colnames(Sum_Chamber) [1] <- 'date'
+test <- data.frame(DOY=Sum_Chamber_P$date)
+test$day1<-as.Date(test$DOY)+1
+test$day2<-as.Date(test$DOY)+2
+test$day3<-as.Date(test$DOY)+3
+test$day4<-as.Date(test$DOY)+4
+test$Sday <- yday(test$DOY)
+test2<- melt(test,id='Sday')
+test3 <- test2 %>% 
+  arrange(value)
+test3 <- data.frame(unique(test2$value))
+test3$date <- test3$unique.test2.value.
+test4 <- test3 %>% 
+  arrange(date)
+
+test4$DOY <- yday(test4$date)
+test4 <- test4[-c(1)]
+
+summary_Cham_P <- merge(Sum_Chamber,test4,by="date",all.x=TRUE)
+
+summary_Cham_P$PulseDays <- summary_Cham_P$DOY.y
+summary_Cham_P$PulseDays <- as.numeric(as.integer(summary_Cham_P$PulseDays))
+
+summary_Cham_P$PulseDays[is.na(summary_Cham_P$PulseDays)] <- 0
+
+Pulse_Cham <- summary_Cham_P %>%
+  filter(PulseDays >0)
+
+NonPulse_Cham <- summary_Cham_P %>%
+  filter(PulseDays == 0)
+
+
+NonPulse_Cham %>%
+  ggplot(aes(x=meanGPP, y = meanRsoil))+
+  geom_point(shape=1)+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
+  ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
+  xlab(~paste("GPP, ", mu, "mol m"^-2,"s"^-1))+
+  ggtitle('Non-Pulse time')
+
+
+
+
+ 
+ 
  ####
  ## Chamber 1
  ####

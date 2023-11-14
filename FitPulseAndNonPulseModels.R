@@ -196,3 +196,27 @@ points(ALL_model4_NP, All_model4_P, pch = 16, col = "black", cex = 1.2)
 # Save the plot
 dev.off()
 
+
+##############Fit all years #########
+all_year_P <- read.csv("USW1220Pulse.csv")
+all_year_NP <- read.csv("USW1220PulseNon.csv")
+
+
+
+
+
+
+############## Fit for Soil chambers ################
+
+
+
+
+
+
+
+
+
+
+
+
+
