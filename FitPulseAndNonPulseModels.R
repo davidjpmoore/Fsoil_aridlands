@@ -198,17 +198,114 @@ dev.off()
 
 
 ##############Fit all years #########
-all_year_P <- read.csv("USW1220Pulse.csv")
-all_year_NP <- read.csv("USW1220PulseNon.csv")
+all_year_P <- read.csv("data/USWPulse.csv")
+
+all_year_NP <- read.csv("data/USWPulseN.csv")
+all_year_NP <- all_year_NP[-c(26)]
+
+all_time <- read.csv("data/Summary_eddy.csv")
+all_time <- all_time[-c(26)]
+
+#### Fit non-pulse model ##########
+all_year_NP <- na.omit(all_year_NP)
+
+SoilMoisture <- all_year_NP$meanSWC5/100
+
+# Assign variables
+meanSWC5_NP <- SoilMoisture
+meanST5_NP <- all_year_NP$meanST5
+meanGPP_NP <- all_year_NP$meanGPP
+GPPmax_NP <- max(all_year_NP$meanGPP)
+
+# Fit model
+Param_model_NP <- nls(meanRECO ~ Fref*((meanGPP_NP/GPPmax_NP +n)/1+n) *
+                         (1-c4*(0.1-meanSWC5_NP)^2)*exp(b4*meanST5_NP), 
+                       data = all_year_NP,
+                       start = list(Fref=0.75, c4=56.54, b4=0.04, n=0.84),
+                       control = nls.control(maxiter = 1000, minFactor = 0.01)
+)
+Summary_Model_NP = summary(Param_model_NP)
 
 
+#Parameters:
+#Estimate Std. Error t value Pr(>|t|)    
+#Fref 1.238616   0.046312  26.745   <2e-16 ***
+#c4   6.231683   2.838189   2.196   0.0282 *  
+#b4   0.035775   0.001352  26.463   <2e-16 ***
+#n    0.057335   0.001889  30.358   <2e-16 ***
+
+# NON_Pulse parameters
+FrefNP = 1.238616
+SMoptNP =0.125 
+c4NP = 6.231683  
+b4NP =  0.035775
+nNP=  0.057335 
 
 
+### Fit Pulse model##################
+all_year_P <- na.omit(all_year_P)
+
+SoilMoisture_P = all_year_P$meanSWC5/100
+meanSWC5_P = SoilMoisture_P
+meanST5_P = all_year_P$meanST5
+meanGPP_P = all_year_P$meanGPP
+GPPmax_P = max(all_year_P$meanGPP)
+
+Param_model_P <- nls(meanRECO ~ Fref*((meanGPP_P/GPPmax_P +n)/1+n) *(1-c4*(0.1-meanSWC5_P)^2)*exp(b4*meanST5_P), 
+                      data = all_year_P,
+                      start = list(Fref=0.75,  c4=56.54, b4=0.04, n=0.84),
+                      control = nls.control(maxiter = 1000, minFactor = 0.01)
+)
+Summary_Model_P = summary(Param_model_P)
+# # 
+#Parameters:
+#Estimate Std. Error t value Pr(>|t|)    
+#Fref  0.392190   0.039721   9.874  < 2e-16 ***
+#c4   -8.202348   1.675466  -4.896 1.28e-06 ***
+#b4    0.051465   0.002666  19.302  < 2e-16 ***
+#n     0.422998   0.033533  12.614  < 2e-16 ***
+
+# Pulse parameters
+FrefP = 0.392190
+SMoptP = 0.125 
+c4P = -8.202348  
+b4P =  0.051465
+nP=  0.422998 
 
 
-############## Fit for Soil chambers ################
+# Setting up drivers for all time
+#complete.cases(all_time)
+
+all_time <- na.omit(all_time)
+
+All_meanSWC5 = all_time$meanSWC5/100
+All_meanST5 = all_time$meanST5
+All_meanGPP = all_time$meanGPP
+All_GPPmax = max(all_time$meanGPP)
+
+#run model for full time series based on non-pulse time parameters
+ALL_model_NP = FrefNP*((All_meanGPP/All_GPPmax +nNP)/1+nNP) *(1-c4NP*(SMoptNP-All_meanSWC5)^2)*exp(b4NP*All_meanST5)
+#run model for full time series based on pulse time parameters
+All_model_P = FrefP*((All_meanGPP/All_GPPmax +nP)/1+nP) *(1-c4P*(SMoptP-All_meanSWC5)^2)*exp(b4P*All_meanST5)
 
 
+# Plot the RECO time series
+
+plot(all_time$date, all_time$meanRECO)
+plot(all_time$date, all_time$meanRECO, type = "p", col = "blue", xlab = "Timestamp", ylab = "RECO", cex = 0.8)
+
+# Add the model output time series to the plot
+points(#all_time$date,  
+       ALL_model_NP, col = "red", pch = 16, cex = 0.4)
+points(#all_time$date, 
+  All_model_P, col = "cyan", pch = 16, cex = 0.4, alpha=0.5)
+
+
+all_time %>%
+  ggplot(aes(x=date))+
+  geom_point(aes(y=meanRECO), color = "blue")+
+  geom_point(aes(y=ALL_model_NP), color="red")+
+  geom_point(aes(y=All_model_P), color = "cyan")
 
 
 

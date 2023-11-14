@@ -158,6 +158,12 @@ USWkg12_20_summary$Season[USWkg12_20_summary$DOY %in% 182:304] = 'Summer'
 
 
 #### Pulse Seasons ####
+USW9sum$Season = vector(mode = 'character', length = nrow(USW9sum))
+USW9sum$Season[USW9sum$DOY %in% c(1:59,305:366)] = 'Winter'
+USW9sum$Season[USW9sum$DOY %in% 60:181] = 'Spring'
+USW9sum$Season[USW9sum$DOY %in% 182:304] = 'Summer'
+
+
 Pulse_Win <- USW9sum %>%
   filter(Season == 'Winter')
 
@@ -377,7 +383,6 @@ USWkg12_20_summary %>%
 #test2$Pulse_DOY <- test2$DOY
 #summary2020_new <- merge(summary2020_all,test2,by="DOY",all.x=TRUE)
 
-USWkg12_20_summary <-USWkg12_20_summary[-c(20)]
 
 USWkg12_20_summary$DOY <- as.numeric(as.character(USWkg12_20_summary$DOY))
 USWkg12_20_summary$Pulse_DOY <- USWkg12_20_summary$DOY*USWkg12_20_summary$bigR
@@ -415,9 +420,9 @@ test4 <- test3 %>%
 test4$DOY <- yday(test4$date)
 test4 <- test4[-c(1)]
 
-USWkg12_20_summary$DOY <- USWkg12_20_summary$date
-USWkg12_20_summary <- USWkg12_20_summary[-c(1)]
-USWkg12_20_summary$meanAT2 <- USWkg12_20_summary$date
+#USWkg12_20_summary$DOY <- USWkg12_20_summary$date
+#USWkg12_20_summary <- USWkg12_20_summary[-c(1)]
+#USWkg12_20_summary$meanAT2 <- USWkg12_20_summary$date
 
 summary_P <- merge(USWkg12_20_summary,test4,by="date",all.x=TRUE)
 
@@ -427,10 +432,18 @@ summary_P$PulseDays <- as.numeric(as.integer(summary_P$PulseDays))
 USW_Pulse <- summary_P %>%
   filter(PulseDays > 0)
 
+write.csv(USW_Pulse, "data/USWPulse.csv")
+
 summary_P$PulseDays[is.na(summary_P$PulseDays)] <- 0
+
+write.csv(summary_P, "data/Summary_eddy.csv")
 
 USW_PulseN <- summary_P %>%
   filter(PulseDays == 0)
+
+write.csv(USW_PulseN, "data/USWPulseN.csv")
+
+
 
 summary_P %>%
   ggplot(aes(x=meanGPP, y = meanRECO))+
