@@ -388,6 +388,25 @@ USWkg12_20_summary$DOY <- as.numeric(as.character(USWkg12_20_summary$DOY))
 USWkg12_20_summary$Pulse_DOY <- USWkg12_20_summary$DOY*USWkg12_20_summary$bigR
 
 
+USWkg12_20_summary$data <- USWkg12_20_summary$DOY
+USWkg12_20_summary <- USWkg12_20_summary[,-c(1)]
+
+USW1220_Pulse <- USWkg12_20_summary %>%
+  filter(bigRmm > 0)
+
+write.csv(USW1220_Pulse, "USW1220Pulse.csv")
+
+USW1220_Pulse <- read.csv("USW1220Pulse.csv")
+USW1220_PulseNon <- read.csv("USW1220PulseNon.csv")
+USWkg12_20_summary <- read.csv("data/USWkg12_20_summary.csv")
+
+
+USW1220_PulseNon <- USWkg12_20_summary %>%
+  filter(bigRmm == 0)  
+
+write.csv(USW1220_PulseNon, "USW1220PulseNon.csv")
+
+
 USW1220_Pulse$DOY <- as.numeric(as.character(USW1220_Pulse$DOY))
 
 colnames(USWkg12_20_summary) [1] <- 'DOY'
@@ -458,6 +477,9 @@ summary_P %>%
 
 
 
+USWkg12_20_summary$data <- USWkg12_20_summary$DOY
+USWkg12_20_summary <- USWkg12_20_summary[,-c(1)]
+
 USW1220_Pulse <- USWkg12_20_summary %>%
   filter(bigRmm > 0)
 
@@ -491,9 +513,40 @@ USW1220_PulseNon %>%
   xlab(~paste("GPP, ", mu, "mol m"^-2,"s"^-1))+
   ggtitle('Non-pulse time')
 
-#### Next step - add graphs for Rsoil
+#### Next part - JUST Reading previous files ############
+USW_Pulse <- read.csv("data/USWPulse.csv")
+summary_P <- read.csv("data/Summary_eddy.csv")
+USW_PulseN <- read.csv("data/USWPulseN.csv")
 
 
+USW_Pulse %>%
+  #filter(RainEvent==1)%>%
+  ggplot(aes(x= meanSWC5, y= meanST5, size = bigRmm, color = Season)) + 
+  geom_point()+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  xlab('Mean SWC, 5 cm')+
+  ylab('Mean Soil temperature, 5 cm')
+
+USW_Pulse %>%
+  #filter(RainEvent==1)%>%
+  ggplot(aes(x= meanSWC5, y= meanST5, size = meanRECO, color = Season)) + 
+  geom_point()+
+  theme_test()+
+  theme(text = element_text(size = 15))+
+  xlab('Mean SWC, 5 cm')+
+  ylab('Mean Soil temperature, 5 cm')+
+  xlim(0,40) +ylim(0,40)
+
+USW_PulseN %>%
+  #filter(RainEvent==1)%>%
+  ggplot(aes(x= meanSWC5, y= meanST5, size = meanRECO, color = Season)) + 
+  geom_point()+
+  theme_test()+
+  theme(text = element_text(size = 15))+
+  xlab('Mean SWC, 5 cm')+
+  ylab('Mean Soil temperature, 5 cm')+
+  xlim(0,40) +ylim(0,40)
 
 
 
