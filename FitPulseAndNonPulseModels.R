@@ -201,12 +201,16 @@ dev.off()
 all_year_P <- read.csv("data/USWPulse.csv")
 
 all_year_NP <- read.csv("data/USWPulseN.csv")
+#this is to remove column 26 with NA values
 all_year_NP <- all_year_NP[-c(26)]
 
+
 all_time <- read.csv("data/Summary_eddy.csv")
+#this is to remove column 26 with NA values
 all_time <- all_time[-c(26)]
 
 #### Fit non-pulse model ##########
+#remove remaining NA values
 all_year_NP <- na.omit(all_year_NP)
 
 SoilMoisture <- all_year_NP$meanSWC5/100
@@ -291,8 +295,8 @@ All_model_P = FrefP*((All_meanGPP/All_GPPmax +nP)/1+nP) *(1-c4P*(SMoptP-All_mean
 
 # Plot the RECO time series
 
-plot(all_time$date, all_time$meanRECO)
-plot(all_time$date, all_time$meanRECO, type = "p", col = "blue", xlab = "Timestamp", ylab = "RECO", cex = 0.8)
+plot(all_time$meanRECO)
+plot(all_time$meanRECO, type = "p", col = "blue", xlab = "Timestamp", ylab = "RECO", cex = 0.8)
 
 # Add the model output time series to the plot
 points(#all_time$date,  
@@ -308,8 +312,19 @@ all_time %>%
   geom_point(aes(y=All_model_P), color = "cyan")
 
 
+plot(all_time$meanRECO,ALL_model_NP )
 
 
+plot(all_time$meanRECO,All_model_P )
+
+sum(ALL_model_NP)
+sum(All_model_P)
+sum(all_time$meanRECO)
+
+
+max(ALL_model_NP)
+max(All_model_P)
+max(all_time$meanRECO)
 
 
 
