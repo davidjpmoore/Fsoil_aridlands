@@ -538,6 +538,7 @@ USW_Pulse %>%
   ylab('Mean Soil temperature, 5 cm')+
   xlim(0,40) +ylim(0,40)
 
+
 USW_PulseN %>%
   #filter(RainEvent==1)%>%
   ggplot(aes(x= meanSWC5, y= meanST5, size = meanRECO, color = Season)) + 
