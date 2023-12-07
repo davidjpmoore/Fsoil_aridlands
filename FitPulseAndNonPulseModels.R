@@ -327,6 +327,70 @@ max(All_model_P)
 max(all_time$meanRECO)
 
 
+##### All time model #######
+SoilMoisture1 <- all_time$meanSWC5/100
+
+# Assign variables
+meanSWC5_all <- SoilMoisture1
+meanST5_all <- all_time$meanST5
+meanGPP_all <- all_time$meanGPP
+GPPmax_all <- max(all_time$meanGPP)
+
+# Fit model
+Param_model4_all <- nls(meanRECO ~ Fref*((meanGPP_all/GPPmax_all +n)/1+n) *
+                         (1-c4*(0.1-meanSWC5_all)^2)*exp(b4*meanST5_all), 
+                       data = all_time,
+                       start = list(Fref=0.75, c4=56.54, b4=0.04, n=0.84),
+                       control = nls.control(maxiter = 1000, minFactor = 0.01)
+)
+Summary_Model4_all = summary(Param_model4_all)
+
+
+# 
+# Formula: meanRECO ~ Fref * ((meanGPP_NP/GPPmax_NP + n)/1 + n) * (1 - c4 * 
+#                                                                    (0.1 - meanSWC5_NP)^2) * exp(b4 * meanST5_NP)
+# 
+#Estimated Wed May 3rd 
+#Parameters:
+# Estimate Std. Error t value Pr(>|t|)    
+# Fref  1.136042   0.049023  23.173  < 2e-16 ***
+# c4   -7.755161   1.219586  -6.359 2.38e-10 ***
+# b4    0.036016   0.001490  24.174  < 2e-16 ***
+# n     0.079803   0.002769  28.815  < 2e-16 ***
+#   
+
+# All time parameters
+Frefall =  1.136042
+SMoptall = 0.125 
+c4all = -7.755161   
+b4all =  0.036016
+nall =  0.079803
+
+
+ALL_model = Frefall*((meanGPP_all/GPPmax_all +nall)/1+nall) *(1-c4all*(SMoptall-meanSWC5_all)^2)*exp(b4all*meanST5_all)
+
+plot(all_time$meanRECO, ALL_model)
+plot(ALL_model_NP, ALL_model)
+plot(All_model_P, ALL_model)
+
+
+##### Include parameters for all time model for Pulse or NP model ??? #####
+
+plot(all_time$meanRECO, type = "p", col = "blue", xlab = "Timestamp", ylab = "RECO", cex = 0.8)
+
+# Add the model output time series to the plot
+points(#all_time$date,  
+  ALL_model, col = "red", pch = 16, cex = 0.4)
+
+points(#all_time$date, 
+  All_model_P, col = "cyan", pch = 16, cex = 0.4, alpha=0.5)
+
+points(#all_time$date, 
+  ALL_model_NP, col = "green", pch = 16, cex = 0.4, alpha=0.5)
+
+
+
+
 
 
 
