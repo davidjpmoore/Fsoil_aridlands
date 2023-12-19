@@ -398,8 +398,8 @@ USWkg12_20_summary$DOY <- as.numeric(as.character(USWkg12_20_summary$DOY))
 USWkg12_20_summary$Pulse_DOY <- USWkg12_20_summary$DOY*USWkg12_20_summary$bigR
 
 
-USWkg12_20_summary$data <- USWkg12_20_summary$DOY
-USWkg12_20_summary <- USWkg12_20_summary[,-c(1)]
+#USWkg12_20_summary$data <- USWkg12_20_summary$DOY
+#USWkg12_20_summary <- USWkg12_20_summary[,-c(1)]
 
 USW1220_Pulse <- USWkg12_20_summary %>%
   filter(bigRmm > 0)
@@ -419,18 +419,6 @@ write.csv(USW1220_PulseNon, "USW1220PulseNon.csv")
 
 USW1220_Pulse$DOY <- as.numeric(as.character(USW1220_Pulse$DOY))
 
-colnames(USWkg12_20_summary) [1] <- 'DOY'
-test <- data.frame(DOY=USW1220_Pulse$DOY)
-test$day1<-test$DOY+1
-test$day2<-test$DOY+2
-test$day3<-test$DOY+3
-test$day4<-test$DOY+4
-test$date <- USW1220_Pulse$date
-test2<- melt(test, id='date')
-test3 <- test2 %>% 
-  arrange(date)
-test3$Day<- as.Date(test3$value-1,  origin = "2013-01-01")
-
 colnames(USWkg12_20_summary) [1] <- 'date'
 test <- data.frame(DOY=USW1220_Pulse$date)
 test$day1<-as.Date(test$DOY)+1
@@ -438,10 +426,16 @@ test$day2<-as.Date(test$DOY)+2
 test$day3<-as.Date(test$DOY)+3
 test$day4<-as.Date(test$DOY)+4
 test$Sday <- yday(test$DOY)
+test$DOY <- as.Date(test$DOY)
+
 test2<- melt(test,id='Sday')
+
+
 test3 <- test2 %>% 
   arrange(value)
+
 test3 <- data.frame(unique(test2$value))
+
 test3$date <- test3$unique.test2.value.
 test4 <- test3 %>% 
   arrange(date)
@@ -483,7 +477,8 @@ summary_P %>%
   stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
   ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
   xlab(~paste("GPP, ", mu, "mol m"^-2,"s"^-1))+
-  ggtitle('All time')
+  ggtitle('All time')+
+  ylim(0,6)
 
 
 
@@ -500,7 +495,7 @@ USW1220_PulseNon <- USWkg12_20_summary %>%
 
 write.csv(USW1220_PulseNon, "USW1220PulseNon.csv")
 
-USW1220_Pulse %>%
+USW_Pulse %>%
   ggplot(aes(x=meanGPP, y = meanRECO))+
   geom_point(shape=1)+
   theme_bw()+
@@ -509,10 +504,11 @@ USW1220_Pulse %>%
   stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
   ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
   xlab(~paste("GPP, ", mu, "mol m"^-2,"s"^-1))+
-  ggtitle('Pulse time')
+  ggtitle('Pulse time')+
+  ylim(0,6)
 
 
-USW1220_PulseNon %>%
+USW_PulseN %>%
   ggplot(aes(x=meanGPP, y = meanRECO))+
   geom_point(shape=1)+
   theme_bw()+
@@ -521,7 +517,8 @@ USW1220_PulseNon %>%
   stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
   ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
   xlab(~paste("GPP, ", mu, "mol m"^-2,"s"^-1))+
-  ggtitle('Non-pulse time')
+  ggtitle('Non-pulse time')+
+  ylim(0,6)
 
 #### Next part - JUST Reading previous files ############
 USW_Pulse <- read.csv("data/USWPulse.csv")

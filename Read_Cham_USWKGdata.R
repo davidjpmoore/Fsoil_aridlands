@@ -85,6 +85,11 @@ Cham_USWKG_pulsedata <- CH_USWkg17_20 %>%
  Cham_USWKG_NON_PULSETIME <- Cham_USWKG_pulsedata[Cham_USWKG_pulsedata$days_since_rain_event > Cham_USWKG_pulsedata$max_pulse_duration, ]
  
  
+Cham_USWKG_pulsedata$meanRsoil <- rowMeans(Cham_USWKG_pulsedata[,c(3,6,9,12,18,21)]
+                                                  ,na.rm = TRUE)
+
+Cham_USWKG_pulsedata$DOY1 <- round(Cham_USWKG_pulsedata$DOY, digits = 0)
+  
 Sum_Chamber <- Cham_USWKG_pulsedata %>%
    group_by(date) %>%
    summarise(meanGPP = mean (meanGPP, na.rm=TRUE),
@@ -141,7 +146,8 @@ NonPulse_Cham %>%
   stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
   ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
   xlab(~paste("GPP, ", mu, "mol m"^-2,"s"^-1))+
-  ggtitle('Non-Pulse time')
+  ggtitle('Non-Pulse time')+
+  ylim(0,6)
 
 
 
@@ -384,7 +390,8 @@ Cham_mean %>%
   stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
   ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
   xlab(~paste("GPP, ", mu, "mol m"^-2,"s"^-1))+
-  ggtitle('All data')
+  ggtitle('All data')+
+  ylim(0,6)
 
 Cham_meanPulse %>%
   ggplot(aes(x=meanGPP, y = meanRsoil))+
@@ -395,7 +402,8 @@ Cham_meanPulse %>%
   stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
   ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
   xlab(~paste("GPP, ", mu, "mol m"^-2,"s"^-1))+
-  ggtitle('Pulse time')
+  ggtitle('Pulse time')+
+  ylim(0,6)
 
 Cham_meanPulseNon %>%
   ggplot(aes(x=meanGPP, y = meanRsoil))+
