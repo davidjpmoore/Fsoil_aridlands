@@ -21,7 +21,8 @@ USWkg12_20_summary <- na.omit(USWkg12_20_summary)
        pch = 16, # use solid circles as the point symbol
        xlab = "Mean Soil Water Content (15 cm depth)", # add x-axis label
        ylab = "Mean Soil Temperature (15 cm depth)", # add y-axis label
-       main = "SWC and Soil T - during pulses") # add plot title
+       main = "SWC and Soil T - during pulses", # add plot title
+       xlim=c(0,45))
   
   
     plot(years_sum_Pulse0$meanSWC15, years_sum_Pulse0$meanST15, 
@@ -29,7 +30,8 @@ USWkg12_20_summary <- na.omit(USWkg12_20_summary)
        pch = 16, # use solid circles as the point symbol
        xlab = "Mean Soil Water Content (15 cm depth)", # add x-axis label
        ylab = "Mean Soil Temperature (15 cm depth)", # add y-axis label
-       main = "SWC and Soil T - between pulses") # add plot title
+       main = "SWC and Soil T - between pulses" , # add plot title
+    xlim=c(0,45))
   
     plot(USWkg12_20_summary$meanSWC15, USWkg12_20_summary$meanST15, 
          cex = USWkg12_20_summary$meanRECO/2, # set the point size based on meanRECO

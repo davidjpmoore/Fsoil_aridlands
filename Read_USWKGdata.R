@@ -89,7 +89,9 @@ USWkg12_20_summary <- USWkg12_20 %>%
     meanRH2 = mean(RH2, na.rm = TRUE),
     meanRH6 = mean(RH6, na.rm = TRUE),
     meanSWC5 = mean(SWC5, na.rm = TRUE),
+    sdSWC5 = sd(SWC5, na.rm=TRUE),
     meanSWC15 = mean(SWC15, na.rm = TRUE),
+    sdSWC15 = sd(SWC15, na.rm=TRUE),
     meanSWC30 = mean(SWC30, na.rm = TRUE),
     meanST5 = mean(ST5, na.rm = TRUE),
     meanST15 = mean(ST15, na.rm = TRUE),
@@ -164,7 +166,7 @@ USW9sum$Season[USW9sum$DOY %in% 60:181] = 'Spring'
 USW9sum$Season[USW9sum$DOY %in% 182:304] = 'Summer'
 
 
-Pulse_Win <- USW9sum %>%
+ Pulse_Win <- USW9sum %>%
   filter(Season == 'Winter')
 
 hist(Pulse_Win$meanRECO)
@@ -228,16 +230,19 @@ Pulse1Spr %>%
                                         size = 2, linetype = "solid")
         #plot.background = element_rect(fill = "#BFD5E3")
         )+
+  geom_errorbar(aes(ymin=meanRECO - sdReco, ymax= meanRECO + sdReco), width=.2,
+                position=position_dodge(.9)) +
+  geom_errorbar(aes(ymin=meanSWC5/20 - sdSWC5/20, ymax= meanSWC5/20 + sdSWC5/20), 
+                width=.2, position=position_dodge(.9))+
   #theme_get()+
-  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
   xlab('DOY')+
-  ggtitle('Spring pulse1')+
-  scale_y_continuous(name="Reco",
-                     sec.axis = sec_axis( trans=~.*20, name="SWC")
-  )
-  #theme(panel.background = element_blank())
+  ggtitle('Spring pulse')+
+  scale_y_continuous(name=~paste("Reco, ", mu, "mol m"^-2,"s"^-1),
+                     sec.axis = sec_axis( trans=~.*20, 
+                                          name="SWC 5 cm , %"))
+   #theme(panel.background = element_blank())
   
-
+ 
 Pulse2Spr <- USWkg12_20_summary %>%
   filter(year == 2019) %>%
   filter(DOY %in% (68:84))
@@ -291,7 +296,7 @@ Pulse1Sum <- USWkg12_20_summary %>%
   filter(DOY %in% (181:198))
 plot(Pulse1Sum$meanRECO)
 
-Pulse3Sum %>%
+Pulse1Sum %>%
   ggplot(aes(x=DOY))+
   geom_point(aes(y = meanRECO),size=2)+
   geom_point(aes(y=meanSWC5/5), color = 'blue', size=2)+
@@ -300,13 +305,16 @@ Pulse3Sum %>%
                                         size = 2, linetype = "solid")
         #plot.background = element_rect(fill = "#BFD5E3")
   )+
+  geom_errorbar(aes(ymin=meanRECO - sdReco, ymax= meanRECO + sdReco), width=.2,
+                position=position_dodge(.9)) +
+  geom_errorbar(aes(ymin=meanSWC5/5 - sdSWC5/5, ymax= meanSWC5/5 + sdSWC5/5), 
+                width=.2, position=position_dodge(.9))+
   #theme_get()+
-  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
   xlab('DOY')+
-  ggtitle('Summer pulse1')+
-  scale_y_continuous(name="Reco",
-                     sec.axis = sec_axis( trans=~.*5, name="SWC")
-  )
+  ggtitle('Summer pulse')+
+  scale_y_continuous(name=~paste("Reco, ", mu, "mol m"^-2,"s"^-1),
+                     sec.axis = sec_axis( trans=~.*5, 
+                                          name="SWC 5 cm , %"))
 
 Pulse2Sum <- USWkg12_20_summary %>%
   filter(year == 2016) %>%
@@ -335,14 +343,16 @@ Pulse2Win %>%
         panel.background = element_rect(fill = "white", colour = "black",
                                         size = 2, linetype = "solid")
         #plot.background = element_rect(fill = "#BFD5E3")
-  )+
+  )+geom_errorbar(aes(ymin=meanRECO - sdReco, ymax= meanRECO + sdReco), width=.2,
+                  position=position_dodge(.9)) +
+  geom_errorbar(aes(ymin=meanSWC5/10 - sdSWC5/10, ymax= meanSWC5/10 + sdSWC5/10), 
+                width=.2, position=position_dodge(.9))+
   #theme_get()+
-  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
   xlab('DOY')+
-  ggtitle('Winter pulse1')+
-  scale_y_continuous(name="Reco",
-                     sec.axis = sec_axis( trans=~.*10, name="SWC")
-  )
+  ggtitle('Winter pulse')+
+  scale_y_continuous(name=~paste("Reco, ", mu, "mol m"^-2,"s"^-1),
+                     sec.axis = sec_axis( trans=~.*10, 
+                                          name="SWC 5 cm , %"))
 
 
 Pulse2Win <- USWkg12_20_summary %>%
