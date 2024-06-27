@@ -17,6 +17,13 @@ USW_PulseN <- read.csv("data/USWPulseN.csv")
 USW_Pulse <- read.csv("data/USWPulse.csv")
 
 
+# Read other pulse division docs - with "DM" in their names
+summary_P <- read.csv("data/years_sum1_DM.csv")
+USW_PulseN <- read.csv("data/years_sum_Pulse0_DM.csv")
+USW_Pulse <- read.csv("data/years_sum_Pulse1_DM.csv")
+
+
+
 # First plot Reco for Pulse time + 15 cm depth
 plot(USW_Pulse$meanSWC15, USW_Pulse$meanST15, 
      cex = USW_Pulse$meanRECO/2, # set the point size based on meanRECO

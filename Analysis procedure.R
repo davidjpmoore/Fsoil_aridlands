@@ -17,7 +17,8 @@
 # Step 7 - Open file "Read_chamber.R" +
 # Step 8 - Open file "Pulse and NP chamber.R" new+
 # Step 9 - Open file "GPP vs Rsoil chamber.R" new+
-# Step 10 - Open file "Chamber model.R" new+
+# Step 10 - Open file "SWC ST space chamber.R"
+# Step 11 - Open file "Chamber model.R" new+
 
  
 #################### That's all! Mission complete! ######################
