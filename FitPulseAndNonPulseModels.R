@@ -209,7 +209,7 @@ all_year_NP <- read.csv("data/USWPulseN.csv")
 all_time <- read.csv("data/Summary_eddy.csv")
 
 #this is to remove column 26 with NA values
-all_year_NP <- all_year_NP[-c(28)]
+all_year_NP2 <- all_year_NP[-c(28)]
 
 #### Fit non-pulse model ##########
  
@@ -232,20 +232,12 @@ Param_model_NP <- nls(meanRECO ~ Fref*((meanGPP_NP/GPPmax_NP +n)/1+n) *(1-c4*(0.
 )
 Summary_Model_NP = summary(Param_model_NP)
 
-
-#Parameters:
-#Estimate Std. Error t value Pr(>|t|)    
-#Fref 1.238616   0.046312  26.745   <2e-16 ***
-#c4   6.231683   2.838189   2.196   0.0282 *  
-#b4   0.035775   0.001352  26.463   <2e-16 ***
-#n    0.057335   0.001889  30.358   <2e-16 ***
-  
 # NON_Pulse parameters
-FrefNP = 1.238616
-SMoptNP =0.125 
-c4NP = 6.231683  
-b4NP =  0.035775
-nNP=  0.057335 
+FrefNP = 1.274830
+SMoptNP = 0.125 
+c4NP = 4.712115  
+b4NP = 0.034578
+nNP= 0.058092 
 
 
 ### Fit Pulse model##################
@@ -263,13 +255,6 @@ Param_model_P <- nls(meanRECO ~ Fref*((meanGPP_P/GPPmax_P +n)/1+n) *(1-c4*(0.1-m
                       control = nls.control(maxiter = 1000, minFactor = 0.01)
 )
 Summary_Model_P = summary(Param_model_P)
-# # 
-#Parameters:
-#Estimate Std. Error t value Pr(>|t|)    
-#Fref  0.435286   0.041309  10.537  < 2e-16 ***
-#c4   -6.867962   1.555288  -4.416 1.19e-05 ***
-#b4    0.050000   0.002521  19.834  < 2e-16 ***
-#n     0.395135   0.029568  13.364  < 2e-16 ***
 
 # Pulse parameters
 FrefP = 0.435286
@@ -342,25 +327,6 @@ Summary_Model4_all = summary(Param_model4_all)
 # 
 # Formula: meanRECO ~ Fref * ((meanGPP_NP/GPPmax_NP + n)/1 + n) * (1 - c4 * 
 #                                                                    (0.1 - meanSWC5_NP)^2) * exp(b4 * meanST5_NP)
-# 
-#Estimated Wed May 3rd 
-#Parameters: 
-# Estimate Std. Error t value Pr(>|t|)    
-# Fref  1.136042   0.049023  23.173  < 2e-16 ***
-# c4   -7.755161   1.219586  -6.359 2.38e-10 ***
-# b4    0.036016   0.001490  24.174  < 2e-16 ***
-# n     0.079803   0.002769  28.815  < 2e-16 ***
-#   
-
-
-#Parameters 06/03/2024:
-#Parameters:
-#Estimate Std. Error t value Pr(>|t|)    
-#Fref  1.183562   0.048450  24.429  < 2e-16 ***
-#c4   -7.875260   1.160614  -6.785  1.4e-11 ***
-#b4    0.034806   0.001412  24.651  < 2e-16 ***
-#n     0.079416   0.002654  29.924  < 2e-16 ***
-
 
 # All time parameters
 Frefall =  1.183562

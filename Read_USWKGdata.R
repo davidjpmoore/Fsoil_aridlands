@@ -139,6 +139,7 @@ USW9sum$diff <- USW9sum$observation - lag(USW9sum$observation,
                                           default = first(USW9sum$observation))
 
 hist(USW9sum$diff)
+
 USW9sum %>%
   ggplot(aes(x=bigRmm))+
   geom_histogram(color="black", fill="white")+
@@ -150,6 +151,8 @@ USW9sum %>%
 
 
 hist(USWkg12_20_summary$meanRECO)
+
+
 
 ######Make seasons #############
 
@@ -166,7 +169,7 @@ USW9sum$Season[USW9sum$DOY %in% 60:181] = 'Spring'
 USW9sum$Season[USW9sum$DOY %in% 182:304] = 'Summer'
 
 
- Pulse_Win <- USW9sum %>%
+Pulse_Win <- USW9sum %>%
   filter(Season == 'Winter')
 
 hist(Pulse_Win$meanRECO)
@@ -214,7 +217,6 @@ USWkg12_20_summary$year <- as.numeric(as.character(USWkg12_20_summary$year))
 
 
 ######Spring Pulses ##########
-plot(Pulse_Spr$meanRECO)
 
 Pulse1Spr <- USWkg12_20_summary %>%
   filter(year == 2014) %>%
@@ -366,7 +368,9 @@ Pulse3Win <- USWkg12_20_summary %>%
 plot(Pulse3Win$meanRECO)
 
 ##### plot graphs with Reco and GPP for pulse and non-pulse time and together ####
+# before this graph change the types of column to numeric
 USWkg12_20_summary %>%
+  na.omit() %>%
   ggplot(aes(x=meanGPP, y = meanRECO))+
   geom_point(shape = 1)+
   theme_bw()+

@@ -86,3 +86,4 @@ USWkg12_20_summary <- USWkg12_20 %>%
   )
 
 write_csv(USWkg12_20_summary, "data/USWkg12_20_summary.csv")
+
