@@ -184,10 +184,14 @@ Summary_Model4_NP = summary(Param_model4_NP)
 
 # NON_Pulse parameters
 FrefNP = 0.581979
+FrefNP_SE = 0.022416
 SMoptNP =0.125 
-c4NP = 5.866561   
+c4NP = 5.866561
+c4NP_SE = 4.914379
 b4NP =  0.032845
+b4NP_SE = 0.001487
 nNP=  0.129888
+nNP_SE = 0.004721
 
 #################### Pulse model ##################################
 ###################################################################
@@ -224,10 +228,14 @@ Summary_Model4_P = summary(Param_model4_P)
 
 # Pulse parameters
 FrefP = 0.646765 
+FrefP_SE = 0.044472
 SMoptP =0.125 
 c4P = -10.166789   
+c4P_SE = 1.489036
 b4P = 0.043525
+b4P_SE = 0.001986
 nP= 0.236665
+nP_SE = 0.013583
 
 ############### All time model #################################
 ################################################################
@@ -265,10 +273,14 @@ Summary_Model4_All = summary(Param_model4_All)
 
 # Pulse parameters
 FrefL = 1.183562
+FrefL_SE = 0.048450
 SMoptL =0.125 
 c4L = -7.875260   
+c4L_SE = 1.160614
 b4L = 0.034806
+b4L_SE = 0.001412
 nL= 0.079416
+nL_SE = 0.002654
 
 #run model for full time series based on non-pulse time parameters
 ALL_model4_NP = FrefNP*((All_meanGPP/All_GPPmax +nNP)/1+nNP) *(1-c4NP*(SMoptNP-All_meanSWC5)^2)*exp(b4NP*All_meanST5)
@@ -279,6 +291,16 @@ All_model4 = FrefL*((All_meanGPP/All_GPPmax +nL)/1+nL) *(1-c4P*(SMoptL-All_meanS
 
 # Plot the RECO time series
 plot(years_sum1$date, years_sum1$meanRECO, type = "p", col = "blue", xlab = "Timestamp", ylab = "RECO", cex = 0.8)
+
+points(years_sum1$date, results_df$MeanR, col="green", pch = 16, cex = 0.4, alpha=0.5)
+# create the legend
+legend(x = "topleft",
+       legend = c("Measured RECO", "Mean model"),
+       pch = c(1, 16),
+       col = c("blue", "green"),
+       lty = c(NA, 1),
+       bty = "n")
+
 
 # Add the model output time series to the plot - CORRECT FIGURE
 points(years_sum1$date, ALL_model4_NP, col = "red", pch = 16, cex = 0.4)
@@ -331,14 +353,36 @@ Reco_obs = sum(years_sum1$meanRECO)
 
 
 plot(ALL_model4_NP,All_model4_P, xlab = "Non-Pulse Model Reco", ylab = "Pulse Model Reco")
+ 
+
+# Create df just with fluxes and calculate 
+Reco_df <- years_sum1 %>%
+  select(date, meanRECO, sdReco, max_pulse_duration, rain_event)
 
 
+Reco_df$PulseM <- All_model4_P
+Reco_df$NonPulseM <- ALL_model4_NP
+Reco_df$MeanM <- All_model4
 
 
+Reco1 <- Reco_df %>%
+  select (date, meanRECO, max_pulse_duration, PulseM, NonPulseM) %>%
+  mutate(case_when(max_pulse_duration == 0 ~ NonPulseM,
+                  max_pulse_duration == 8 ~ PulseM,
+                max_pulse_duration == 14 ~ PulseM,
+                max_pulse_duration == 20 ~ PulseM))
+                         
 
 
-
-
+plot(Reco_df$date, Reco_df$meanRECO, type = "p", col = "blue", xlab = "Timestamp", ylab = "RECO", cex = 0.8)
+points(Reco1$date, Reco1$`case_when(...)`, col="green", pch = 16, cex = 0.4, alpha=0.5)
+# create the legend
+legend(x = "topleft",
+       legend = c("Measured RECO", "Pulse and Non-pulse models"),
+       pch = c(1, 16),
+       col = c("blue", "green"),
+       lty = c(NA, 1),
+       bty = "n")
 
 
 
