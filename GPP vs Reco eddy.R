@@ -7,16 +7,13 @@ library(tidyverse)
 library(lubridate)
 library(ggplot2)
 library(units)
+library(ggpubr)
 
 # In this file we focus on the interactions Between Reco and GPP fluxes ###
 # for all time, Pulse and non-Pulse time ##################################
 
-# Open files with summary information
-summary_P <- read.csv("data/Summary_eddy.csv")
-USW_PulseN <- read.csv("data/USWPulseN.csv")
-USW_Pulse <- read.csv("data/USWPulse.csv")
 
-# Read other pulse division docs - with "DM" in their names
+# Read other pulse division docs - with "DM" in their names - 
 summary_P <- read.csv("data/years_sum1_DM.csv")
 USW_PulseN <- read.csv("data/years_sum_Pulse0_DM.csv")
 USW_Pulse <- read.csv("data/years_sum_Pulse1_DM.csv")
@@ -59,7 +56,8 @@ USW_PulseN %>%
   ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
   xlab(~paste("GPP, ", mu, "mol m"^-2,"s"^-1))+
   ggtitle('Non-pulse time')+
-  ylim(0,6)
+  ylim(0,6)+
+  xlim(0,6)
 
 
 

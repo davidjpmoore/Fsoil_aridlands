@@ -1,7 +1,7 @@
 # 16-05-2024
 # Anastasia Makhnykina
 
-library(dplyr)
+ library(dplyr)
 library(tidyr)
 library(tidyverse)
 library(lubridate)
@@ -40,6 +40,10 @@ USWkg12_20_summary$Pulse_DOY <- USWkg12_20_summary$DOY*USWkg12_20_summary$bigR
 # Make df with just Rains > 5 mm 
 USW1220_Pulse <- USWkg12_20_summary %>%
   filter(bigRmm > 0)
+
+
+#################### 5-days duration Pulse definition ########################
+#######################################################################
 
 # Make additional "test" df to make Pulse duration (5 days)
 USW1220_Pulse$DOY <- as.numeric(as.character(USW1220_Pulse$DOY))

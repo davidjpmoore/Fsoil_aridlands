@@ -126,3 +126,108 @@ legend(x = "topleft",
        bty = "n")
 
 
+plot(ALL_model4_NP,All_model4_P, xlab = "Non-Pulse Model Rsoil", ylab = "Pulse Model Rsoil")
+
+# Create df with all measured and modelled fluxes
+Rsoil_df <- summary_Cham_P %>%
+  select(date, meanRsoil, max_pulse_duration)
+
+Rsoil_df$PulseM <- All_model4_P
+Rsoil_df$NonPulseM <- ALL_model4_NP
+Rsoil_df$MeanM <- All_model4
+
+Rsoil1 <- Rsoil_df %>%
+  select (date, meanRsoil, max_pulse_duration, PulseM, NonPulseM) %>%
+  mutate(case_when(max_pulse_duration == 0 ~ NonPulseM,
+                   max_pulse_duration == 8 ~ PulseM,
+                   max_pulse_duration == 14 ~ PulseM,
+                   max_pulse_duration == 20 ~ PulseM))
+
+
+plot(Rsoil_df$date, Rsoil_df$meanRsoil, type = "p", col = "blue", xlab = "Timestamp", 
+     ylab =  "Rsoil, µmol m-2 s-1", cex = 0.8)
+
+points(Rsoil1$date, Rsoil1$`case_when(...)`, col="green", pch = 16, cex = 0.4, alpha=0.5)
+# create the legend
+legend(x = "topleft",
+       legend = c("Measured Rsoil", "Pulse and Non-pulse models"),
+       pch = c(1, 16),
+       col = c("blue", "green"),
+       lty = c(NA, 1),
+       bty = "n")
+
+Rsoil_df$Rsoil_Mean <- Rsoil1$`case_when(...)`
+
+Rsoil_df %>%
+  na.omit() %>%
+  ggplot(aes(x=date))+
+  geom_point(aes(y = meanRsoil),shape=20, color = "blue", size = 2)+
+  geom_point(aes(y=Rsoil_Mean),shape=1, size = 1, color = "green")+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab("Timestamp")+
+  ylim(0,4)
+
+
+Rsoil_df %>%
+  ggplot(aes(x=meanRsoil, y = Rsoil_Mean))+
+  geom_point(shape=1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
+  ylab(~paste("Modelled Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab(~paste("Measured Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  #ggtitle('Non-pulse time')+
+  ylim(0,4)+
+  xlim(0,4)
+
+# calculate RMSE
+rmse_MeanMod <- sqrt(sum((Rsoil_df$Rsoil_Mean - Rsoil_df$meanRsoil)^2, na.rm=TRUE)/nrow(Rsoil_df))
+
+# calculate MAPE -  Mean absolute percent error
+mape_MeanMod <- mean(abs((Rsoil_df$Rsoil_Mean - Rsoil_df$meanRsoil) / Rsoil_df$meanRsoil), na.rm=TRUE) * 100
+
+# calculate R-squared
+r_squared_MeanMod <- cor(Rsoil_df$Rsoil_Mean, Rsoil_df$meanRsoil, use = "complete.obs")^2
+
+
+###### Calculate cumulative flux for - Mean model, Including Pulse and non-pulse together and measured fluxes ######
+####################################################################################################################
+
+### Create df with just fluxes #####
+
+Rsoildf_new <- Rsoil_df %>%
+  na.omit() %>%
+  select (date, meanRsoil, MeanM, Rsoil_Mean)
+
+Rsoildf_new$culMeasured <- ave(Rsoildf_new$meanRsoil, FUN = cumsum)  
+Rsoildf_new$culMeanMod <- ave(Rsoildf_new$MeanM, FUN = cumsum)  
+Rsoildf_new$culModelled <- ave(Rsoildf_new$Rsoil_Mean, FUN = cumsum)  
+
+
+plot(Rsoildf_new$date,Rsoildf_new$culMeasured,  type = "l", col = "blue", xlab = "Year", 
+     ylab =  "Cumulative Rsoil", cex = 0.8)
+lines(Rsoildf_new$date, Rsoildf_new$culMeanMod, type = "l", col = "red")
+lines(Rsoildf_new$date, Rsoildf_new$culModelled, type = "l", col = "green")
+
+legend(x = "topleft",
+       legend = c("Measured Rsoil", "Pulse and Non-pulse models", "Mean model"),
+       pch = c(1, 16, 16),
+       col = c("blue", "red", "green"),
+       lty = c(NA, 1,1),
+       bty = "n")
+
+
+
+
+
+
+
+
+
+
+
+
+

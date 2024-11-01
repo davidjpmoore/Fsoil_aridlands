@@ -11,6 +11,8 @@ library(units)
 # In this file we need to make some analysis of data we observed ###
 # and plot the main dependencies and interactions ##################
 
+#### In This file we take the figures for Fig1 and Fig 2a (max pulse size) ##########
+
 # Open two files for analysis 
 USWkg12_20_summary <- read.csv("data/USWkg12_20_summary.csv", 
                                header=TRUE, na.strings="NaN", skip=0)
@@ -18,6 +20,14 @@ summary_P <- read.csv("data/Summary_eddy.csv")
 
 # First Plot frequency of Rain events > 5 mm 
 USWkg12_20_summary$observation <- 1:nrow(USWkg12_20_summary)
+
+USWkg12_20_summary$DOY <- paste(yday(USWkg12_20_summary$date))
+USWkg12_20_summary$DOY <- as.numeric(as.character(USWkg12_20_summary$DOY))
+USWkg12_20_summary$bigR <- as.numeric(USWkg12_20_summary$sum_R>5)
+USWkg12_20_summary$bigRmm <- as.numeric(USWkg12_20_summary$bigR)*as.numeric(USWkg12_20_summary$sum_R)
+USWkg12_20_summary$year <- substr(USWkg12_20_summary$date, 1,4)
+USWkg12_20_summary$year <- as.numeric(as.character(USWkg12_20_summary$year))
+
 
 USW9sum <- USWkg12_20_summary%>%
   filter(bigRmm > 0)

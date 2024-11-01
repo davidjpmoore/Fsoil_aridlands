@@ -24,10 +24,10 @@ hist(Pulse_Cham$SWC_per)
 plot(Pulse_Cham$SWC_per, Pulse_Cham$meanTsoil, 
      cex = Pulse_Cham$meanRsoil/2, # set the point size based on meanRECO
      pch = 16, # use solid circles as the point symbol
-     xlab = "Mean SWC (5 cm depth)", # add x-axis label
-     ylab = "Mean soil temperature (5 cm depth)", # add y-axis label
+     xlab = "Mean SWC 5 cm, %", # add x-axis label
+     ylab = "Mean Tsoil 5 cm, °C", # add y-axis label
      main = "SWC and Soil T - during pulses", # add plot title
-     xlim=c(0,100))
+     xlim=c(0,60))
 
 
 NonPulse_Cham$SWC_per <- NonPulse_Cham$meanSWC*100
@@ -35,10 +35,10 @@ NonPulse_Cham$SWC_per <- NonPulse_Cham$meanSWC*100
 plot(NonPulse_Cham$SWC_per, NonPulse_Cham$meanTsoil, 
      cex = NonPulse_Cham$meanRsoil/2, # set the point size based on meanRECO
      pch = 16, # use solid circles as the point symbol
-     xlab = "Mean SWC (5 cm depth)", # add x-axis label
-     ylab = "Mean soil temperature (5 cm depth)", # add y-axis label
+     xlab = "Mean SWC 5 cm, %", # add x-axis label
+     ylab = "Mean Tsoil 5 cm, °C", # add y-axis label
      main = "SWC and Soil T - between pulses" , # add plot title
-     xlim=c(0,100))
+     xlim=c(0,60))
 
 
 

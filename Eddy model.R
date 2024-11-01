@@ -11,124 +11,11 @@ library(stats)
 library(grDevices)
 library(readr)
 
-# Open file with all eddy-covariance data 
-USWkg12_20_summary <- read.csv("data/USWkg12_20_summary.csv", 
-                               header=TRUE, na.strings="NaN", skip=0)
-USWkg12_20_summary$date <- as.Date(USWkg12_20_summary$date)
 
-# sort data by date
-years_sum1 <- USWkg12_20_summary %>% arrange(date)
-
-# Initialize the pulseduration_S variable as a vector of 0's
-years_sum1$pulseduration_S <- rep(0, nrow(years_sum1))
-
-# Find the indices of rows where there is a rain event with sum_R between 5 and 10
-rain_indices_S <- which(years_sum1$sum_R > 5 & years_sum1$sum_R <= 10)
-
-# Loop through each rain event
-for (i in rain_indices_S) {
-  # Set pulseduration_S to 8 for 8 days after the event
-  years_sum1$pulseduration_S[i:(min(i+7, nrow(years_sum1)))] <- 8
-}
-
-# Create a new variable called pulseduration_M, initialized with zeros
-years_sum1$pulseduration_M <- rep(0, nrow(years_sum1))
-
-# Loop through each element of sum_R
-for (i in 1:nrow(years_sum1)) {
-  
-  # Check if the sum_R value is between 10 and 20
-  if (years_sum1$sum_R[i] > 10 & years_sum1$sum_R[i] <= 20) {
-    
-    # If yes, set the pulseduration_M variable to 14 for the next 14 days
-    for (j in 1:14) {
-      if (i + j <= nrow(years_sum1)) { # check if within range
-        years_sum1$pulseduration_M[i + j] <- 14
-      }
-    }
-    
-  }
-  
-}
-
-# Create a new variable called pulseduration_L, initialized with zeros
-years_sum1$pulseduration_L <- rep(0, nrow(years_sum1))
-
-# Loop through each element of sum_R
-for (i in 21:nrow(years_sum1)) {
-  
-  # Check if the sum_R value was less than or equal to 20 in the previous day, and greater than 20 in the current day
-  if (years_sum1$sum_R[i-1] <= 20 & years_sum1$sum_R[i] > 20) {
-    
-    # If yes, set the pulseduration_L variable to 20 for the next 20 days
-    for (j in 0:19) {
-      if (i + j <= nrow(years_sum1)) { # check if within range
-        years_sum1$pulseduration_L[i + j] <- 20
-      }
-    }
-    
-  }
-  
-}
-
-# create a new variable called max_pulse_duration that is the maximum of pulseduration_S, pulseduration_M, and pulseduration_L
-years_sum1$max_pulse_duration <- pmax(years_sum1$pulseduration_S, years_sum1$pulseduration_M, years_sum1$pulseduration_L)
-
-# sort data by date
-years_sum1 <- years_sum1 %>% arrange(date)
-
-# Identify days with rain events
-years_sum1$rain_event <- ifelse(years_sum1$sum_R > 5, 1, 0)
-
-# Create a new column in the dataframe to store days since last rain event
-years_sum1$days_since_rain_event <- 0
-
-# Loop through each row of the data
-for (i in 2:nrow(years_sum1)) {
-  # If sum_R is greater than 5, set days_since_rain_event to 0
-  if (years_sum1$sum_R[i] > 5) {
-    years_sum1$days_since_rain_event[i] <- 0
-  } else {
-    # If sum_R is less than or equal to 5, increment the days_since_rain_event by 1
-    years_sum1$days_since_rain_event[i] <- years_sum1$days_since_rain_event[i-1] + 1
-  }
-}
-
-
-# Create years_sum_Pulse0 df
-years_sum_Pulse0 <- years_sum1 %>%
-  filter(days_since_rain_event >= max_pulse_duration)
-
-
-# Create years_sum_Pulse1 df
-years_sum_Pulse1 <- years_sum1 %>%
-  filter(days_since_rain_event < max_pulse_duration)
-
-# Total rain for Pulse and non-pulse time
-hist(subset(years_sum_Pulse0$sum_R, years_sum_Pulse0$sum_R != 0), 
-     breaks = seq(0, 60, length.out = 30),
-     main = "Non-pulse time", 
-     xlab = "Rainfall total", 
-     ylab = "Frequency",
-     col = "red", 
-     border = "white",
-     lty = "solid",
-     ylim = c(0, 100))
-
-hist(subset(years_sum_Pulse1$sum_R, years_sum_Pulse1$sum_R != 0), 
-     breaks = seq(min(years_sum_Pulse1$sum_R), max(years_sum_Pulse1$sum_R), length.out = 30),
-     main = "Pulse time", 
-     xlab = "Rainfall total", 
-     ylab = "Frequency",
-     col = "cyan", 
-     border = "white",
-     lty = "solid",
-     ylim = c(0, 100))
-
-# WRITE OUT NEW FILES
-write_csv(years_sum_Pulse0, "data/years_sum_Pulse0_DM.csv")
-write_csv(years_sum_Pulse1, "data/years_sum_Pulse1_DM.csv")
-write_csv(years_sum1, "data/years_sum1_DM.csv")
+# Read other pulse division docs - with "DM" in their names
+years_sum1 <- read.csv("data/years_sum1_DM.csv")
+years_sum_Pulse0 <- read.csv("data/years_sum_Pulse0_DM.csv")
+years_sum_Pulse1 <- read.csv("data/years_sum_Pulse1_DM.csv")
 
 # Make sure in the Date format
 years_sum_Pulse0$date <- as.Date(years_sum_Pulse0$date)
@@ -338,18 +225,18 @@ hist(Model_residual_P, col = "cyan")
 
 
 # calculate RMSE
-rmse_NP <- sqrt(mean((ALL_model4_NP - years_sum1$meanRECO)^2))
-rmse_P <- sqrt(mean((All_model4_P - years_sum1$meanRECO)^2))
+rmse_NP <- sqrt(mean((ALL_model4_NP - years_sum1$meanRECO)^2, na.rm = TRUE))
+rmse_P <- sqrt(mean((All_model4_P - years_sum1$meanRECO)^2, na.rm = TRUE))
 # calculate MAPE
-mape_NP <- mean(abs(ALL_model4_NP - years_sum1$meanRECO) / years_sum1$meanRECO) * 100
-mape_P <- mean(abs(All_model4_P - years_sum1$meanRECO) / years_sum1$meanRECO) * 100
+mape_NP <- mean(abs(ALL_model4_NP - years_sum1$meanRECO) / years_sum1$meanRECO, na.rm = TRUE) * 100
+mape_P <- mean(abs(All_model4_P - years_sum1$meanRECO) / years_sum1$meanRECO, na.rm = TRUE) * 100
 # calculate R-squared
-r_squared_NP <- cor(ALL_model4_NP, years_sum1$meanRECO)^2
-r_squared_P <- cor(All_model4_P, years_sum1$meanRECO)^2
+r_squared_NP <- cor(ALL_model4_NP, years_sum1$meanRECO, use = "complete.obs")^2
+r_squared_P <- cor(All_model4_P, years_sum1$meanRECO, use = "complete.obs")^2
 
-Reco_NP = sum(ALL_model4_NP)
-Reco_P = sum(All_model4_P)
-Reco_obs = sum(years_sum1$meanRECO)
+Reco_NP = sum(ALL_model4_NP, na.rm = TRUE)
+Reco_P = sum(All_model4_P, na.rm = TRUE)
+Reco_obs = sum(years_sum1$meanRECO, na.rm = TRUE)
 
 
 plot(ALL_model4_NP,All_model4_P, xlab = "Non-Pulse Model Reco", ylab = "Pulse Model Reco")
@@ -374,15 +261,95 @@ Reco1 <- Reco_df %>%
                          
 
 
-plot(Reco_df$date, Reco_df$meanRECO, type = "p", col = "blue", xlab = "Timestamp", ylab = "RECO", cex = 0.8)
+plot(Reco_df$date, Reco_df$meanRECO, type = "p", col = "blue", xlab = "Timestamp", 
+     ylab =  "Reco, µmol m-2 s-1", cex = 0.8)
+     
 points(Reco1$date, Reco1$`case_when(...)`, col="green", pch = 16, cex = 0.4, alpha=0.5)
 # create the legend
 legend(x = "topleft",
-       legend = c("Measured RECO", "Pulse and Non-pulse models"),
+       legend = c("Measured Reco", "Pulse and Non-pulse models"),
        pch = c(1, 16),
        col = c("blue", "green"),
        lty = c(NA, 1),
        bty = "n")
+
+
+Reco_df$Reco_Mean <- Reco1$`case_when(...)`
+
+Reco_df %>%
+  na.omit() %>%
+  ggplot(aes(x=date))+
+  geom_point(aes(y = meanRECO),shape=20, color = "blue", size = 2)+
+  geom_point(aes(y=Reco_Mean),shape=1, size = 1, color = "green")+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab("Timestamp")+
+  ylim(0,4)
+  
+plot(Reco_df$meanRECO, Reco_df$Reco_Mean, type = "p", col = "black", xlab = "Mesured Reco", 
+     ylab =  "Modelled Reco", cex = 0.8)
+
+Reco_df %>%
+  ggplot(aes(x=meanRECO, y = Reco_Mean))+
+  geom_point(shape=1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
+  ylab(~paste("Modelled Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab(~paste("Measured Reco, ", mu, "mol m"^-2,"s"^-1))+
+  #ggtitle('Non-pulse time')+
+  ylim(0,5)+
+  xlim(0,5)
+
+# calculate RMSE
+rmse_MeanMod <- sqrt(sum((Reco_df$Reco_Mean - Reco_df$meanRECO)^2, na.rm=TRUE)/nrow(Reco_df))
+
+# calculate MAPE -  Mean absolute percent error
+mape_MeanMod <- mean(abs((Reco_df$Reco_Mean - Reco_df$meanRECO) / Reco_df$meanRECO), na.rm=TRUE) * 100
+ 
+# calculate R-squared
+r_squared_MeanMod <- cor(Reco_df$Reco_Mean, Reco_df$meanRECO, use = "complete.obs")^2
+
+
+###### Calculate cumulative flux for - Mean model, Including Pulse and non-pulse together and measured fluxes ######
+####################################################################################################################
+
+### Create df with just fluxes #####
+
+Recodf_new <- Reco_df %>%
+  na.omit() %>%
+  select (date, meanRECO, MeanM, Reco_Mean)
+
+Recodf_new$culMeasured <- ave(Recodf_new$meanRECO, FUN = cumsum)  
+Recodf_new$culMeanMod <- ave(Recodf_new$MeanM, FUN = cumsum)  
+Recodf_new$culModelled <- ave(Recodf_new$Reco_Mean, FUN = cumsum)  
+
+
+plot(Recodf_new$date,Recodf_new$culMeasured,  type = "l", col = "blue", xlab = "Year", 
+     ylab =  "Cumulative Reco", cex = 0.8)
+lines(Recodf_new$date, Recodf_new$culMeanMod, type = "l", col = "red")
+lines(Recodf_new$date, Recodf_new$culModelled, type = "l", col = "green")
+
+legend(x = "topleft",
+       legend = c("Measured Reco", "Pulse and Non-pulse models", "Mean model"),
+       pch = c(1, 16, 16),
+       col = c("blue", "red", "green"),
+       lty = c(NA, 1,1),
+       bty = "n")
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

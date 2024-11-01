@@ -12,9 +12,10 @@ library(matrixStats)
 
 
 # In the next block we will create figures for pulses for 3 seasons ###
-# Spring, Summer and Winter pulses ####################################
+# Spring, Summer and Winter pulses - We need make the mean Values for each season #####
 
-### We need 2 dfs - USW9sum and USWkg12_20_summary
+### We need 2 dfs - USW9sum and USWkg12_20_summary ##########
+### You can open them separately or keep them open from the previous analysis #############
 
 USW9sum$Season = vector(mode = 'character', length = nrow(USW9sum))
 USW9sum$Season[USW9sum$DOY %in% c(1:59,305:366)] = 'Winter'
@@ -157,31 +158,31 @@ MaxWin$Reco6 <- as.numeric(as.character(MaxWin$Reco6))
 MaxWin$Reco7 <- as.numeric(as.character(MaxWin$Reco7))
 MaxWin$Reco8 <- as.numeric(as.character(MaxWin$Reco8))
 
-MaxWin$meanSR <- rowMeans(MaxWin[,c(1,5,9,13,17,21,25,29)], na.rm=TRUE)
+MaxWin$meanFlux <- rowMeans(MaxWin[,c(1,5,9,13,17,21,25,29)], na.rm=TRUE)
 
 #MaxWin$meanSRsd <- rowSds(MaxWin[,c(1,5,9,13,17,21,25,29)], na.rm=TRUE)
 
-MaxWin$SD_SR = vector(mode = 'character', length = nrow(MaxWin))
-MaxWin$SD_SR[MaxWin$DOY %in% 323] = 0.2
-MaxWin$SD_SR[MaxWin$DOY %in% 324] = 0.26
-MaxWin$SD_SR[MaxWin$DOY %in% 325] = 0.33
-MaxWin$SD_SR[MaxWin$DOY %in% 326] = 0.08
-MaxWin$SD_SR[MaxWin$DOY %in% 327] = 0.19
-MaxWin$SD_SR[MaxWin$DOY %in% 328] = 0.18
-MaxWin$SD_SR[MaxWin$DOY %in% 329] = 0.16
-MaxWin$SD_SR[MaxWin$DOY %in% 330] = 0.18
-MaxWin$SD_SR[MaxWin$DOY %in% 331] = 0.21
-MaxWin$SD_SR[MaxWin$DOY %in% 332] = 0.19
-MaxWin$SD_SR[MaxWin$DOY %in% 333] = 0.16
-MaxWin$SD_SR[MaxWin$DOY %in% 334] = 0.19
-MaxWin$SD_SR[MaxWin$DOY %in% 335] = 0.3
-MaxWin$SD_SR[MaxWin$DOY %in% 336] = 0.21
-MaxWin$SD_SR[MaxWin$DOY %in% 337] = 0.18
-MaxWin$SD_SR[MaxWin$DOY %in% 338] = 0.17
-MaxWin$SD_SR[MaxWin$DOY %in% 339] = 0.11
-MaxWin$SD_SR[MaxWin$DOY %in% 340] = 0.11
+MaxWin$SD_Flux = vector(mode = 'character', length = nrow(MaxWin))
+MaxWin$SD_Flux[MaxWin$DOY %in% 323] = 0.2
+MaxWin$SD_Flux[MaxWin$DOY %in% 324] = 0.26
+MaxWin$SD_Flux[MaxWin$DOY %in% 325] = 0.33
+MaxWin$SD_Flux[MaxWin$DOY %in% 326] = 0.08
+MaxWin$SD_Flux[MaxWin$DOY %in% 327] = 0.19
+MaxWin$SD_Flux[MaxWin$DOY %in% 328] = 0.18
+MaxWin$SD_Flux[MaxWin$DOY %in% 329] = 0.16
+MaxWin$SD_Flux[MaxWin$DOY %in% 330] = 0.18
+MaxWin$SD_Flux[MaxWin$DOY %in% 331] = 0.21
+MaxWin$SD_Flux[MaxWin$DOY %in% 332] = 0.19
+MaxWin$SD_Flux[MaxWin$DOY %in% 333] = 0.16
+MaxWin$SD_Flux[MaxWin$DOY %in% 334] = 0.19
+MaxWin$SD_Flux[MaxWin$DOY %in% 335] = 0.3
+MaxWin$SD_Flux[MaxWin$DOY %in% 336] = 0.21
+MaxWin$SD_Flux[MaxWin$DOY %in% 337] = 0.18
+MaxWin$SD_Flux[MaxWin$DOY %in% 338] = 0.17
+MaxWin$SD_Flux[MaxWin$DOY %in% 339] = 0.11
+MaxWin$SD_Flux[MaxWin$DOY %in% 340] = 0.11
 
-MaxWin$SD_SR <- as.numeric(as.character(MaxWin$SD_SR))
+MaxWin$SD_Flux <- as.numeric(as.character(MaxWin$SD_SR))
 
 
 MaxWin$meanSWC5 <- as.numeric(as.character(MaxWin$meanSWC5))
@@ -245,14 +246,14 @@ MaxWin$Pulse_day[MaxWin$DOY %in% 340] = '14'
 ################# Graph with Standard Errors!!!! #####################
 MaxWin %>%
   ggplot(aes(x=DOY))+
-  geom_point(aes(y = meanSR),size=2)+
+  geom_point(aes(y = meanFlux),size=2)+
   geom_point(aes(y=meanSWC/10), color = 'blue', size=2)+
   theme(text = element_text(size = 15), plot.background = element_rect(fill = "white"),
         panel.background = element_rect(fill = "white", colour = "black",
                                         size = 2, linetype = "solid")
         #plot.background = element_rect(fill = "#BFD5E3")
   )+
-  geom_errorbar(aes(ymin=meanSR - (SD_SR/sqrt(8)), ymax= meanSR + (SD_SR/sqrt(8))), width=.2,
+  geom_errorbar(aes(ymin=meanFlux - (SD_Flux/sqrt(8)), ymax= meanFlux + (SD_Flux/sqrt(8))), width=.2,
                   position=position_dodge(.9)) +
   geom_errorbar(aes(ymin=meanSWC/10 - ((SD_SWC/10)/sqrt(8)), ymax= meanSWC/10 + ((SD_SWC/10)/sqrt(8))), 
                 width=.2, position=position_dodge(.9))+
@@ -267,14 +268,14 @@ MaxWin$Pulse_day <- as.numeric(as.character(MaxWin$Pulse_day))
 
 MaxWin %>%
   ggplot(aes(x=as.factor(Pulse_day)))+
-  geom_point(aes(y = meanSR),size=2)+
+  geom_point(aes(y = meanFlux),size=2)+
   geom_point(aes(y=meanSWC/10), color = 'blue', size=2)+
   theme(text = element_text(size = 15), plot.background = element_rect(fill = "white"),
         panel.background = element_rect(fill = "white", colour = "black",
                                         size = 2, linetype = "solid")
         #plot.background = element_rect(fill = "#BFD5E3")
   )+
-  geom_errorbar(aes(ymin=meanSR - (SD_SR/sqrt(8)), ymax= meanSR + (SD_SR/sqrt(8))), width=.2,
+  geom_errorbar(aes(ymin=meanFlux - (SD_Flux/sqrt(8)), ymax= meanFlux + (SD_Flux/sqrt(8))), width=.2,
                 position=position_dodge(.9)) +
   geom_errorbar(aes(ymin=meanSWC/10 - ((SD_SWC/10)/sqrt(8)), ymax= meanSWC/10 + ((SD_SWC/10)/sqrt(8))), 
                 width=.2, position=position_dodge(.9))+
@@ -295,6 +296,8 @@ MaxWin %>%
 
 Pulse_Spr <- USW9sum %>%
   filter(Season == 'Spring')
+
+Pulse_Spr$meanRECO <- as.numeric(as.character(Pulse_Spr$meanRECO))
 
 Pulse_Spr %>%
   ggplot(aes(x=meanRECO))+
@@ -363,8 +366,23 @@ MaxSpr$Reco6sd <- MaxSpr6$sdReco
 MaxSpr$SWC6 <- MaxSpr6$meanSWC5
 MaxSpr$SWC6sd <- MaxSpr6$sdSWC5
 
+MaxSpr$meanRECO <- as.numeric(as.character(MaxSpr$meanRECO))
+MaxSpr$Reco2 <- as.numeric(as.character(MaxSpr$Reco2))
+MaxSpr$Reco3 <- as.numeric(as.character(MaxSpr$Reco3))
+MaxSpr$Reco4 <- as.numeric(as.character(MaxSpr$Reco4))
+MaxSpr$Reco5 <- as.numeric(as.character(MaxSpr$Reco5))
+MaxSpr$Reco6 <- as.numeric(as.character(MaxSpr$Reco6))
 
-MaxSpr$meanSR <- rowMeans(MaxSpr[,c(1,5,9,13,17,21)], na.rm=TRUE)
+MaxSpr$meanSWC5 <- as.numeric(as.character(MaxSpr$meanSWC5))
+MaxSpr$SWC2 <- as.numeric(as.character(MaxSpr$SWC2))
+MaxSpr$SWC3 <- as.numeric(as.character(MaxSpr$SWC3))
+MaxSpr$SWC4 <- as.numeric(as.character(MaxSpr$SWC4))
+MaxSpr$SWC5 <- as.numeric(as.character(MaxSpr$SWC5))
+MaxSpr$SWC6 <- as.numeric(as.character(MaxSpr$SWC6))
+
+
+##### 
+MaxSpr$meanFlux <- rowMeans(MaxSpr[,c(1,5,9,13,17,21)], na.rm=TRUE)
 MaxSpr$meanSWC <- rowMeans(MaxSpr[,c(3,7,11,15,19,23)], na.rm=TRUE)
 
 MaxSpr$DOY <- MaxSpr1$DOY 
@@ -391,27 +409,27 @@ MaxSpr$Pulse_day[MaxSpr$DOY %in% 116] = '14'
 
 MaxSpr$Pulse_day <- as.numeric(as.character(MaxSpr$Pulse_day))
 
-MaxSpr$SD_SR = vector(mode = 'character', length = nrow(MaxSpr))
-MaxSpr$SD_SR[MaxSpr$DOY %in% 99] = 0.26
-MaxSpr$SD_SR[MaxSpr$DOY %in% 100] = 0.33
-MaxSpr$SD_SR[MaxSpr$DOY %in% 101] = 0.54
-MaxSpr$SD_SR[MaxSpr$DOY %in% 102] = 0.79
-MaxSpr$SD_SR[MaxSpr$DOY %in% 103] = 0.69
-MaxSpr$SD_SR[MaxSpr$DOY %in% 104] = 0.63
-MaxSpr$SD_SR[MaxSpr$DOY %in% 105] = 0.43
-MaxSpr$SD_SR[MaxSpr$DOY %in% 106] = 0.41
-MaxSpr$SD_SR[MaxSpr$DOY %in% 107] = 0.68
-MaxSpr$SD_SR[MaxSpr$DOY %in% 108] = 1.06
-MaxSpr$SD_SR[MaxSpr$DOY %in% 109] = 1.27
-MaxSpr$SD_SR[MaxSpr$DOY %in% 110] = 1.18
-MaxSpr$SD_SR[MaxSpr$DOY %in% 111] = 0.99
-MaxSpr$SD_SR[MaxSpr$DOY %in% 112] = 0.9
-MaxSpr$SD_SR[MaxSpr$DOY %in% 113] = 0.78
-MaxSpr$SD_SR[MaxSpr$DOY %in% 114] = 0.67
-MaxSpr$SD_SR[MaxSpr$DOY %in% 115] = 0.72
-MaxSpr$SD_SR[MaxSpr$DOY %in% 116] = 0.75
+MaxSpr$SD_Flux = vector(mode = 'character', length = nrow(MaxSpr))
+MaxSpr$SD_Flux[MaxSpr$DOY %in% 99] = 0.26
+MaxSpr$SD_Flux[MaxSpr$DOY %in% 100] = 0.33
+MaxSpr$SD_Flux[MaxSpr$DOY %in% 101] = 0.54
+MaxSpr$SD_Flux[MaxSpr$DOY %in% 102] = 0.79
+MaxSpr$SD_Flux[MaxSpr$DOY %in% 103] = 0.69
+MaxSpr$SD_Flux[MaxSpr$DOY %in% 104] = 0.63
+MaxSpr$SD_Flux[MaxSpr$DOY %in% 105] = 0.43
+MaxSpr$SD_Flux[MaxSpr$DOY %in% 106] = 0.41
+MaxSpr$SD_Flux[MaxSpr$DOY %in% 107] = 0.68
+MaxSpr$SD_Flux[MaxSpr$DOY %in% 108] = 1.06
+MaxSpr$SD_Flux[MaxSpr$DOY %in% 109] = 1.27
+MaxSpr$SD_Flux[MaxSpr$DOY %in% 110] = 1.18
+MaxSpr$SD_Flux[MaxSpr$DOY %in% 111] = 0.99
+MaxSpr$SD_Flux[MaxSpr$DOY %in% 112] = 0.9
+MaxSpr$SD_Flux[MaxSpr$DOY %in% 113] = 0.78
+MaxSpr$SD_Flux[MaxSpr$DOY %in% 114] = 0.67
+MaxSpr$SD_Flux[MaxSpr$DOY %in% 115] = 0.72
+MaxSpr$SD_Flux[MaxSpr$DOY %in% 116] = 0.75
 
-MaxSpr$SD_SR <- as.numeric(as.character(MaxSpr$SD_SR))
+MaxSpr$SD_Flux <- as.numeric(as.character(MaxSpr$SD_SR))
 
 MaxSpr$SD_SWC = vector(mode = 'character', length = nrow(MaxSpr))
 MaxSpr$SD_SWC[MaxSpr$DOY %in% 99] = 2.06
@@ -437,14 +455,14 @@ MaxSpr$SD_SWC <- as.numeric(as.character(MaxSpr$SD_SWC))
 
 MaxSpr %>%
   ggplot(aes(x=as.factor(Pulse_day)))+
-  geom_point(aes(y = meanSR),size=2)+
+  geom_point(aes(y = meanFlux),size=2)+
   geom_point(aes(y=meanSWC/15), color = 'blue', size=2)+
   theme(text = element_text(size = 15), plot.background = element_rect(fill = "white"),
         panel.background = element_rect(fill = "white", colour = "black",
                                         size = 2, linetype = "solid")
         #plot.background = element_rect(fill = "#BFD5E3")
   )+
-  geom_errorbar(aes(ymin=meanSR - (SD_SR/sqrt(8)), ymax= meanSR + (SD_SR/sqrt(8))), width=.2,
+  geom_errorbar(aes(ymin=meanFlux - (SD_Flux/sqrt(8)), ymax= meanFlux + (SD_Flux/sqrt(8))), width=.2,
                 position=position_dodge(.9)) +
   geom_errorbar(aes(ymin=meanSWC/15 - ((SD_SWC/15)/sqrt(8)), ymax= meanSWC/15 + ((SD_SWC/15)/sqrt(8))), 
                 width=.2, position=position_dodge(.9))+
@@ -460,6 +478,8 @@ MaxSpr %>%
 # Summer pulses
 Pulse_Sum <- USW9sum %>%
   filter(Season == 'Summer')
+
+Pulse_Sum$meanRECO <- as.numeric(as.character(Pulse_Sum$meanRECO))
 
 Pulse_Sum %>%
   ggplot(aes(x=meanRECO))+
@@ -537,7 +557,25 @@ MaxSum$Reco7sd <- MaxSum7$sdReco
 MaxSum$SWC7 <- MaxSum7$meanSWC5
 MaxSum$SWC7sd <- MaxSum7$sdSWC5
 
-MaxSum$meanSR <- rowMeans(MaxSum[,c(1,5,9,13,17,21,25)], na.rm=TRUE)
+MaxSum$meanRECO <- as.numeric(as.character(MaxSum$meanRECO))
+MaxSum$Reco2 <- as.numeric(as.character(MaxSum$Reco2))
+MaxSum$Reco3 <- as.numeric(as.character(MaxSum$Reco3))
+MaxSum$Reco4 <- as.numeric(as.character(MaxSum$Reco4))
+MaxSum$Reco5 <- as.numeric(as.character(MaxSum$Reco5))
+MaxSum$Reco6 <- as.numeric(as.character(MaxSum$Reco6))
+MaxSum$Reco7 <- as.numeric(as.character(MaxSum$Reco7))
+
+MaxSum$meanSWC5 <- as.numeric(as.character(MaxSum$meanSWC5))
+MaxSum$SWC2 <- as.numeric(as.character(MaxSum$SWC2))
+MaxSum$SWC3 <- as.numeric(as.character(MaxSum$SWC3))
+MaxSum$SWC4 <- as.numeric(as.character(MaxSum$SWC4))
+MaxSum$SWC5 <- as.numeric(as.character(MaxSum$SWC5))
+MaxSum$SWC6 <- as.numeric(as.character(MaxSum$SWC6))
+MaxSum$SWC7 <- as.numeric(as.character(MaxSum$SWC7))
+
+##########
+
+MaxSum$meanFlux <- rowMeans(MaxSum[,c(1,5,9,13,17,21,25)], na.rm=TRUE)
 MaxSum$meanSWC <- rowMeans(MaxSum[,c(3,7,11,15,19,23,27)], na.rm=TRUE)
 
 MaxSum$DOY <- MaxSum1$DOY 
@@ -564,27 +602,27 @@ MaxSum$Pulse_day[MaxSum$DOY %in% 198] = '14'
 
 MaxSum$Pulse_day <- as.numeric(as.character(MaxSum$Pulse_day))
 
-MaxSum$SD_SR = vector(mode = 'character', length = nrow(MaxSum))
-MaxSum$SD_SR[MaxSum$DOY %in% 181] = 0.36
-MaxSum$SD_SR[MaxSum$DOY %in% 182] = 0.52
-MaxSum$SD_SR[MaxSum$DOY %in% 183] = 0.39
-MaxSum$SD_SR[MaxSum$DOY %in% 184] = 0.29
-MaxSum$SD_SR[MaxSum$DOY %in% 185] = .45
-MaxSum$SD_SR[MaxSum$DOY %in% 186] = .49
-MaxSum$SD_SR[MaxSum$DOY %in% 187] = .54
-MaxSum$SD_SR[MaxSum$DOY %in% 188] = .4
-MaxSum$SD_SR[MaxSum$DOY %in% 189] = .36
-MaxSum$SD_SR[MaxSum$DOY %in% 190] = .43
-MaxSum$SD_SR[MaxSum$DOY %in% 191] = .51
-MaxSum$SD_SR[MaxSum$DOY %in% 192] = .6
-MaxSum$SD_SR[MaxSum$DOY %in% 193] = .58
-MaxSum$SD_SR[MaxSum$DOY %in% 194] = .55
-MaxSum$SD_SR[MaxSum$DOY %in% 195] = .55
-MaxSum$SD_SR[MaxSum$DOY %in% 196] = 0.59
-MaxSum$SD_SR[MaxSum$DOY %in% 197] = 0.5
-MaxSum$SD_SR[MaxSum$DOY %in% 198] = .42
+MaxSum$SD_Flux = vector(mode = 'character', length = nrow(MaxSum))
+MaxSum$SD_Flux[MaxSum$DOY %in% 181] = 0.36
+MaxSum$SD_Flux[MaxSum$DOY %in% 182] = 0.52
+MaxSum$SD_Flux[MaxSum$DOY %in% 183] = 0.39
+MaxSum$SD_Flux[MaxSum$DOY %in% 184] = 0.29
+MaxSum$SD_Flux[MaxSum$DOY %in% 185] = 0.45
+MaxSum$SD_Flux[MaxSum$DOY %in% 186] = 0.49
+MaxSum$SD_Flux[MaxSum$DOY %in% 187] = 0.54
+MaxSum$SD_Flux[MaxSum$DOY %in% 188] = 0.4
+MaxSum$SD_Flux[MaxSum$DOY %in% 189] = 0.36
+MaxSum$SD_Flux[MaxSum$DOY %in% 190] = 0.43
+MaxSum$SD_Flux[MaxSum$DOY %in% 191] = 0.51
+MaxSum$SD_Flux[MaxSum$DOY %in% 192] = 0.6
+MaxSum$SD_Flux[MaxSum$DOY %in% 193] = 0.58
+MaxSum$SD_Flux[MaxSum$DOY %in% 194] = 0.55
+MaxSum$SD_Flux[MaxSum$DOY %in% 195] = 0.55
+MaxSum$SD_Flux[MaxSum$DOY %in% 196] = 0.59
+MaxSum$SD_Flux[MaxSum$DOY %in% 197] = 0.5
+MaxSum$SD_Flux[MaxSum$DOY %in% 198] = 0.42
 
-MaxSum$SD_SR <- as.numeric(as.character(MaxSum$SD_SR))
+MaxSum$SD_Flux <- as.numeric(as.character(MaxSum$SD_Flux))
 
 MaxSum$SD_SWC = vector(mode = 'character', length = nrow(MaxSum))
 MaxSum$SD_SWC[MaxSum$DOY %in% 181] = 2.35
@@ -610,14 +648,14 @@ MaxSum$SD_SWC <- as.numeric(as.character(MaxSum$SD_SWC))
 
 MaxSum %>%
   ggplot(aes(x=as.factor(Pulse_day)))+
-  geom_point(aes(y = meanSR),size=2)+
+  geom_point(aes(y = meanFlux),size=2)+
   geom_point(aes(y=meanSWC/10), color = 'blue', size=2)+
   theme(text = element_text(size = 15), plot.background = element_rect(fill = "white"),
         panel.background = element_rect(fill = "white", colour = "black",
                                         size = 2, linetype = "solid")
         #plot.background = element_rect(fill = "#BFD5E3")
   )+
-  geom_errorbar(aes(ymin=meanSR - (SD_SR/sqrt(8)), ymax= meanSR + (SD_SR/sqrt(8))), width=.2,
+  geom_errorbar(aes(ymin=meanFlux - (SD_Flux/sqrt(8)), ymax= meanFlux + (SD_Flux/sqrt(8))), width=.2,
                 position=position_dodge(.9)) +
   geom_errorbar(aes(ymin=meanSWC/10 - ((SD_SWC/10)/sqrt(8)), ymax= meanSWC/10 + ((SD_SWC/10)/sqrt(8))), 
                 width=.2, position=position_dodge(.9))+

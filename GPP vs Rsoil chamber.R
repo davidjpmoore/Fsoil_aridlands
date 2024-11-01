@@ -10,12 +10,6 @@ library(units)
 
 # In this file we will plot figures to show interactions between Rsoil and GPP
 
-# Open file we need
-
-summary_Cham_P <- read.csv("data/Summary chamber.csv")
-Pulse_Cham <- read.csv("data/Pulse chamber.csv")
-NonPulse_Cham <- read.csv("data/PulseN chamber.csv")
-
 # Open new- updated files with Dave's pulse definition
 summary_Cham_P <- read.csv("data/All summary chamber.csv")
 Pulse_Cham <- read.csv("data/Pulse sum chamber.csv")
@@ -59,4 +53,5 @@ NonPulse_Cham %>%
   ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
   xlab(~paste("GPP, ", mu, "mol m"^-2,"s"^-1))+
   ggtitle('Non-Pulse time')+
-  ylim(0,6)
+  ylim(0,6)+
+  xlim(0,6)

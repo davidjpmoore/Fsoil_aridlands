@@ -126,7 +126,8 @@ Sum_Chamber_all <- Cham_USWKG_pulsedata %>%
             meanRsoil = mean(meanRsoil, na.rm = TRUE),
             sumRain = mean(sum_R, na.rm=TRUE),
             meanTsoil = mean(meanTsoil, na.rm=TRUE),
-            meanSWC = mean(meanVWC, na.rm = TRUE)
+            meanSWC = mean(meanVWC, na.rm = TRUE),
+            max_pulse_duration = mean(max_pulse_duration)
   )
 
 Sum_Chamber_all$DOY <- yday(Sum_Chamber_all$date)
@@ -139,7 +140,8 @@ Sum_Chamber_P <- Cham_USWKG_PULSETIME %>%
             meanRsoil = mean(meanRsoil, na.rm = TRUE),
             sumRain = mean(sum_R, na.rm=TRUE),
             meanTsoil = mean(meanTsoil, na.rm=TRUE),
-            meanSWC = mean(meanVWC, na.rm = TRUE)
+            meanSWC = mean(meanVWC, na.rm = TRUE),
+            max_pulse_duration = mean(max_pulse_duration)
             
   )
 
@@ -153,7 +155,8 @@ Sum_Chamber_NP <- Cham_USWKG_NON_PULSETIME%>%
             meanRsoil = mean(meanRsoil, na.rm = TRUE),
             sumRain = mean(sum_R, na.rm=TRUE),
             meanTsoil = mean(meanTsoil, na.rm=TRUE),
-            meanSWC = mean(meanVWC, na.rm = TRUE)
+            meanSWC = mean(meanVWC, na.rm = TRUE),
+            max_pulse_duration = mean(max_pulse_duration)
             
   )
 

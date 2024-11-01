@@ -1,24 +1,25 @@
 # 16-05-2024
 # Anastasia Makhnykina
 
-# In this file you can read 10 steps of our analysis from raw data
+# In this file you can read 12 steps of our analysis from raw data
 # to graphs we use in the paper:
 
-# Step 1 - Open file "Read_eddy.R" +
-# Step 2 - Open file "Pulse and NP eddy.R" updated+
-
+# Step 1 - Open file "Read_eddy.R" 
+# Step 2 - Open file "Pulse and NP eddy.R"
 # Step 3 - Open file "Rain and pulses eddy.R"
-# Step 4 - Open file "GPP vs Reco eddy.R" updated +
-# Step 5 - Open file "SWC and ST space.R" updated +
-# Step 6 - Open file "Eddy model.R" +
+# Step 4 - Open file "Seasons and pulses.R"
+# Step 5 - Open file "GPP vs Reco eddy.R" 
+# Step 6 - Open file "SWC and ST space.R"
+# Step 7 - Open file "Eddy model.R" 
 
 # Uncertainty found
 
-# Step 7 - Open file "Read_chamber.R" +
-# Step 8 - Open file "Pulse and NP chamber.R" new+
-# Step 9 - Open file "GPP vs Rsoil chamber.R" new+
-# Step 10 - Open file "SWC ST space chamber.R"
-# Step 11 - Open file "Chamber model.R" new+
+# Step 8 - Open file "Read_chamber.R"
+# Step 9 - Open file "Pulse and NP chamber.R" 
+# Step 10 - Open file "GPP vs Rsoil chamber.R" 
+# Step 11 - Open file "SWC ST space chamber.R"
+# Step 12 - Open file "Chamber model.R" 
+
 
  
 #################### That's all! Mission complete! ######################

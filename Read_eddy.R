@@ -8,7 +8,11 @@ library(lubridate)
 library(ggplot2)
 library(units)
 
-###### Read data from eddy tower for all seasons #######################
+
+##### Read data from eddy tower for all seasons #######################
+
+setwd("C:\\Users\\user\\Documents\\Fsoil_aridlands")
+
 
 # First file upload from the folder on your computer because it's too big
 
