@@ -111,7 +111,7 @@ MaxWin9 <- USWkg12_20_summary %>%
 
 # To exclude MaxWin5 and make the one df for 8 Reco and SWC5
 MaxWin <- MaxWin1 %>%
-  select(meanRECO, sdReco, meanSWC5,sdSWC5)
+  select(meanRECO, sdReco, meanSWC5,sdSWC5, DOY)
 
 MaxWin$Reco2 <- MaxWin2$meanRECO
 MaxWin$Reco2sd <- MaxWin2$sdReco
@@ -158,7 +158,7 @@ MaxWin$Reco6 <- as.numeric(as.character(MaxWin$Reco6))
 MaxWin$Reco7 <- as.numeric(as.character(MaxWin$Reco7))
 MaxWin$Reco8 <- as.numeric(as.character(MaxWin$Reco8))
 
-MaxWin$meanFlux <- rowMeans(MaxWin[,c(1,5,9,13,17,21,25,29)], na.rm=TRUE)
+MaxWin$meanFlux <- rowMeans(MaxWin[,c(1,6,10,14,18,22,26,30)], na.rm=TRUE)
 
 #MaxWin$meanSRsd <- rowSds(MaxWin[,c(1,5,9,13,17,21,25,29)], na.rm=TRUE)
 
@@ -182,7 +182,7 @@ MaxWin$SD_Flux[MaxWin$DOY %in% 338] = 0.17
 MaxWin$SD_Flux[MaxWin$DOY %in% 339] = 0.11
 MaxWin$SD_Flux[MaxWin$DOY %in% 340] = 0.11
 
-MaxWin$SD_Flux <- as.numeric(as.character(MaxWin$SD_SR))
+MaxWin$SD_Flux <- as.numeric(as.character(MaxWin$SD_Flux))
 
 
 MaxWin$meanSWC5 <- as.numeric(as.character(MaxWin$meanSWC5))
@@ -194,7 +194,7 @@ MaxWin$SWC6 <- as.numeric(as.character(MaxWin$SWC6))
 MaxWin$SWC7 <- as.numeric(as.character(MaxWin$SWC7))
 MaxWin$SWC8 <- as.numeric(as.character(MaxWin$SWC8))
 
-MaxWin$meanSWC <- rowMeans(MaxWin[,c(3,7,11,15,19,23,27,31)], na.rm=TRUE)
+MaxWin$meanSWC <- rowMeans(MaxWin[,c(3,8,12,16,20,24,28,32)], na.rm=TRUE)
 
 MaxWin$DOY <- MaxWin1$DOY 
 
@@ -429,7 +429,7 @@ MaxSpr$SD_Flux[MaxSpr$DOY %in% 114] = 0.67
 MaxSpr$SD_Flux[MaxSpr$DOY %in% 115] = 0.72
 MaxSpr$SD_Flux[MaxSpr$DOY %in% 116] = 0.75
 
-MaxSpr$SD_Flux <- as.numeric(as.character(MaxSpr$SD_SR))
+MaxSpr$SD_Flux <- as.numeric(as.character(MaxSpr$SD_Flux))
 
 MaxSpr$SD_SWC = vector(mode = 'character', length = nrow(MaxSpr))
 MaxSpr$SD_SWC[MaxSpr$DOY %in% 99] = 2.06
