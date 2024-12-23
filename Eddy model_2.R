@@ -78,18 +78,19 @@ Summary_Model4_NP = summary(Param_model4_NP)
 # n    0.129719   0.004816  26.933   <2e-16 ***
 
 
-#FrefNP = 0.561731
-#FrefNP_SE = 0.022309
-#SMoptNP =0.125 
-#c4NP = 8.106202
-#c4NP_SE = 4.970882
-#b4NP =  0.034162 
-#b4NP_SE = 0.001555
-#nNP=  0.129719
-#nNP_SE = 0.004816
+FrefNP = 0.561731
+FrefNP_SE = 0.022309
+SMoptNP =0.125 
+c4NP = 8.106202
+c4NP_SE = 4.970882
+b4NP =  0.034162 
+b4NP_SE = 0.001555
+nNP=  0.129719
+nNP_SE = 0.004816
 
-FrefNP = 0.581979
-FrefNP_SE = 0.022416
+
+#FrefNP = 0.581979
+#FrefNP_SE = 0.022416
 SMoptNP =0.125 
 c4NP = 5.866561
 c4NP_SE = 4.914379
