@@ -10,7 +10,7 @@
 # Step 4 - Open file "Seasons and pulses.R"
 # Step 5 - Open file "GPP vs Reco eddy.R" 
 # Step 6 - Open file "SWC and ST space.R"
-# Step 7 - Open file "Eddy model.R" 
+# Step 7 - Open file "Eddy model 2.R" 
 
 # Uncertainty found
 

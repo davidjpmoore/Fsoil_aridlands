@@ -11,97 +11,11 @@ library(reshape2)
 
 ### In this file we will create two data frames for Pulse and Non-pulse time ###
 
-# Open file with all eddy-covariance data 
-USWkg12_20_summary <- read.csv("data/USWkg12_20_summary.csv", 
-                               header=TRUE, na.strings="NaN", skip=0)
-
-# Create new columns for heavy rains
-USWkg12_20_summary$bigR <- as.numeric(USWkg12_20_summary$sum_R>5)
-USWkg12_20_summary$bigRmm <- as.numeric(USWkg12_20_summary$bigR)*as.numeric(USWkg12_20_summary$sum_R)
-
-# Create DOY - column
-USWkg12_20_summary$DOY <- paste(yday(USWkg12_20_summary$date))
-USWkg12_20_summary$DOY <- as.numeric(as.character(USWkg12_20_summary$DOY))
-
-# Adding Seasons of the year
-USWkg12_20_summary$Season = vector(mode = 'character', length = nrow(USWkg12_20_summary))
-USWkg12_20_summary$Season[USWkg12_20_summary$DOY %in% c(1:59,305:366)] = 'Winter'
-USWkg12_20_summary$Season[USWkg12_20_summary$DOY %in% 60:181] = 'Spring'
-USWkg12_20_summary$Season[USWkg12_20_summary$DOY %in% 182:304] = 'Summer'
-
-# Create year - column
-USWkg12_20_summary$year <- substr(USWkg12_20_summary$date, 1,4)
-USWkg12_20_summary$year <- as.numeric(as.character(USWkg12_20_summary$year))
-
-# Create Pulse_DOY - the DOY when rain > 5 mm happen
-USWkg12_20_summary$DOY <- as.numeric(as.character(USWkg12_20_summary$DOY))
-USWkg12_20_summary$Pulse_DOY <- USWkg12_20_summary$DOY*USWkg12_20_summary$bigR
-
-# Make df with just Rains > 5 mm 
-USW1220_Pulse <- USWkg12_20_summary %>%
-  filter(bigRmm > 0)
-
-
-#################### 5-days duration Pulse definition ########################
-#######################################################################
-
-# Make additional "test" df to make Pulse duration (5 days)
-USW1220_Pulse$DOY <- as.numeric(as.character(USW1220_Pulse$DOY))
-
-colnames(USWkg12_20_summary) [1] <- 'date'
-test <- data.frame(DOY=USW1220_Pulse$date)
-test$day1<-as.Date(test$DOY)+1
-test$day2<-as.Date(test$DOY)+2
-test$day3<-as.Date(test$DOY)+3
-test$day4<-as.Date(test$DOY)+4
-test$Sday <- yday(test$DOY)
-test$DOY <- as.Date(test$DOY)
-
-test2<- melt(test,id='Sday')
-
-test3 <- test2 %>% 
-  arrange(value)
-
-test4 <- data.frame(unique(test2$value))
-
-test4$date <- test4$unique.test2.value.
-test5 <- test4 %>% 
-  arrange(date)
-
-test5$DOY <- yday(test5$date)
-test5 <- test5[-c(1)]
-
-test5$date <- as.Date(test5$date)
-USWkg12_20_summary$date <- as.Date(USWkg12_20_summary$date)
-
-summary_P <- merge(USWkg12_20_summary,test5,by="date",all.x=TRUE)
+# Open file with all eddy-covariance data (file was created in "Read_eddy.R")
  
-# Add PulseDays - column
-summary_P$PulseDays <- summary_P$DOY.y
-
-summary_P$PulseDays[is.na(summary_P$PulseDays)] <- 0
-
-write.csv(summary_P, "data/Summary_eddy.csv")
-
-# Create df for Pulse and Non-pulse time
-USW_Pulse <- summary_P %>%
-  filter(PulseDays > 0)
-
-write.csv(USW_Pulse, "data/USWPulse.csv")
-
-
-USW_PulseN <- summary_P %>%
-  filter(PulseDays == 0)
-
-write.csv(USW_PulseN, "data/USWPulseN.csv")
-
-
-###################### DM Pulse Definition #####################################
-################################################################################
-
-# Open file with all eddy-covariance data 
 USWkg12_20_summary <- read.csv("data/USWkg12_20_summary.csv", 
                                header=TRUE, na.strings="NaN", skip=0)
+
 USWkg12_20_summary$date <- as.Date(USWkg12_20_summary$date)
 
 # sort data by date

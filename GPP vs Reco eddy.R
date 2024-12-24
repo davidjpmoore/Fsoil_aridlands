@@ -13,14 +13,14 @@ library(ggpubr)
 # for all time, Pulse and non-Pulse time ##################################
 
 
-# Read other pulse division docs - with "DM" in their names - 
-summary_P <- read.csv("data/years_sum1_DM.csv")
-USW_PulseN <- read.csv("data/years_sum_Pulse0_DM.csv")
-USW_Pulse <- read.csv("data/years_sum_Pulse1_DM.csv")
+# Read pulse division docs
+years_sum1 <- read.csv("data/years_sum1_DM.csv")
+years_sum_Pulse0 <- read.csv("data/years_sum_Pulse0_DM.csv")
+years_sum_Pulse1 <- read.csv("data/years_sum_Pulse1_DM.csv")
 
 
 # Plot data For All time
-summary_P %>%
+years_sum1 %>%
   ggplot(aes(x=meanGPP, y = meanRECO))+
   geom_point(shape=1)+
   theme_bw()+
@@ -33,7 +33,7 @@ summary_P %>%
   ylim(0,6)
 
 # Plot data for pulse time
-USW_Pulse %>%
+years_sum_Pulse1 %>%
   ggplot(aes(x=meanGPP, y = meanRECO))+
   geom_point(shape=1)+
   theme_bw()+
@@ -46,7 +46,7 @@ USW_Pulse %>%
   ylim(0,6)
 
 # Plot data for non-Pulse time
-USW_PulseN %>%
+years_sum_Pulse0 %>%
   ggplot(aes(x=meanGPP, y = meanRECO))+
   geom_point(shape=1)+
   theme_bw()+

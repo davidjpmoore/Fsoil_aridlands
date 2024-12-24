@@ -14,8 +14,8 @@ library(matrixStats)
 # In the next block we will create figures for pulses for 3 seasons ###
 # Spring, Summer and Winter pulses - We need make the mean Values for each season #####
 
-### We need 2 dfs - USW9sum and USWkg12_20_summary ##########
-### You can open them separately or keep them open from the previous analysis #############
+### USW9sum was created in the file "Rain and pulses.R" ##########
+
 
 USW9sum$Season = vector(mode = 'character', length = nrow(USW9sum))
 USW9sum$Season[USW9sum$DOY %in% c(1:59,305:366)] = 'Winter'
