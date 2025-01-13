@@ -12,19 +12,19 @@ library(grDevices)
 library(readr)
 
 # Open new files 
-summary_Cham_P <- read.csv("data/All summary chamber.csv")
+summary_Cham <- read.csv("data/All summary chamber.csv")
 Pulse_Cham <- read.csv("data/Pulse sum chamber.csv")
 NonPulse_Cham <- read.csv("data/NonPulse sum chamber.csv")
 
 # Make sure in the Date format
 NonPulse_Cham$date <- as.Date(NonPulse_Cham$date)
 Pulse_Cham$date <- as.Date(Pulse_Cham$date)
-summary_Cham_P$date <- as.Date(summary_Cham_P$date)
+summary_Cham$date <- as.Date(summary_Cham$date)
 
 # CHECK COLUMN NAMES AND DATA TYPES
 str(NonPulse_Cham)
 str(Pulse_Cham)
-str(summary_Cham_P)
+str(summary_Cham)
 
 ###### Pulse time model ###########################
 ###################################################
@@ -43,8 +43,15 @@ Param_model4_P <- nls(meanRsoil ~ Fref*((meanGPP_P/GPPmax_P +n)/1+n) *(1-c4*(0.1
 )
 Summary_Model4_P = summary(Param_model4_P)
 
-# Pulse parameters
-FrefP = 0.446910
+# Pulse parameters 
+#Parameters:
+        # Estimate Std. Error t value Pr(>|t|)    
+# Fref  0.446910   0.060229   7.420 7.49e-13 ***
+# c4    -1.058658   0.764587  -1.385    0.167    
+# b4     0.044799   0.003433  13.049  < 2e-16 ***
+#  n     0.298964   0.035638   8.389 9.29e-16 ***
+
+FrefP = 0.446910 
 SMoptP =0.125 
 c4P = -1.058658   
 b4P = 0.044799
@@ -68,7 +75,13 @@ Param_model4_NP <- nls(meanRsoil ~ Fref*((meanGPP_NP/GPPmax_NP +n)/1+n) *
 )
 Summary_Model4_NP = summary(Param_model4_NP)
 
-# Formula: meanRECO ~ Fref * ((meanGPP_NP/GPPmax_NP + n)/1 + n) * (1 - c4 * 
+#Parameters:
+#        Estimate Std. Error t value Pr(>|t|)    
+# Fref   0.743454   0.035530  20.924   <2e-16 ***
+#  c4   -1.668911   0.845241  -1.974   0.0488 *  
+#  b4    0.023544   0.001437  16.383   <2e-16 ***
+#  n     0.160941   0.007160  22.479   <2e-16 ***
+
 
 # NON_Pulse parameters
 FrefNP = 0.743454
@@ -80,20 +93,28 @@ nNP=  0.160941
 ############### All time model #################################
 ################################################################
 
-complete.cases(summary_Cham_P)
+complete.cases(summary_Cham)
 
 # Setting up drivers for all time
-All_meanSWC = summary_Cham_P$meanSWC
-All_meanST = summary_Cham_P$meanTsoil
-All_meanGPP = summary_Cham_P$meanGPP
-All_GPPmax = max(summary_Cham_P$meanGPP, na.rm = TRUE)
+All_meanSWC = summary_Cham$meanSWC
+All_meanST = summary_Cham$meanTsoil
+All_meanGPP = summary_Cham$meanGPP
+All_GPPmax = max(summary_Cham$meanGPP, na.rm = TRUE)
 
 Param_model4_All <- nls(meanRsoil ~ Fref*((All_meanGPP/All_GPPmax +n)/1+n) *(1-c4*(0.1-All_meanSWC)^2)*exp(b4*All_meanST), 
-                        data = summary_Cham_P,
+                        data = summary_Cham,
                         start = list(Fref=0.75,  c4=56.54, b4=0.04, n=0.84),
                         control = nls.control(maxiter = 1000, minFactor = 0.01)
 )
 Summary_Model4_All = summary(Param_model4_All)
+
+#Parameters:
+#       Estimate Std. Error t value Pr(>|t|)    
+# Fref  0.916427   0.062004  14.780   <2e-16 ***
+# c4   -0.244660   0.542270  -0.451    0.652    
+# b4    0.031851   0.001996  15.960   <2e-16 ***
+# n     0.137391   0.007402  18.561   <2e-16 ***
+
 
 # All-time parameters
 FrefAll = 0.916427
@@ -110,12 +131,12 @@ All_model4_P = FrefP*((All_meanGPP/All_GPPmax +nP)/1+nP) *(1-c4P*(SMoptP-All_mea
 All_model4 = FrefAll*((All_meanGPP/All_GPPmax +nAll)/1+nAll) *(1-c4All*(SMoptAll-All_meanSWC)^2)*exp(b4All*All_meanST)
 
 # Plot the RECO time series
-plot(summary_Cham_P$date, summary_Cham_P$meanRsoil, type = "p", col = "blue", xlab = "Timestamp", ylab = "Rsoil", cex = 0.8)
+plot(summary_Cham$date, summary_Cham$meanRsoil, type = "p", col = "blue", xlab = "Timestamp", ylab = "Rsoil", cex = 0.8)
 
 # Add the model output time series to the plot - CORRECT FIGURE
-points(summary_Cham_P$date, ALL_model4_NP, col = "red", pch = 16, cex = 0.4)
-points(summary_Cham_P$date, All_model4_P, col = "cyan", pch = 16, cex = 0.4, alpha=0.5)
-points(summary_Cham_P$date, All_model4, col = "green", pch = 16, cex = 0.4, alpha=0.5)
+points(summary_Cham$date, ALL_model4_NP, col = "red", pch = 16, cex = 0.4)
+points(summary_Cham$date, All_model4_P, col = "cyan", pch = 16, cex = 0.4, alpha=0.5)
+points(summary_Cham$date, All_model4, col = "green", pch = 16, cex = 0.4, alpha=0.5)
 
 # create the legend
 legend(x = "topleft",
@@ -129,7 +150,7 @@ legend(x = "topleft",
 plot(ALL_model4_NP,All_model4_P, xlab = "Non-Pulse Model Rsoil", ylab = "Pulse Model Rsoil")
 
 # Create df with all measured and modelled fluxes
-Rsoil_df <- summary_Cham_P %>%
+Rsoil_df <- summary_Cham %>%
   select(date, meanRsoil, max_pulse_duration)
 
 Rsoil_df$PulseM <- All_model4_P
@@ -144,25 +165,25 @@ Rsoil1 <- Rsoil_df %>%
                    max_pulse_duration == 20 ~ PulseM))
 
 
-plot(Rsoil_df$date, Rsoil_df$meanRsoil, type = "p", col = "blue", xlab = "Timestamp", 
+plot(Rsoil1$date, Rsoil1$meanRsoil, type = "p", col = "blue", xlab = "Timestamp", 
      ylab =  "Rsoil, µmol m-2 s-1", cex = 0.8)
 
 points(Rsoil1$date, Rsoil1$`case_when(...)`, col="green", pch = 16, cex = 0.4, alpha=0.5)
 # create the legend
 legend(x = "topleft",
-       legend = c("Measured Rsoil", "Pulse and Non-pulse models"),
+       legend = c("Measured Rsoil", "Combined model"),
        pch = c(1, 16),
        col = c("blue", "green"),
        lty = c(NA, 1),
        bty = "n")
 
-Rsoil_df$Rsoil_Mean <- Rsoil1$`case_when(...)`
+Rsoil_df$Rsoil_Combined <- Rsoil1$`case_when(...)`
 
 Rsoil_df %>%
   na.omit() %>%
   ggplot(aes(x=date))+
   geom_point(aes(y = meanRsoil),shape=20, color = "blue", size = 2)+
-  geom_point(aes(y=Rsoil_Mean),shape=1, size = 1, color = "green")+
+  geom_point(aes(y=Rsoil_Combined),shape=1, size = 1, color = "green")+
   theme_classic()+
   theme(text = element_text(size = 15))+
   ylab(~paste("Rsoil, ", mu, "mol m"^-2,"s"^-1))+
@@ -171,7 +192,7 @@ Rsoil_df %>%
 
 
 Rsoil_df %>%
-  ggplot(aes(x=meanRsoil, y = Rsoil_Mean))+
+  ggplot(aes(x=meanRsoil, y = Rsoil_Combined))+
   geom_point(shape=1)+
   theme_classic()+
   theme(text = element_text(size = 15))+
@@ -184,13 +205,13 @@ Rsoil_df %>%
   xlim(0,4)
 
 # calculate RMSE
-rmse_MeanMod <- sqrt(sum((Rsoil_df$Rsoil_Mean - Rsoil_df$meanRsoil)^2, na.rm=TRUE)/nrow(Rsoil_df))
+rmse_MeanMod <- sqrt(sum((Rsoil_df$Rsoil_Combined - Rsoil_df$meanRsoil)^2, na.rm=TRUE)/nrow(Rsoil_df))
 
 # calculate MAPE -  Mean absolute percent error
-mape_MeanMod <- mean(abs((Rsoil_df$Rsoil_Mean - Rsoil_df$meanRsoil) / Rsoil_df$meanRsoil), na.rm=TRUE) * 100
+mape_MeanMod <- mean(abs((Rsoil_df$Rsoil_Combined - Rsoil_df$meanRsoil) / Rsoil_df$meanRsoil), na.rm=TRUE) * 100
 
 # calculate R-squared
-r_squared_MeanMod <- cor(Rsoil_df$Rsoil_Mean, Rsoil_df$meanRsoil, use = "complete.obs")^2
+r_squared_MeanMod <- cor(Rsoil_df$Rsoil_Combined, Rsoil_df$meanRsoil, use = "complete.obs")^2
 
 
 ###### Calculate cumulative flux for - Mean model, Including Pulse and non-pulse together and measured fluxes ######
@@ -200,20 +221,20 @@ r_squared_MeanMod <- cor(Rsoil_df$Rsoil_Mean, Rsoil_df$meanRsoil, use = "complet
 
 Rsoildf_new <- Rsoil_df %>%
   na.omit() %>%
-  select (date, meanRsoil, MeanM, Rsoil_Mean)
+  select (date, meanRsoil, MeanM, Rsoil_Combined)
 
 Rsoildf_new$culMeasured <- ave(Rsoildf_new$meanRsoil, FUN = cumsum)  
 Rsoildf_new$culMeanMod <- ave(Rsoildf_new$MeanM, FUN = cumsum)  
-Rsoildf_new$culModelled <- ave(Rsoildf_new$Rsoil_Mean, FUN = cumsum)  
+Rsoildf_new$culCombined <- ave(Rsoildf_new$Rsoil_Combined, FUN = cumsum)  
 
 
 plot(Rsoildf_new$date,Rsoildf_new$culMeasured,  type = "l", col = "blue", xlab = "Year", 
      ylab =  "Cumulative Rsoil", cex = 0.8)
 lines(Rsoildf_new$date, Rsoildf_new$culMeanMod, type = "l", col = "red")
-lines(Rsoildf_new$date, Rsoildf_new$culModelled, type = "l", col = "green")
+lines(Rsoildf_new$date, Rsoildf_new$culCombined, type = "l", col = "green")
 
 legend(x = "topleft",
-       legend = c("Measured Rsoil", "Pulse and Non-pulse models", "Mean model"),
+       legend = c("Measured Rsoil", "Mean model", "Combined models" ),
        pch = c(1, 16, 16),
        col = c("blue", "red", "green"),
        lty = c(NA, 1,1),
@@ -221,9 +242,9 @@ legend(x = "topleft",
 
 
 
-
-
-
+sum(Rsoildf_new$meanRsoil)
+sum(Rsoildf_new$MeanM)
+sum(Rsoildf_new$Rsoil_Combined)
 
 
 

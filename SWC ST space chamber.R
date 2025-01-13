@@ -12,7 +12,7 @@ library(units)
 
 # Open file we need
 
-summary_Cham_P <- read.csv("data/All summary chamber.csv")
+summary_Cham <- read.csv("data/All summary chamber.csv")
 Pulse_Cham <- read.csv("data/Pulse sum chamber.csv")
 NonPulse_Cham <- read.csv("data/NonPulse sum chamber.csv")
 

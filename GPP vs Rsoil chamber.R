@@ -7,17 +7,18 @@ library(tidyverse)
 library(lubridate)
 library(ggplot2)
 library(units)
+library(ggpubr)
 
 # In this file we will plot figures to show interactions between Rsoil and GPP
 
 # Open new- updated files with Dave's pulse definition
-summary_Cham_P <- read.csv("data/All summary chamber.csv")
+summary_Cham <- read.csv("data/All summary chamber.csv")
 Pulse_Cham <- read.csv("data/Pulse sum chamber.csv")
 NonPulse_Cham <- read.csv("data/NonPulse sum chamber.csv")
 
 
 # Plot figure for all time
-summary_Cham_P %>%
+summary_Cham %>%
   ggplot(aes(x=meanGPP, y = meanRsoil))+
   geom_point(shape=1)+
   theme_bw()+
