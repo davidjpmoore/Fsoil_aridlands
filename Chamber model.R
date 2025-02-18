@@ -233,8 +233,9 @@ plot(Rsoildf_new$date,Rsoildf_new$culMeasured,  type = "l", col = "blue", xlab =
 lines(Rsoildf_new$date, Rsoildf_new$culMeanMod, type = "l", col = "red")
 lines(Rsoildf_new$date, Rsoildf_new$culCombined, type = "l", col = "green")
 
+
 legend(x = "topleft",
-       legend = c("Measured Rsoil", "Mean model", "Combined models" ),
+       legend = c("Measured Rsoil", "Mean model", "Combined model" ),
        pch = c(1, 16, 16),
        col = c("blue", "red", "green"),
        lty = c(NA, 1,1),

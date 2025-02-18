@@ -330,6 +330,7 @@ Recodf_new$culMeanMod <- ave(Recodf_new$MeanM, FUN = cumsum)
 Recodf_new$culModelled <- ave(Recodf_new$Reco_Combined, FUN = cumsum)  
 
 
+
 plot(Recodf_new$date,Recodf_new$culMeasured,  type = "l", col = "blue", xlab = "Year", 
      ylab =  "Cumulative Reco", cex = 0.8)
 lines(Recodf_new$date, Recodf_new$culMeanMod, type = "l", col = "red")
