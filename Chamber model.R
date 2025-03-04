@@ -151,29 +151,32 @@ plot(ALL_model4_NP,All_model4_P, xlab = "Non-Pulse Model Rsoil", ylab = "Pulse M
 
 # Create df with all measured and modelled fluxes
 Rsoil_df <- summary_Cham %>%
-  select(date, meanRsoil, max_pulse_duration)
+  select(date, meanRsoil, max_pulse_duration, )
 
 Rsoil_df$PulseM <- All_model4_P
 Rsoil_df$NonPulseM <- ALL_model4_NP
 Rsoil_df$MeanM <- All_model4
 
 Rsoil1 <- Rsoil_df %>%
-  select (date, meanRsoil, max_pulse_duration, PulseM, NonPulseM) %>%
+  select (date, meanRsoil, max_pulse_duration, PulseM, NonPulseM, MeanM) %>%
   mutate(case_when(max_pulse_duration == 0 ~ NonPulseM,
                    max_pulse_duration == 8 ~ PulseM,
                    max_pulse_duration == 14 ~ PulseM,
                    max_pulse_duration == 20 ~ PulseM))
 
 
-plot(Rsoil1$date, Rsoil1$meanRsoil, type = "p", col = "blue", xlab = "Timestamp", 
-     ylab =  "Rsoil, µmol m-2 s-1", cex = 0.8)
+plot(Rsoil1$date, Rsoil1$meanRsoil, type = "p", col = "blue", xlab = "Year", 
+     ylab =  "Rsoil, µmol m-2 s-1", cex = 0.8,
+     ylim = c(0,4))
 
 points(Rsoil1$date, Rsoil1$`case_when(...)`, col="green", pch = 16, cex = 0.4, alpha=0.5)
+points(Rsoil1$date, Rsoil1$MeanM, col="red", pch = 16, cex = 0.4, alpha=0.5)
+
 # create the legend
 legend(x = "topleft",
-       legend = c("Measured Rsoil", "Combined model"),
+       legend = c("Measured Rsoil", "Combined model", "Mean model"),
        pch = c(1, 16),
-       col = c("blue", "green"),
+       col = c("blue", "green", "red"),
        lty = c(NA, 1),
        bty = "n")
 
@@ -204,14 +207,24 @@ Rsoil_df %>%
   ylim(0,4)+
   xlim(0,4)
 
-# calculate RMSE
-rmse_MeanMod <- sqrt(sum((Rsoil_df$Rsoil_Combined - Rsoil_df$meanRsoil)^2, na.rm=TRUE)/nrow(Rsoil_df))
+# statistics for Combined model
+rmse_CombMod <- sqrt(sum((Rsoil_df$Rsoil_Combined - Rsoil_df$meanRsoil)^2, na.rm=TRUE)/nrow(Rsoil_df))
 
 # calculate MAPE -  Mean absolute percent error
-mape_MeanMod <- mean(abs((Rsoil_df$Rsoil_Combined - Rsoil_df$meanRsoil) / Rsoil_df$meanRsoil), na.rm=TRUE) * 100
+mape_CombMod <- mean(abs((Rsoil_df$Rsoil_Combined - Rsoil_df$meanRsoil) / Rsoil_df$meanRsoil), na.rm=TRUE) * 100
 
 # calculate R-squared
-r_squared_MeanMod <- cor(Rsoil_df$Rsoil_Combined, Rsoil_df$meanRsoil, use = "complete.obs")^2
+r_squared_CombMod <- cor(Rsoil_df$Rsoil_Combined, Rsoil_df$meanRsoil, use = "complete.obs")^2
+
+### statistics for Mean model
+rmse_MeanMod <- sqrt(sum((Rsoil_df$MeanM - Rsoil_df$meanRsoil)^2, na.rm=TRUE)/nrow(Rsoil_df))
+
+# calculate MAPE -  Mean absolute percent error
+mape_MeanMod <- mean(abs((Rsoil_df$MeanM - Rsoil_df$meanRsoil) / Rsoil_df$meanRsoil), na.rm=TRUE) * 100
+
+# calculate R-squared
+r_squared_MeanMod <- cor(Rsoil_df$MeanM, Rsoil_df$meanRsoil, use = "complete.obs")^2
+
 
 
 ###### Calculate cumulative flux for - Mean model, Including Pulse and non-pulse together and measured fluxes ######
@@ -246,6 +259,108 @@ legend(x = "topleft",
 sum(Rsoildf_new$meanRsoil)
 sum(Rsoildf_new$MeanM)
 sum(Rsoildf_new$Rsoil_Combined)
+
+######### Difference Rsoil Measured - Modelled 
+Rsoildf_new$diffMean <- Rsoildf_new$culMeasured - Rsoildf_new$culMeanMod
+Rsoildf_new$diffComb <- Rsoildf_new$culMeasured - Rsoildf_new$culCombined
+
+
+plot(Rsoildf_new$date,Rsoildf_new$diffComb,  type = "l", col = "blue", xlab = "Year", 
+     ylab =  "Difference from measured Rsoil", #cex = 0.8,
+     ylim = c(-60,80)
+     )
+lines(Rsoildf_new$date, Rsoildf_new$diffMean, type = "l", col = "red")
+
+legend(x = "topleft",
+       legend = c("Combined model difference", "Mean model difference"),
+       pch = c(1, 16, 16),
+       col = c("blue", "red"),
+       lty = c(NA, 1, 1),
+       bty = "n")
+
+
+Rsoildf_new %>%
+  ggplot(aes(x=date))+ 
+  geom_line(aes(y = diffMean, col = 'diffMean'))+
+  geom_line(aes(y = diffComb, col = 'diffComb'))+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  #stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  #stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
+  ylab(~paste("Modelled Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Year')
+  #ggtitle('Non-pulse time')+
+  #ylim(0,4)+
+  #xlim(0,4)
+
+
+Rsoildf_new$diffMeanV <- Rsoildf_new$meanRsoil - Rsoildf_new$MeanM
+Rsoildf_new$diffCombV <- Rsoildf_new$meanRsoil - Rsoildf_new$Rsoil_Combined
+
+
+plot(Rsoildf_new$date,Rsoildf_new$diffCombV,  type = "l", col = "blue", xlab = "Year", 
+     ylab =  "Difference from measured Rsoil", #cex = 0.8,
+     ylim = c(-3,6)
+)
+lines(Rsoildf_new$date, Rsoildf_new$diffMeanV, type = "l", col = "red")
+
+legend(x = "topleft",
+       legend = c( "Combined model difference", "Mean model difference"),
+       pch = c(1, 16, 16),
+       col = c("blue", "red"),
+       lty = c(NA, 1, 1),
+       bty = "n")
+
+######### Difference Modelled - Rsoil Measured 
+Rsoildf_new$diffMean2 <-  Rsoildf_new$culMeanMod - Rsoildf_new$culMeasured
+Rsoildf_new$diffComb2 <- Rsoildf_new$culCombined - Rsoildf_new$culMeasured 
+
+
+plot(Rsoildf_new$date,Rsoildf_new$diffComb2,  type = "l", col = "blue", xlab = "Year", 
+     ylab =  "Difference from measured Rsoil", #cex = 0.8,
+     ylim = c(-80,60)
+)
+lines(Rsoildf_new$date, Rsoildf_new$diffMean2, type = "l", col = "red")
+
+legend(x = "topleft",
+       legend = c("Combined model difference", "Mean model difference"),
+       pch = c(1, 16, 16),
+       col = c("blue", "red"),
+       lty = c(NA, 1, 1),
+       bty = "n")
+
+
+Rsoildf_new %>%
+  ggplot(aes(x=date))+ 
+  geom_line(aes(y = diffMean2, col = 'diffMean'))+
+  geom_line(aes(y = diffComb2, col = 'diffComb'))+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  #stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  #stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
+  ylab(~paste("Modelled Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Year')
+#ggtitle('Non-pulse time')+
+#ylim(0,4)+
+#xlim(0,4)
+
+
+Rsoildf_new$diffMeanV2 <- Rsoildf_new$MeanM - Rsoildf_new$meanRsoil 
+Rsoildf_new$diffCombV2 <- Rsoildf_new$Rsoil_Combined - Rsoildf_new$meanRsoil 
+
+
+plot(Rsoildf_new$date,Rsoildf_new$diffCombV2,  type = "l", col = "blue", xlab = "Year", 
+     ylab =  "Difference from measured Rsoil", #cex = 0.8,
+     ylim = c(-6,3)
+)
+lines(Rsoildf_new$date, Rsoildf_new$diffMeanV2, type = "l", col = "red")
+
+legend(x = "topleft",
+       legend = c( "Combined model difference", "Mean model difference"),
+       pch = c(1, 16, 16),
+       col = c("blue", "red"),
+       lty = c(NA, 1, 1),
+       bty = "n")
 
 
 

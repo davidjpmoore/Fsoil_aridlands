@@ -344,8 +344,110 @@ legend(x = "topleft",
        bty = "n")
 
 
+### Calculate differences from the measured values Measured - Modelled #########
+
+Recodf_new$diffMean <- Recodf_new$culMeasured - Recodf_new$culMeanMod
+Recodf_new$diffComb <- Recodf_new$culMeasured - Recodf_new$culModelled
 
 
+plot(Recodf_new$date,Recodf_new$diffComb,  type = "l", col = "blue", xlab = "Year", 
+     ylab =  "Difference from measured Reco", #cex = 0.8,
+     ylim = c(-60,200)
+)
+lines(Recodf_new$date, Recodf_new$diffMean, type = "l", col = "red")
+
+legend(x = "topleft",
+       legend = c("Combined model difference", "Mean model difference"),
+       pch = c(1, 16, 16),
+       col = c("blue", "red"),
+       lty = c(NA, 1, 1),
+       bty = "n")
+
+
+Recodf_new %>%
+  ggplot(aes(x=date))+ 
+  geom_line(aes(y = diffMean, col = 'diffMean'))+
+  geom_line(aes(y = diffComb, col = 'diffComb'))+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  #stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  #stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
+  ylab(~paste("Modelled Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Year')
+#ggtitle('Non-pulse time')+
+#ylim(0,4)+
+#xlim(0,4)
+
+
+Recodf_new$diffMeanV <- Recodf_new$meanRECO - Recodf_new$MeanM
+Recodf_new$diffCombV <- Recodf_new$meanRECO - Recodf_new$Reco_Combined
+
+
+plot(Recodf_new$date,Recodf_new$diffCombV,  type = "l", col = "blue", xlab = "Year", 
+     ylab =  "Difference from measured Reco", #cex = 0.8,
+     ylim = c(-2,3)
+)
+lines(Recodf_new$date, Recodf_new$diffMeanV, type = "l", col = "red")
+
+legend(x = "topleft",
+       legend = c( "Combined model difference", "Mean model difference"),
+       pch = c(1, 16, 16),
+       col = c("blue", "red"),
+       lty = c(NA, 1, 1),
+       bty = "n")
+
+
+### Calculate differences from the measured values Modelled - Measured  #########
+
+Recodf_new$diffMean2 <- Recodf_new$culMeanMod - Recodf_new$culMeasured  
+Recodf_new$diffComb2 <- Recodf_new$culModelled - Recodf_new$culMeasured 
+
+
+plot(Recodf_new$date,Recodf_new$diffComb2,  type = "l", col = "blue", xlab = "Year", 
+     ylab =  "Difference from measured Reco", #cex = 0.8,
+     ylim = c(-200,50)
+)
+lines(Recodf_new$date, Recodf_new$diffMean2, type = "l", col = "red")
+
+legend(x = "topleft",
+       legend = c("Combined model difference", "Mean model difference"),
+       pch = c(1, 16, 16),
+       col = c("blue", "red"),
+       lty = c(NA, 1, 1),
+       bty = "n")
+
+
+Recodf_new %>%
+  ggplot(aes(x=date))+ 
+  geom_line(aes(y = diffMean2, col = 'diffMean'))+
+  geom_line(aes(y = diffComb2, col = 'diffComb'))+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  #stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  #stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
+  ylab(~paste("Modelled Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Year')
+#ggtitle('Non-pulse time')+
+#ylim(0,4)+
+#xlim(0,4)
+
+
+Recodf_new$diffMeanV2 <- Recodf_new$MeanM - Recodf_new$meanRECO
+Recodf_new$diffCombV2 <- Recodf_new$Reco_Combined - Recodf_new$meanRECO 
+
+
+plot(Recodf_new$date,Recodf_new$diffCombV2,  type = "l", col = "blue", xlab = "Year", 
+     ylab =  "Difference from measured Reco", #cex = 0.8,
+     ylim = c(-2,3)
+)
+lines(Recodf_new$date, Recodf_new$diffMeanV2, type = "l", col = "red")
+
+legend(x = "topleft",
+       legend = c( "Combined model difference", "Mean model difference"),
+       pch = c(1, 16, 16),
+       col = c("blue", "red"),
+       lty = c(NA, 1, 1),
+       bty = "n")
 
 
 
