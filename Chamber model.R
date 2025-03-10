@@ -10,6 +10,7 @@ library(units)
 library(stats)
 library(grDevices)
 library(readr)
+library(minpack.lm)
 
 # Open new files 
 summary_Cham <- read.csv("data/All summary chamber.csv")
@@ -30,6 +31,8 @@ str(summary_Cham)
 ###################################################
 
 # Assign variables
+Pulse_Cham <- na.omit(Pulse_Cham)
+
 meanSWC_P =Pulse_Cham$meanSWC
 meanST_P = Pulse_Cham$meanTsoil
 meanGPP_P = Pulse_Cham$meanGPP
@@ -61,10 +64,12 @@ nP= 0.298964
 ###########################################
 
 # Assign variables
+NonPulse_Cham <- na.omit(NonPulse_Cham)
+
 meanSWC_NP <- NonPulse_Cham$meanSWC
 meanST_NP <- NonPulse_Cham$meanTsoil
 meanGPP_NP <- NonPulse_Cham$meanGPP
-GPPmax_NP <- max(NonPulse_Cham$meanGPP, na.rm = TRUE)
+GPPmax_NP <- max(NonPulse_Cham$meanGPP)
 
 # Fit model
 Param_model4_NP <- nls(meanRsoil ~ Fref*((meanGPP_NP/GPPmax_NP +n)/1+n) *
@@ -96,6 +101,9 @@ nNP=  0.160941
 complete.cases(summary_Cham)
 
 # Setting up drivers for all time
+
+summary_Cham <- na.omit (summary_Cham)
+
 All_meanSWC = summary_Cham$meanSWC
 All_meanST = summary_Cham$meanTsoil
 All_meanGPP = summary_Cham$meanGPP
@@ -123,6 +131,8 @@ c4All = -0.244660
 b4All = 0.031851
 nAll= 0.137391
 
+
+
 #run model for full time series based on non-pulse time parameters
 ALL_model4_NP = FrefNP*((All_meanGPP/All_GPPmax +nNP)/1+nNP) *(1-c4NP*(SMoptNP-All_meanSWC)^2)*exp(b4NP*All_meanST)
 #run model for full time series based on pulse time parameters
@@ -148,6 +158,17 @@ legend(x = "topleft",
 
 
 plot(ALL_model4_NP,All_model4_P, xlab = "Non-Pulse Model Rsoil", ylab = "Pulse Model Rsoil")
+
+# calculate RMSE
+rmse_NP <- sqrt(mean((ALL_model4_NP - summary_Cham$meanRsoil)^2, na.rm = TRUE))
+rmse_P <- sqrt(mean((All_model4_P - summary_Cham$meanRsoil)^2, na.rm = TRUE))
+# calculate MAPE
+mape_NP <- mean(abs(ALL_model4_NP - summary_Cham$meanRsoil) / summary_Cham$meanRsoil, na.rm = TRUE) * 100
+mape_P <- mean(abs(All_model4_P - summary_Cham$meanRsoil) / summary_Cham$meanRsoil, na.rm = TRUE) * 100
+# calculate R-squared
+r_squared_NP <- cor(ALL_model4_NP, summary_Cham$meanRsoil, use = "complete.obs")^2
+r_squared_P <- cor(All_model4_P, summary_Cham$meanRsoil, use = "complete.obs")^2
+
 
 # Create df with all measured and modelled fluxes
 Rsoil_df <- summary_Cham %>%
@@ -363,6 +384,124 @@ legend(x = "topleft",
        bty = "n")
 
 
+##### Find model parameters for each year ######################
+################################################################
+
+# NP-model
+NonPulse_Cham$year <- substr(NonPulse_Cham$date, 1,4)
+NonPulse_Cham$year <- as.numeric(as.character(NonPulse_Cham$year))
+
+yearID1 <- unique(NonPulse_Cham$year)
+
+start1 <- list(FrefNP=0.75, c4=56.54, b4=0.04, n=0.84)
+
+# create empty data.frame to store IDs and parameters
+params.pre1 <- data.frame(matrix(nrow = length(yearID1), ncol = 1+length(start1)))
+names(params.pre1) <- c("yearID1", names(start1))
+
+for(i in seq_along(yearID1)) {
+  # create data frame for sub "i"
+  
+  individual_DFs1 <- NonPulse_Cham %>% filter (year %in% yearID1[i])
+  
+  # fit model for each sub "i"
+  Param_model4_NP1 <- nlsLM(meanRsoil ~ FrefNP*((meanGPP_NP/GPPmax_NP +n)/1+n)*
+                              (1-c4*(0.1-meanSWC_NP)^2)*exp(b4*meanST_NP), 
+                            data = individual_DFs1,
+                            start = start1, trace = TRUE
+  )
+  
+  # store IDs
+  params.pre1[i,1] <- yearID1[i]
+  
+  # store fit parameters
+  params.pre1[i,2:ncol(params.pre1)] <- Param_model4_NP1$m$getPars()
+  
+ 
+  
+}
+
+params.pre1
+
+
+# Pulse model
+Pulse_Cham$year <- substr(Pulse_Cham$date, 1,4)
+Pulse_Cham$year <- as.numeric(as.character(Pulse_Cham$year))
+
+yearID <- unique(Pulse_Cham$year)
+
+start <- list(FrefP=0.75, c4=56.54, b4=0.04, n=0.84)
+
+# create empty data.frame to store IDs and parameters
+params.pre <- data.frame(matrix(nrow = length(yearID), ncol = 1+length(start)))
+names(params.pre) <- c("yearID", names(start))
+
+
+for(i in seq_along(yearID)) {
+  # create data frame for sub "i"
+  
+  individual_DFs <- Pulse_Cham %>% filter (year %in% yearID[i])
+  
+  # fit model for each sub "i"
+  Param_model4_P1 <- nlsLM(meanRsoil ~ FrefP*((meanGPP_P/GPPmax_P +n)/1+n) *(1-c4*(0.1-meanSWC_P)^2)*exp(b4*meanST_P), 
+                           data = individual_DFs,
+                           start = start, trace = TRUE,
+                           #control = nls.control(maxiter = 1000, minFactor = 0.01)
+  )
+  
+  # store IDs
+  params.pre[i,1] <- yearID[i]
+  
+  # store fit parameters
+  params.pre[i,2:ncol(params.pre)] <- Param_model4_P1$m$getPars()
+  
+  #params.pre[i,3:ncol(params.pre)] <- Param_model4_P1$m$getPars()
+  
+  
+  
+}
+
+params.pre
+
+
+# Mean Model 
+summary_Cham$year <- substr(summary_Cham$date, 1,4)
+summary_Cham$year <- as.numeric(as.character(summary_Cham$year))
+
+yearID2 <- unique(summary_Cham$year)
+
+start2 <- list(FrefL=0.75,  c4L=56.54, b4L=0.04, nL=0.84)
+
+# create empty data.frame to store IDs and parameters
+params.pre2 <- data.frame(matrix(nrow = length(yearID2), ncol = 1+length(start2)))
+names(params.pre2) <- c("yearID", names(start2))
+
+
+for(i in seq_along(yearID2)) {
+  # create data frame for sub "i"
+  
+  individual_DFs2 <- summary_Cham %>% filter (year %in% yearID2[i])
+  
+  # fit model for each sub "i"
+  Param_model4_All1 <- nlsLM(meanRsoil ~ FrefL*((All_meanGPP/All_GPPmax +nL)/1+nL) *(1-c4L*(0.1-All_meanSWC)^2)*exp(b4L*All_meanST), 
+                             data = individual_DFs2,
+                             start = start2, trace = TRUE,
+                             #control = nls.control(maxiter = 1000, minFactor = 0.01)
+  )
+  
+  # store IDs
+  params.pre2[i,1] <- yearID2[i]
+  
+  # store fit parameters
+  params.pre2[i,2:ncol(params.pre2)] <- Param_model4_All1$m$getPars()
+  
+  #params.pre[i,3:ncol(params.pre)] <- Param_model4_P1$m$getPars()
+  
+  
+  
+}
+
+params.pre2
 
 
 

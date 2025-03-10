@@ -11,6 +11,7 @@ library(stats)
 library(grDevices)
 library(readr)
 library(ggpubr)
+library(minpack.lm)
 
 
 # Read other pulse division docs - with "DM" in their names
@@ -198,6 +199,129 @@ legend(x = "topleft",
        bty = "n")
 
 
+##### Find model parameters for each year ######################
+################################################################
+
+# NP-model
+years_sum_Pulse0$year <- substr(years_sum_Pulse0$date, 1,4)
+years_sum_Pulse0$year <- as.numeric(as.character(years_sum_Pulse0$year))
+
+yearID1 <- unique(years_sum_Pulse0$year)
+
+start1 <- list(FrefNP=0.75, c4=56.54, b4=0.04, n=0.84)
+
+# create empty data.frame to store IDs and parameters
+params.pre1 <- data.frame(matrix(nrow = length(yearID1), ncol = 1+length(start1)))
+names(params.pre1) <- c("yearID1", names(start1))
+
+for(i in seq_along(yearID1)) {
+  # create data frame for sub "i"
+  
+  individual_DFs1 <- years_sum_Pulse0 %>% filter (year %in% yearID1[i])
+  
+  # fit model for each sub "i"
+  Param_model4_NP1 <- nlsLM(meanRECO ~ FrefNP*((meanGPP_NP/GPPmax_NP +n)/1+n) *
+                              (1-c4*(0.1-meanSWC5_NP)^2)*exp(b4*meanST5_NP), 
+                           data = individual_DFs1,
+                           start = start1, trace = TRUE,
+                            )
+  
+  # store IDs
+  params.pre1[i,1] <- yearID1[i]
+  
+  # store fit parameters
+  params.pre1[i,2:ncol(params.pre1)] <- Param_model4_NP1$m$getPars()
+  
+  #params.pre[i,3:ncol(params.pre)] <- Param_model4_P1$m$getPars()
+  
+  
+  
+}
+
+params.pre1
+
+
+# Pulse model
+years_sum_Pulse1$year <- substr(years_sum_Pulse1$date, 1,4)
+years_sum_Pulse1$year <- as.numeric(as.character(years_sum_Pulse1$year))
+
+yearID <- unique(years_sum_Pulse1$year)
+
+start <- list(FrefP=0.75, c4=56.54, b4=0.04, n=0.84)
+
+# create empty data.frame to store IDs and parameters
+params.pre <- data.frame(matrix(nrow = length(yearID), ncol = 1+length(start)))
+names(params.pre) <- c("yearID", names(start))
+
+
+for(i in seq_along(yearID)) {
+  # create data frame for sub "i"
+  
+  individual_DFs <- years_sum_Pulse1 %>% filter (year %in% yearID[i])
+  
+  # fit model for each sub "i"
+  Param_model4_P1 <- nlsLM(meanRECO ~ FrefP*((meanGPP_P/GPPmax_P +n )/1+n) *(1-c4*(0.1-meanSWC5_P)^2)*exp(b4*meanST5_P), 
+                         data = individual_DFs,
+                         start = start, trace = TRUE,
+                         #control = nls.control(maxiter = 1000, minFactor = 0.01)
+                         )
+  
+  # store IDs
+  params.pre[i,1] <- yearID[i]
+ 
+  # store fit parameters
+  params.pre[i,2:ncol(params.pre)] <- Param_model4_P1$m$getPars()
+  
+  #params.pre[i,3:ncol(params.pre)] <- Param_model4_P1$m$getPars()
+  
+  
+  
+}
+
+params.pre
+
+
+# Mean Model 
+years_sum1$year <- substr(years_sum1$date, 1,4)
+years_sum1$year <- as.numeric(as.character(years_sum1$year))
+
+yearID2 <- unique(years_sum1$year)
+
+start2 <- list(FrefL=0.75,  c4L=56.54, b4L=0.04, nL=0.84)
+
+# create empty data.frame to store IDs and parameters
+params.pre2 <- data.frame(matrix(nrow = length(yearID2), ncol = 1+length(start2)))
+names(params.pre2) <- c("yearID", names(start2))
+
+
+for(i in seq_along(yearID2)) {
+  # create data frame for sub "i"
+  
+  individual_DFs2 <- years_sum1 %>% filter (year %in% yearID2[i])
+  
+  # fit model for each sub "i"
+  Param_model4_All1 <- nlsLM(meanRECO ~ FrefL*((All_meanGPP/All_GPPmax +nL)/1+nL)*(1-c4L*(0.1-All_meanSWC5)^2)*exp(b4L*All_meanST5), 
+                           data = individual_DFs2,
+                           start = start2, trace = TRUE,
+                           #control = nls.control(maxiter = 1000, minFactor = 0.01)
+  )
+
+  # store IDs
+  params.pre2[i,1] <- yearID2[i]
+  
+  # store fit parameters
+  params.pre2[i,2:ncol(params.pre2)] <- Param_model4_All1$m$getPars()
+  
+  #params.pre[i,3:ncol(params.pre)] <- Param_model4_P1$m$getPars()
+  
+  
+  
+}
+
+params.pre2
+
+
+
 ##### Compare modeled and measured data
 plot(years_sum1$meanRECO,ALL_model4_NP, type = "p", col = "red", xlab = "MEASURED RECO", ylab = "Non-pulse model RECO")
 text(x = 1, y = 1.5, labels = "Over estimation")
@@ -306,14 +430,25 @@ Reco_df %>%
   ylim(0,5)+
   xlim(0,5)
 
-# calculate RMSE
+# calculate RMSE COMBINED MODEL
 rmse_CombinedMod <- sqrt(sum((Reco_df$Reco_Combined - Reco_df$meanRECO)^2, na.rm=TRUE)/nrow(Reco_df))
 
 # calculate MAPE -  Mean absolute percent error
 mape_CombinedMod <- mean(abs((Reco_df$Reco_Combined - Reco_df$meanRECO) / Reco_df$meanRECO), na.rm=TRUE) * 100
  
-# calculate R-squared
+# calculate R-squared 
 r_squared_CombinedMod <- cor(Reco_df$Reco_Combined, Reco_df$meanRECO, use = "complete.obs")^2
+
+# calculate RMSE MEAN MODEL
+rmse_MeanMod <- sqrt(sum((Reco_df$MeanM - Reco_df$meanRECO)^2, na.rm=TRUE)/nrow(Reco_df))
+
+# calculate MAPE -  Mean absolute percent error
+mape_MeanMod <- mean(abs((Reco_df$MeanM - Reco_df$meanRECO) / Reco_df$meanRECO), na.rm=TRUE) * 100
+
+# calculate R-squared
+r_squared_MeanMod <- cor(Reco_df$MeanM, Reco_df$meanRECO, use = "complete.obs")^2
+
+
 
 
 ###### Calculate cumulative flux for - Mean model, Including Pulse and non-pulse together and measured fluxes ######
