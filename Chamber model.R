@@ -504,6 +504,32 @@ for(i in seq_along(yearID2)) {
 params.pre2
 
 
+######### AIC calculation ################
+
+#1 NM model
+
+AIC_1 <- AIC(Param_model4_NP)
+
+# Print the result
+cat("Automated AIC:", AIC_1, "\n")
+
+#2 P model
+
+AIC_2 <- AIC(Param_model4_P)
+
+# Print the result
+cat("Automated AIC:", AIC_2, "\n")
+
+
+#3 All model
+AIC_3 <- AIC(Param_model4_All)
+
+# Print the result
+cat("Automated AIC:", AIC_3, "\n")
+
+
+
+
 
 
 

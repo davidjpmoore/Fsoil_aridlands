@@ -586,14 +586,57 @@ legend(x = "topleft",
 
 
 
+######### AIC calculation ################
 
+#1 NM model
 
+AIC_1 <- AIC(Param_model4_NP)
 
+# Print the result
+cat("Automated AIC:", AIC_1, "\n")
 
+#2 P model
 
+AIC_2 <- AIC(Param_model4_P)
 
+# Print the result
+cat("Automated AIC:", AIC_2, "\n")
 
+#3 All model
+AIC_3 <- AIC(Param_model4_All)
 
+# Print the result
+cat("Automated AIC:", AIC_3, "\n")
+ 
+
+# For combined MODEL ###########
+loglik <- logLik(Param_model4_All)
+
+n   <- attributes(loglik)$nobs 
+p   <- attributes(loglik)$df 
+
+dev <- -2*as.numeric(loglik)
+
+my_AIC  <- dev + 2 * p
+my_AIC1 <- dev + 2*4
+
+my_AIC2 <- dev + 2*8
+
+broom:: glance(Param_model4_All)
+
+#  sigma isConv     finTol logLik   AIC   BIC deviance df.residual  nobs
+#<dbl> <lgl>       <dbl>  <dbl> <dbl> <dbl>    <dbl>       <int> <int>
+#  1 0.356 TRUE   0.00000808 -1042. 2094. 2124.     342.        2696  2700
+
+broom:: glance(Param_model4_NP)
+# sigma isConv     finTol logLik   AIC   BIC deviance df.residual  nobs
+#<dbl> <lgl>       <dbl>  <dbl> <dbl> <dbl>    <dbl>       <int> <int>
+#  1 0.198 TRUE   0.00000392   343. -677. -650.     66.3        1693  1697
+
+broom:: glance(Param_model4_P)
+# sigma isConv     finTol logLik   AIC   BIC deviance df.residual  nobs
+#<dbl> <lgl>       <dbl>  <dbl> <dbl> <dbl>    <dbl>       <int> <int>
+#  1 0.435 TRUE   0.00000601  -587. 1184. 1208.     189.         999  1003
 
 
 
