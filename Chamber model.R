@@ -11,7 +11,7 @@ library(stats)
 library(grDevices)
 library(readr)
 library(minpack.lm)
-
+library(ggpubr)
 # Open new files 
 summary_Cham <- read.csv("data/All summary chamber.csv")
 Pulse_Cham <- read.csv("data/Pulse sum chamber.csv")
