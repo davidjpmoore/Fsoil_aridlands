@@ -195,20 +195,7 @@ legend(x = "topleft",
        col = c("blue", "cyan", "red","green"),
        lty = c(NA, 1, 1,1),
        bty = "n")
-
-
-
-##### Compare modeled and measured data
-plot(years_sum1$meanRECO, ALL_model4_NP, type = "p", col = "red", xlab = "MEASURED RECO", ylab = "Non-pulse model RECO")
-text(x = 1, y = 1.5, labels = "Over estimation")
-text(x = 3, y = 0.5, labels = "Under estimation")
-points( years_sum1$meanRECO,years_sum1$meanRECO,  type = "l", col = "red")
-
-plot(years_sum1$meanRECO,All_model4_P,  type = "p", col = "cyan", xlab = "MEASURED RECO", ylab = "Pulse model RECO")
-text(x = 1, y = 2.5, labels = "Over estimation")
-text(x = 3, y = 0.5, labels = "Under estimation")
-points( years_sum1$meanRECO,years_sum1$meanRECO,  type = "l", col = "cyan")
-
+       
 
 ###################### Next step - Combined model ################################
 ##################################################################################
@@ -1550,7 +1537,6 @@ legend(x = "topleft",
        lty = c(NA, 1, 1,1),
        bty = "n")
 
-
 ###################### Next step - Combined model ################################
 ##################################################################################
 
@@ -1586,6 +1572,478 @@ legend(x = "topleft",
        col = c("blue", "green", "red"),
        lty = c(NA, 1,1),
        bty = "n")
+
+
+Reco1$Reco_Combined <- Reco1$`case_when(...)`
+
+
+##### Find model parameters for each year ######################
+################################################################
+
+# NP-model
+years_sum2_5less$year <- substr(years_sum2_5less$date, 1,4)
+years_sum2_5less$year <- as.numeric(as.character(years_sum2_5less$year))
+years_sum2_5less <- years_sum2_5less[-c(178),]
+
+yearID1 <- unique(years_sum2_5less$year)
+
+start1 <- list(FrefNP=0.75, c4=56.54, b4=0.04, n=0.84)
+
+# create empty data.frame to store IDs and parameters
+params.pre1 <- data.frame(matrix(nrow = length(yearID1), ncol = 1+length(start1)))
+names(params.pre1) <- c("yearID1", names(start1))
+
+for(i in seq_along(yearID1)) {
+  # create data frame for sub "i"
+  
+  individual_DFs1 <- years_sum2_5less %>% filter (year %in% yearID1[i])
+  
+  # fit model for each sub "i"
+  Param_model4_NP1 <- nlsLM(meanRECO ~ FrefNP*((meanGPP_NP/GPPmax_NP +n)/1+n) *
+                              (1-c4*(0.1-meanSWC5_NP)^2)*exp(b4*meanST5_NP), 
+                            data = individual_DFs1,
+                            start = start1, #trace = TRUE,
+  )
+  
+  # store IDs
+  params.pre1[i,1] <- yearID1[i]
+  
+  # store fit parameters
+  params.pre1[i,2:ncol(params.pre1)] <- Param_model4_NP1$m$getPars()
+  
+ 
+  
+}
+
+params.pre1
+
+
+# Pulse model
+years_sum2_5more$year <- substr(years_sum2_5more$date, 1,4)
+years_sum2_5more$year <- as.numeric(as.character(years_sum2_5more$year))
+
+yearID <- unique(years_sum2_5more$year)
+
+start <- list(FrefP=0.75, c4=56.54, b4=0.04, n=0.84)
+
+# create empty data.frame to store IDs and parameters
+params.pre <- data.frame(matrix(nrow = length(yearID), ncol = 1+length(start)))
+names(params.pre) <- c("yearID", names(start))
+
+
+for(i in seq_along(yearID)) {
+  # create data frame for sub "i"
+  
+  individual_DFs <- years_sum2_5more%>% filter (year %in% yearID[i])
+  
+  # fit model for each sub "i"
+  Param_model4_P1 <- nlsLM(meanRECO ~ FrefP*((meanGPP_P/GPPmax_P +n )/1+n) *(1-c4*(0.1-meanSWC5_P)^2)*exp(b4*meanST5_P), 
+                           data = individual_DFs,
+                           start = start, trace = TRUE,
+                           #control = nls.control(maxiter = 1000, minFactor = 0.01)
+  )
+  
+  # store IDs
+  params.pre[i,1] <- yearID[i]
+  
+  # store fit parameters
+  params.pre[i,2:ncol(params.pre)] <- Param_model4_P1$m$getPars()
+  
+  #params.pre[i,3:ncol(params.pre)] <- Param_model4_P1$m$getPars()
+  
+  
+  
+}
+
+params.pre
+
+
+# Mean Model 
+years_sum1$year <- substr(years_sum1$date, 1,4)
+years_sum1$year <- as.numeric(as.character(years_sum1$year))
+
+yearID2 <- unique(years_sum1$year)
+
+start2 <- list(FrefL=0.75,  c4L=56.54, b4L=0.04, nL=0.84)
+
+# create empty data.frame to store IDs and parameters
+params.pre2 <- data.frame(matrix(nrow = length(yearID2), ncol = 1+length(start2)))
+names(params.pre2) <- c("yearID", names(start2))
+
+
+for(i in seq_along(yearID2)) {
+  # create data frame for sub "i"
+  
+  individual_DFs2 <- years_sum1 %>% filter (year %in% yearID2[i])
+  
+  # fit model for each sub "i"
+  Param_model4_All1 <- nlsLM(meanRECO ~ FrefL*((All_meanGPP/All_GPPmax +nL)/1+nL)*(1-c4L*(0.1-All_meanSWC5)^2)*exp(b4L*All_meanST5), 
+                             data = individual_DFs2,
+                             start = start2, trace = TRUE,
+                             #control = nls.control(maxiter = 1000, minFactor = 0.01)
+  )
+  
+  # store IDs
+  params.pre2[i,1] <- yearID2[i]
+  
+  # store fit parameters
+  params.pre2[i,2:ncol(params.pre2)] <- Param_model4_All1$m$getPars()
+  
+  #params.pre[i,3:ncol(params.pre)] <- Param_model4_P1$m$getPars()
+  
+  
+  
+}
+
+params.pre2
+
+
+# NP-model - 10% SWC ##########
+###############################
+
+years_sum2_10less$year <- substr(years_sum2_10less$date, 1,4)
+years_sum2_10less$year <- as.numeric(as.character(years_sum2_10less$year))
+
+yearID1 <- unique(years_sum2_10less$year)
+
+start1 <- list(FrefNP=0.75, c4=56.54, b4=0.04, n=0.84)
+
+# create empty data.frame to store IDs and parameters
+params.pre1 <- data.frame(matrix(nrow = length(yearID1), ncol = 1+length(start1)))
+names(params.pre1) <- c("yearID1", names(start1))
+
+for(i in seq_along(yearID1)) {
+  # create data frame for sub "i"
+  
+  individual_DFs1 <- years_sum2_10less %>% filter (year %in% yearID1[i])
+  
+  # fit model for each sub "i"
+  Param_model4_NP1 <- nlsLM(meanRECO ~ FrefNP*((meanGPP_NP/GPPmax_NP +n)/1+n) *
+                              (1-c4*(0.1-meanSWC5_NP)^2)*exp(b4*meanST5_NP), 
+                            data = individual_DFs1,
+                            start = start1, #trace = TRUE,
+  )
+  
+  # store IDs
+  params.pre1[i,1] <- yearID1[i]
+  
+  # store fit parameters
+  params.pre1[i,2:ncol(params.pre1)] <- Param_model4_NP1$m$getPars()
+  
+  
+  
+}
+
+params.pre1
+
+
+# Pulse model
+years_sum2_10more$year <- substr(years_sum2_10more$date, 1,4)
+years_sum2_10more$year <- as.numeric(as.character(years_sum2_10more$year))
+
+yearID <- unique(years_sum2_10more$year)
+
+start <- list(FrefP=0.75, c4=56.54, b4=0.04, n=0.84)
+
+# create empty data.frame to store IDs and parameters
+params.pre <- data.frame(matrix(nrow = length(yearID), ncol = 1+length(start)))
+names(params.pre) <- c("yearID", names(start))
+
+
+for(i in seq_along(yearID)) {
+  # create data frame for sub "i"
+  
+  individual_DFs <- years_sum2_10more%>% filter (year %in% yearID[i])
+  
+  # fit model for each sub "i"
+  Param_model4_P1 <- nlsLM(meanRECO ~ FrefP*((meanGPP_P/GPPmax_P +n )/1+n) *(1-c4*(0.1-meanSWC5_P)^2)*exp(b4*meanST5_P), 
+                           data = individual_DFs,
+                           start = start, trace = TRUE,
+                           #control = nls.control(maxiter = 1000, minFactor = 0.01)
+  )
+  
+  # store IDs
+  params.pre[i,1] <- yearID[i]
+  
+  # store fit parameters
+  params.pre[i,2:ncol(params.pre)] <- Param_model4_P1$m$getPars()
+  
+  #params.pre[i,3:ncol(params.pre)] <- Param_model4_P1$m$getPars()
+  
+  
+  
+}
+
+params.pre
+
+
+# NP-model - 15% SWC ##########
+###############################
+
+years_sum2_15less$year <- substr(years_sum2_15less$date, 1,4)
+years_sum2_15less$year <- as.numeric(as.character(years_sum2_15less$year))
+
+yearID1 <- unique(years_sum2_15less$year)
+
+start1 <- list(FrefNP=0.75, c4=56.54, b4=0.04, n=0.84)
+
+# create empty data.frame to store IDs and parameters
+params.pre1 <- data.frame(matrix(nrow = length(yearID1), ncol = 1+length(start1)))
+names(params.pre1) <- c("yearID1", names(start1))
+
+for(i in seq_along(yearID1)) {
+  # create data frame for sub "i"
+  
+  individual_DFs1 <- years_sum2_15less %>% filter (year %in% yearID1[i])
+  
+  # fit model for each sub "i"
+  Param_model4_NP1 <- nlsLM(meanRECO ~ FrefNP*((meanGPP_NP/GPPmax_NP +n)/1+n) *
+                              (1-c4*(0.1-meanSWC5_NP)^2)*exp(b4*meanST5_NP), 
+                            data = individual_DFs1,
+                            start = start1, #trace = TRUE,
+  )
+  
+  # store IDs
+  params.pre1[i,1] <- yearID1[i]
+  
+  # store fit parameters
+  params.pre1[i,2:ncol(params.pre1)] <- Param_model4_NP1$m$getPars()
+  
+  
+  
+}
+
+params.pre1
+
+
+# Pulse model
+years_sum2_15more$year <- substr(years_sum2_15more$date, 1,4)
+years_sum2_15more$year <- as.numeric(as.character(years_sum2_15more$year))
+
+yearID <- unique(years_sum2_15more$year)
+
+start <- list(FrefP=0.75, c4=56.54, b4=0.04, n=0.84)
+
+# create empty data.frame to store IDs and parameters
+params.pre <- data.frame(matrix(nrow = length(yearID), ncol = 1+length(start)))
+names(params.pre) <- c("yearID", names(start))
+
+
+for(i in seq_along(yearID)) {
+  # create data frame for sub "i"
+  
+  individual_DFs <- years_sum2_15more%>% filter (year %in% yearID[i])
+  
+  # fit model for each sub "i"
+  Param_model4_P1 <- nlsLM(meanRECO ~ FrefP*((meanGPP_P/GPPmax_P +n )/1+n) *(1-c4*(0.1-meanSWC5_P)^2)*exp(b4*meanST5_P), 
+                           data = individual_DFs,
+                           start = start, trace = TRUE,
+                           #control = nls.control(maxiter = 1000, minFactor = 0.01)
+  )
+  
+  # store IDs
+  params.pre[i,1] <- yearID[i]
+  
+  # store fit parameters
+  params.pre[i,2:ncol(params.pre)] <- Param_model4_P1$m$getPars()
+  
+  #params.pre[i,3:ncol(params.pre)] <- Param_model4_P1$m$getPars()
+  
+  
+  
+}
+
+params.pre
+
+
+# calculate RMSE MEAN MODEL
+rmse_MeanMod <- sqrt(sum((Reco1$MeanM - Reco1$meanRECO)^2, na.rm=TRUE)/nrow(Reco1))
+
+# calculate MAPE -  Mean absolute percent error
+mape_MeanMod <- mean(abs((Reco1$MeanM - Reco_df$meanRECO) / Reco1$meanRECO), na.rm=TRUE) * 100
+
+# calculate R-squared
+r_squared_MeanMod <- cor(Reco1$MeanM, Reco1$meanRECO, use = "complete.obs")^2
+
+broom:: glance(Param_model4_All)
+
+# calculate RMSE COMBINED MODEL
+rmse_MeanMod <- sqrt(sum((Reco1$Reco_Combined - Reco1$meanRECO)^2, na.rm=TRUE)/nrow(Reco1))
+
+# calculate MAPE -  Mean absolute percent error
+mape_MeanMod <- mean(abs((Reco1$Reco_Combined - Reco_df$meanRECO) / Reco1$meanRECO), na.rm=TRUE) * 100
+
+# calculate R-squared
+r_squared_MeanMod <- cor(Reco1$Reco_Combined, Reco1$meanRECO, use = "complete.obs")^2
+
+
+# calculate RMSE PULSE MODEL
+rmse_MeanMod <- sqrt(sum((Reco1$PulseM - Reco1$meanRECO)^2, na.rm=TRUE)/nrow(Reco1))
+
+# calculate MAPE -  Mean absolute percent error
+mape_MeanMod <- mean(abs((Reco1$PulseM - Reco_df$meanRECO) / Reco1$meanRECO), na.rm=TRUE) * 100
+
+# calculate R-squared
+r_squared_MeanMod <- cor(Reco1$PulseM, Reco1$meanRECO, use = "complete.obs")^2
+
+broom:: glance(Param_model4_P)
+
+# calculate RMSE NON-PULSE MODEL
+rmse_MeanMod <- sqrt(sum((Reco1$NonPulseM - Reco1$meanRECO)^2, na.rm=TRUE)/nrow(Reco1))
+
+# calculate MAPE -  Mean absolute percent error
+mape_MeanMod <- mean(abs((Reco1$NonPulseM - Reco_df$meanRECO) / Reco1$meanRECO), na.rm=TRUE) * 100
+
+# calculate R-squared
+r_squared_MeanMod <- cor(Reco1$NonPulseM, Reco1$meanRECO, use = "complete.obs")^2
+
+broom:: glance(Param_model4_NP)
+
+
+############## Cumulative fluxes ###########################
+############################################################
+
+Recodf_new <- Reco1 %>%
+  na.omit() %>%
+  select (date, meanRECO, MeanM, Reco_Combined)
+
+Recodf_new$culMeasured <- ave(Recodf_new$meanRECO, FUN = cumsum)  
+Recodf_new$culMeanMod <- ave(Recodf_new$MeanM, FUN = cumsum)  
+Recodf_new$culModelled <- ave(Recodf_new$Reco_Combined, FUN = cumsum)  
+
+
+
+plot(Recodf_new$date,Recodf_new$culMeasured,  type = "l", col = "blue", xlab = "Year", 
+     ylab =  "Cumulative Reco", cex = 0.8)
+lines(Recodf_new$date, Recodf_new$culMeanMod, type = "l", col = "red")
+lines(Recodf_new$date, Recodf_new$culModelled, type = "l", col = "green")
+
+legend(x = "topleft",
+       legend = c("Measured Reco", "Mean model", "Combined model"),
+       pch = c(1, 16, 16),
+       col = c("blue", "red", "green"),
+       lty = c(NA, 1,1),
+       bty = "n")
+
+
+Recodf_new$diffMean <- Recodf_new$culMeasured - Recodf_new$culMeanMod
+Recodf_new$diffComb <- Recodf_new$culMeasured - Recodf_new$culModelled
+
+
+plot(Recodf_new$date,Recodf_new$diffComb,  type = "l", col = "blue", xlab = "Year", 
+     ylab =  "Difference from measured Reco", #cex = 0.8,
+     ylim = c(-60,200)
+)
+lines(Recodf_new$date, Recodf_new$diffMean, type = "l", col = "red")
+
+legend(x = "topleft",
+       legend = c("Combined model difference", "Mean model difference"),
+       pch = c(1, 16, 16),
+       col = c("blue", "red"),
+       lty = c(NA, 1, 1),
+       bty = "n")
+
+
+Recodf_new %>%
+  ggplot(aes(x=date))+ 
+  geom_line(aes(y = diffMean, col = 'diffMean'))+
+  geom_line(aes(y = diffComb, col = 'diffComb'))+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  #stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  #stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
+  ylab(~paste("Modelled Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Year')
+#ggtitle('Non-pulse time')+
+#ylim(0,4)+
+#xlim(0,4)
+
+
+Recodf_new$diffMeanV <- Recodf_new$meanRECO - Recodf_new$MeanM
+Recodf_new$diffCombV <- Recodf_new$meanRECO - Recodf_new$Reco_Combined
+
+
+plot(Recodf_new$date,Recodf_new$diffCombV,  type = "l", col = "blue", xlab = "Year", 
+     ylab =  "Difference from measured Reco", #cex = 0.8,
+     ylim = c(-2,3)
+)
+lines(Recodf_new$date, Recodf_new$diffMeanV, type = "l", col = "red")
+
+legend(x = "topleft",
+       legend = c( "Combined model difference", "Mean model difference"),
+       pch = c(1, 16, 16),
+       col = c("blue", "red"),
+       lty = c(NA, 1, 1),
+       bty = "n")
+
+
+### Calculate differences from the measured values Modelled - Measured  #########
+
+Recodf_new$diffMean2 <- Recodf_new$culMeanMod - Recodf_new$culMeasured  
+Recodf_new$diffComb2 <- Recodf_new$culModelled - Recodf_new$culMeasured 
+
+
+plot(Recodf_new$date,Recodf_new$diffComb2,  type = "l", col = "blue", xlab = "Year", 
+     ylab =  "Difference from measured Reco", #cex = 0.8,
+     ylim = c(-200,50)
+)
+lines(Recodf_new$date, Recodf_new$diffMean2, type = "l", col = "red")
+
+legend(x = "topleft",
+       legend = c("Combined model difference", "Mean model difference"),
+       pch = c(1, 16, 16),
+       col = c("blue", "red"),
+       lty = c(NA, 1, 1),
+       bty = "n")
+
+
+Recodf_new %>%
+  ggplot(aes(x=date))+ 
+  geom_line(aes(y = diffMean2, col = 'diffMean'))+
+  geom_line(aes(y = diffComb2, col = 'diffComb'))+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  #stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
+  #stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
+  ylab(~paste("Modelled Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Year')
+#ggtitle('Non-pulse time')+
+#ylim(0,4)+
+#xlim(0,4)
+
+
+Recodf_new$diffMeanV2 <- Recodf_new$MeanM - Recodf_new$meanRECO
+Recodf_new$diffCombV2 <- Recodf_new$Reco_Combined - Recodf_new$meanRECO 
+
+
+plot(Recodf_new$date,Recodf_new$diffCombV2,  type = "l", col = "blue", xlab = "Year", 
+     ylab =  "Difference from measured Reco", #cex = 0.8,
+     ylim = c(-2,3)
+)
+lines(Recodf_new$date, Recodf_new$diffMeanV2, type = "l", col = "red")
+
+legend(x = "topleft",
+       legend = c( "Combined model difference", "Mean model difference"),
+       pch = c(1, 16, 16),
+       col = c("blue", "red"),
+       lty = c(NA, 1, 1),
+       bty = "n")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

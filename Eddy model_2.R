@@ -71,15 +71,10 @@ Summary_Model4_NP = summary(Param_model4_NP)
 
 
 FrefNP = 0.561731
-FrefNP_SE = 0.022309
 SMoptNP =0.125 
 c4NP = 8.106202
-c4NP_SE = 4.970882
 b4NP =  0.034162 
-b4NP_SE = 0.001555
 nNP=  0.129719
-nNP_SE = 0.004816
-
 
 #################### Pulse model ##################################
 ###################################################################
@@ -116,14 +111,10 @@ Summary_Model4_P = summary(Param_model4_P)
 
 # Pulse parameters
 FrefP = 0.616634 
-FrefP_SE = 0.045269
 SMoptP =0.125 
 c4P = -10.431847   
-c4P_SE = 1.596214
 b4P = 0.044407
-b4P_SE = 0.002129
 nP= 0.243863
-nP_SE = 0.014703
 
 
 ############### All time model OR MEAN MODEL #################################
@@ -166,14 +157,10 @@ Summary_Model4_All = summary(Param_model4_All)
 
 # Mean parameters
 FrefL = 1.136042
-FrefL_SE = 0.049023
 SMoptL =0.125 
 c4L = -7.755161   
-c4L_SE = 1.219586
 b4L = 0.036016
-b4L_SE = 0.001490
 nL= 0.079803
-nL_SE = 0.002769
 
 #run model for full time series
 ALL_model4_NP = FrefNP*((All_meanGPP/All_GPPmax +nNP)/1+nNP) *(1-c4NP*(SMoptNP-All_meanSWC5)^2)*exp(b4NP*All_meanST5)
@@ -387,18 +374,21 @@ Reco_Measured = sum(Reco1$meanRECO, na.rm = TRUE)
 Reco_PandNP = sum(Reco1$`case_when(...)`, na.rm = TRUE)
 Reco_MeanMod = sum(Reco1$MeanM, na.rm = TRUE)
 
+Reco1$thresholdM <- Reco15$Reco_Combined
+
 
 plot(Reco_df$date, Reco_df$meanRECO, type = "p", col = "blue", xlab = "Timestamp", 
      ylab =  "Reco, µmol m-2 s-1", cex = 0.8)
      
 points(Reco1$date, Reco1$`case_when(...)`, col="green", pch = 16, cex = 0.4, alpha=0.5)
 points(Reco1$date, Reco1$MeanM, col="red", pch = 16, cex = 0.4, alpha=0.5)
+points(Reco1$date, Reco1$thresholdM, col="cyan", pch = 16, cex = 0.4, alpha=0.5)
 # create the legend
 legend(x = "topleft",
-       legend = c("Measured Reco", "Combined model", "Mean model"),
-       pch = c(1, 16, 16),
-       col = c("blue", "green", "red"),
-       lty = c(NA, 1,1),
+       legend = c("Measured Reco", "P-NP model", "Mean model", "15% model"),
+       pch = c(1, 16, 16, 16),
+       col = c("blue", "green", "red", "cyan"),
+       lty = c(NA, 1,1,1),
        bty = "n")
 
 
@@ -450,7 +440,6 @@ r_squared_MeanMod <- cor(Reco_df$MeanM, Reco_df$meanRECO, use = "complete.obs")^
 
 
 
-
 ###### Calculate cumulative flux for - Mean model, Including Pulse and non-pulse together and measured fluxes ######
 ####################################################################################################################
 
@@ -464,22 +453,25 @@ Recodf_new$culMeasured <- ave(Recodf_new$meanRECO, FUN = cumsum)
 Recodf_new$culMeanMod <- ave(Recodf_new$MeanM, FUN = cumsum)  
 Recodf_new$culModelled <- ave(Recodf_new$Reco_Combined, FUN = cumsum)  
 
+Recodf_new$ThresholdCum <- Recodf_new15$culModelled
 
 
 plot(Recodf_new$date,Recodf_new$culMeasured,  type = "l", col = "blue", xlab = "Year", 
      ylab =  "Cumulative Reco", cex = 0.8)
 lines(Recodf_new$date, Recodf_new$culMeanMod, type = "l", col = "red")
 lines(Recodf_new$date, Recodf_new$culModelled, type = "l", col = "green")
+lines(Recodf_new$date, Recodf_new$ThresholdCum, type = "l", col = "cyan")
 
 legend(x = "topleft",
-       legend = c("Measured Reco", "Mean model", "Combined model"),
-       pch = c(1, 16, 16),
-       col = c("blue", "red", "green"),
-       lty = c(NA, 1,1),
+       legend = c("Measured Reco", "Mean model", "P-NP model", "15% model"),
+       pch = c(1, 16, 16, 16),
+       col = c("blue", "red", "green", "cyan"),
+       lty = c(NA, 1,1,1),
        bty = "n")
 
+### Calculate differences from the measured CUMILATIVE values Modelled - Measured  #########
 
-### Calculate differences from the measured values Measured - Modelled #########
+Recodf_new$diffCum15 <- Recodf_new15$diffComb
 
 Recodf_new$diffMean <- Recodf_new$culMeasured - Recodf_new$culMeanMod
 Recodf_new$diffComb <- Recodf_new$culMeasured - Recodf_new$culModelled
@@ -490,12 +482,13 @@ plot(Recodf_new$date,Recodf_new$diffComb,  type = "l", col = "blue", xlab = "Yea
      ylim = c(-60,200)
 )
 lines(Recodf_new$date, Recodf_new$diffMean, type = "l", col = "red")
+lines(Recodf_new$date, Recodf_new$diffCum15, type = "l", col = "cyan")
 
 legend(x = "topleft",
-       legend = c("Combined model difference", "Mean model difference"),
-       pch = c(1, 16, 16),
-       col = c("blue", "red"),
-       lty = c(NA, 1, 1),
+       legend = c("P-NP model difference", "Mean model difference", "15% model difference"),
+       pch = c(1, 16, 16, 16),
+       col = c("blue", "red", "cyan"),
+       lty = c(NA, 1, 1, 1),
        bty = "n")
 
 
@@ -514,6 +507,9 @@ Recodf_new %>%
 #xlim(0,4)
 
 
+### Calculate differences from the measured values Measured - Modelled #########
+Recodf_new$diff15Meas <- Recodf_new15$diffCombV
+
 Recodf_new$diffMeanV <- Recodf_new$meanRECO - Recodf_new$MeanM
 Recodf_new$diffCombV <- Recodf_new$meanRECO - Recodf_new$Reco_Combined
 
@@ -523,67 +519,14 @@ plot(Recodf_new$date,Recodf_new$diffCombV,  type = "l", col = "blue", xlab = "Ye
      ylim = c(-2,3)
 )
 lines(Recodf_new$date, Recodf_new$diffMeanV, type = "l", col = "red")
+lines(Recodf_new$date, Recodf_new$diff15Meas, type = "l", col = "cyan")
 
 legend(x = "topleft",
-       legend = c( "Combined model difference", "Mean model difference"),
-       pch = c(1, 16, 16),
-       col = c("blue", "red"),
-       lty = c(NA, 1, 1),
+       legend = c( "P-NP model difference", "Mean model difference", "15% model difference"),
+       pch = c(1, 16, 16, 16),
+       col = c("blue", "red", "cyan"),
+       lty = c(NA, 1, 1, 1),
        bty = "n")
-
-
-### Calculate differences from the measured values Modelled - Measured  #########
-
-Recodf_new$diffMean2 <- Recodf_new$culMeanMod - Recodf_new$culMeasured  
-Recodf_new$diffComb2 <- Recodf_new$culModelled - Recodf_new$culMeasured 
-
-
-plot(Recodf_new$date,Recodf_new$diffComb2,  type = "l", col = "blue", xlab = "Year", 
-     ylab =  "Difference from measured Reco", #cex = 0.8,
-     ylim = c(-200,50)
-)
-lines(Recodf_new$date, Recodf_new$diffMean2, type = "l", col = "red")
-
-legend(x = "topleft",
-       legend = c("Combined model difference", "Mean model difference"),
-       pch = c(1, 16, 16),
-       col = c("blue", "red"),
-       lty = c(NA, 1, 1),
-       bty = "n")
-
-
-Recodf_new %>%
-  ggplot(aes(x=date))+ 
-  geom_line(aes(y = diffMean2, col = 'diffMean'))+
-  geom_line(aes(y = diffComb2, col = 'diffComb'))+
-  theme_classic()+
-  theme(text = element_text(size = 15))+
-  #stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
-  #stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
-  ylab(~paste("Modelled Rsoil, ", mu, "mol m"^-2,"s"^-1))+
-  xlab('Year')
-#ggtitle('Non-pulse time')+
-#ylim(0,4)+
-#xlim(0,4)
-
-
-Recodf_new$diffMeanV2 <- Recodf_new$MeanM - Recodf_new$meanRECO
-Recodf_new$diffCombV2 <- Recodf_new$Reco_Combined - Recodf_new$meanRECO 
-
-
-plot(Recodf_new$date,Recodf_new$diffCombV2,  type = "l", col = "blue", xlab = "Year", 
-     ylab =  "Difference from measured Reco", #cex = 0.8,
-     ylim = c(-2,3)
-)
-lines(Recodf_new$date, Recodf_new$diffMeanV2, type = "l", col = "red")
-
-legend(x = "topleft",
-       legend = c( "Combined model difference", "Mean model difference"),
-       pch = c(1, 16, 16),
-       col = c("blue", "red"),
-       lty = c(NA, 1, 1),
-       bty = "n")
-
 
 
 ######### AIC calculation ################

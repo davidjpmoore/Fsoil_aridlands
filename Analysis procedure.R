@@ -10,6 +10,7 @@
 # Step 4 - Open file "Seasons and pulses.R"
 # Step 5 - Open file "GPP vs Reco eddy.R" 
 # Step 6 - Open file "SWC and ST space.R"
+# + additional Step - Open file "15% Threshold.R"
 # Step 7 - Open file "Eddy model 2.R" 
 
 # Uncertainty found
@@ -18,6 +19,7 @@
 # Step 9 - Open file "Pulse and NP chamber.R" 
 # Step 10 - Open file "GPP vs Rsoil chamber.R" 
 # Step 11 - Open file "SWC ST space chamber.R"
+# + additional Step - Open file "15% for Rsoil.R"
 # Step 12 - Open file "Chamber model.R" 
 
 

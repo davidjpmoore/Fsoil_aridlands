@@ -12,6 +12,7 @@ library(grDevices)
 library(readr)
 library(minpack.lm)
 library(ggpubr)
+
 # Open new files 
 summary_Cham <- read.csv("data/All summary chamber.csv")
 Pulse_Cham <- read.csv("data/Pulse sum chamber.csv")
@@ -185,6 +186,7 @@ Rsoil1 <- Rsoil_df %>%
                    max_pulse_duration == 14 ~ PulseM,
                    max_pulse_duration == 20 ~ PulseM))
 
+Rsoil1$threshold15 <- Rsoil15$Rsoil_Combined
 
 plot(Rsoil1$date, Rsoil1$meanRsoil, type = "p", col = "blue", xlab = "Year", 
      ylab =  "Rsoil, µmol m-2 s-1", cex = 0.8,
@@ -192,12 +194,14 @@ plot(Rsoil1$date, Rsoil1$meanRsoil, type = "p", col = "blue", xlab = "Year",
 
 points(Rsoil1$date, Rsoil1$`case_when(...)`, col="green", pch = 16, cex = 0.4, alpha=0.5)
 points(Rsoil1$date, Rsoil1$MeanM, col="red", pch = 16, cex = 0.4, alpha=0.5)
+  points(Rsoil1$date, Rsoil1$threshold15, col="cyan", pch = 16, cex = 0.4, alpha=0.5)
+
 
 # create the legend
 legend(x = "topleft",
-       legend = c("Measured Rsoil", "Combined model", "Mean model"),
+       legend = c("Measured Rsoil", "P-NP model", "Mean model", "15% model"),
        pch = c(1, 16),
-       col = c("blue", "green", "red"),
+       col = c("blue", "green", "red", "cyan"),
        lty = c(NA, 1),
        bty = "n")
 
@@ -261,17 +265,18 @@ Rsoildf_new$culMeasured <- ave(Rsoildf_new$meanRsoil, FUN = cumsum)
 Rsoildf_new$culMeanMod <- ave(Rsoildf_new$MeanM, FUN = cumsum)  
 Rsoildf_new$culCombined <- ave(Rsoildf_new$Rsoil_Combined, FUN = cumsum)  
 
+Rsoildf_new$cumRsoil15 <- Rsoildf_new15$culModelled
 
 plot(Rsoildf_new$date,Rsoildf_new$culMeasured,  type = "l", col = "blue", xlab = "Year", 
      ylab =  "Cumulative Rsoil", cex = 0.8)
 lines(Rsoildf_new$date, Rsoildf_new$culMeanMod, type = "l", col = "red")
 lines(Rsoildf_new$date, Rsoildf_new$culCombined, type = "l", col = "green")
-
+lines(Rsoildf_new$date, Rsoildf_new$cumRsoil15, type = "l", col = "cyan")
 
 legend(x = "topleft",
-       legend = c("Measured Rsoil", "Mean model", "Combined model" ),
-       pch = c(1, 16, 16),
-       col = c("blue", "red", "green"),
+       legend = c("Measured Rsoil", "Mean model", "P-NP model", "15% model" ),
+       pch = c(1, 16, 16, 16),
+       col = c("blue", "red", "green", "cyan"),
        lty = c(NA, 1,1),
        bty = "n")
 
@@ -285,18 +290,23 @@ sum(Rsoildf_new$Rsoil_Combined)
 Rsoildf_new$diffMean <- Rsoildf_new$culMeasured - Rsoildf_new$culMeanMod
 Rsoildf_new$diffComb <- Rsoildf_new$culMeasured - Rsoildf_new$culCombined
 
+Rsoildf_new$diff15M <- Rsoildf_new15$diffComb
+
+
 
 plot(Rsoildf_new$date,Rsoildf_new$diffComb,  type = "l", col = "blue", xlab = "Year", 
      ylab =  "Difference from measured Rsoil", #cex = 0.8,
      ylim = c(-60,80)
      )
 lines(Rsoildf_new$date, Rsoildf_new$diffMean, type = "l", col = "red")
+lines(Rsoildf_new$date, Rsoildf_new$diff15M, type = "l", col = "cyan")
+
 
 legend(x = "topleft",
-       legend = c("Combined model difference", "Mean model difference"),
-       pch = c(1, 16, 16),
-       col = c("blue", "red"),
-       lty = c(NA, 1, 1),
+       legend = c("P-NP model difference", "Mean model difference", "15% model difference"),
+       pch = c(1, 16, 16, 16),
+       col = c("blue", "red", "cyan"),
+       lty = c(NA, 1, 1, 1),
        bty = "n")
 
 
@@ -318,69 +328,20 @@ Rsoildf_new %>%
 Rsoildf_new$diffMeanV <- Rsoildf_new$meanRsoil - Rsoildf_new$MeanM
 Rsoildf_new$diffCombV <- Rsoildf_new$meanRsoil - Rsoildf_new$Rsoil_Combined
 
+Rsoildf_new$diff15Meas <- Rsoildf_new15$diffCombV
 
 plot(Rsoildf_new$date,Rsoildf_new$diffCombV,  type = "l", col = "blue", xlab = "Year", 
      ylab =  "Difference from measured Rsoil", #cex = 0.8,
      ylim = c(-3,6)
 )
 lines(Rsoildf_new$date, Rsoildf_new$diffMeanV, type = "l", col = "red")
+lines(Rsoildf_new$date, Rsoildf_new$diff15Meas, type = "l", col = "cyan")
 
 legend(x = "topleft",
-       legend = c( "Combined model difference", "Mean model difference"),
-       pch = c(1, 16, 16),
-       col = c("blue", "red"),
-       lty = c(NA, 1, 1),
-       bty = "n")
-
-######### Difference Modelled - Rsoil Measured 
-Rsoildf_new$diffMean2 <-  Rsoildf_new$culMeanMod - Rsoildf_new$culMeasured
-Rsoildf_new$diffComb2 <- Rsoildf_new$culCombined - Rsoildf_new$culMeasured 
-
-
-plot(Rsoildf_new$date,Rsoildf_new$diffComb2,  type = "l", col = "blue", xlab = "Year", 
-     ylab =  "Difference from measured Rsoil", #cex = 0.8,
-     ylim = c(-80,60)
-)
-lines(Rsoildf_new$date, Rsoildf_new$diffMean2, type = "l", col = "red")
-
-legend(x = "topleft",
-       legend = c("Combined model difference", "Mean model difference"),
-       pch = c(1, 16, 16),
-       col = c("blue", "red"),
-       lty = c(NA, 1, 1),
-       bty = "n")
-
-
-Rsoildf_new %>%
-  ggplot(aes(x=date))+ 
-  geom_line(aes(y = diffMean2, col = 'diffMean'))+
-  geom_line(aes(y = diffComb2, col = 'diffComb'))+
-  theme_classic()+
-  theme(text = element_text(size = 15))+
-  #stat_regline_equation(aes(label = paste(..eq.label..,..rr.label.., sep = "~~~~")))+
-  #stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
-  ylab(~paste("Modelled Rsoil, ", mu, "mol m"^-2,"s"^-1))+
-  xlab('Year')
-#ggtitle('Non-pulse time')+
-#ylim(0,4)+
-#xlim(0,4)
-
-
-Rsoildf_new$diffMeanV2 <- Rsoildf_new$MeanM - Rsoildf_new$meanRsoil 
-Rsoildf_new$diffCombV2 <- Rsoildf_new$Rsoil_Combined - Rsoildf_new$meanRsoil 
-
-
-plot(Rsoildf_new$date,Rsoildf_new$diffCombV2,  type = "l", col = "blue", xlab = "Year", 
-     ylab =  "Difference from measured Rsoil", #cex = 0.8,
-     ylim = c(-6,3)
-)
-lines(Rsoildf_new$date, Rsoildf_new$diffMeanV2, type = "l", col = "red")
-
-legend(x = "topleft",
-       legend = c( "Combined model difference", "Mean model difference"),
-       pch = c(1, 16, 16),
-       col = c("blue", "red"),
-       lty = c(NA, 1, 1),
+       legend = c( "P-NP model difference", "Mean model difference", "15% model difference"),
+       pch = c(1, 16, 16, 16),
+       col = c("blue", "red", "cyan"),
+       lty = c(NA, 1, 1, 1),
        bty = "n")
 
 
