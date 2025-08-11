@@ -249,7 +249,7 @@ years_sum2_15less$year <- as.numeric(as.character(years_sum2_15less$year))
 
 yearID1 <- unique(years_sum2_15less$year)
 
-start1 <- list(FrefNP=0.75, c4NP=56.54, b4NP=0.04, nNP=0.84)
+start1 <- list(FrefNP_15=0.75, c4=56.54, b4=0.04, n=0.84)
 
 # create empty data.frame to store IDs and parameters
 params.pre1 <- data.frame(matrix(nrow = length(yearID1), ncol = 1+length(start1)))
@@ -261,8 +261,8 @@ for(i in seq_along(yearID1)) {
   individual_DFs1 <- years_sum2_15less %>% filter (year %in% yearID1[i])
   
   # fit model for each sub "i"
-  Param_model4_NP1 <- nlsLM(meanRECO ~ FrefNP*((meanGPP_NP/GPPmax_NP +nNP)/1+nNP) *
-                              (1-c4NP*(0.1-meanSWC5_NP)^2)*exp(b4NP*meanST5_NP), 
+  Param_model4_NP1 <- nlsLM(meanRECO ~ FrefNP_15*((meanGPP_NP_15/GPPmax_NP_15 +n)/1+n) *
+                              (1-c4*(0.1-meanSWC5_NP_15)^2)*exp(b4*meanST5_NP_15), 
                             data = individual_DFs1,
                             start = start1, #trace = TRUE,
   )
@@ -286,7 +286,7 @@ years_sum2_15more$year <- as.numeric(as.character(years_sum2_15more$year))
 
 yearID <- unique(years_sum2_15more$year)
 
-start <- list(FrefP=0.75, c4=56.54, b4=0.04, n=0.84)
+start <- list(FrefP_15=0.75, c4=56.54, b4=0.04, n=0.84)
 
 # create empty data.frame to store IDs and parameters
 params.pre <- data.frame(matrix(nrow = length(yearID), ncol = 1+length(start)))
@@ -299,7 +299,8 @@ for(i in seq_along(yearID)) {
   individual_DFs <- years_sum2_15more%>% filter (year %in% yearID[i])
   
   # fit model for each sub "i"
-  Param_model4_P1 <- nlsLM(meanRECO ~ FrefP*((meanGPP_P/GPPmax_P +nP)/1+nP) *(1-c4P*(0.1-meanSWC5_P)^2)*exp(b4P*meanST5_P), 
+  Param_model4_P1 <- nlsLM(meanRECO ~ FrefP_15*((meanGPP_P_15/GPPmax_P_15 +n)/1+n)* 
+                           (1-c4*(0.1-meanSWC5_P_15)^2)*exp(b4*meanST5_P_15), 
                            data = individual_DFs,
                            start = start, trace = TRUE,
                            #control = nls.control(maxiter = 1000, minFactor = 0.01)
