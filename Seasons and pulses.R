@@ -288,6 +288,12 @@ MaxWin %>%
                                           name="SWC 5 cm , %"))
 
 
+
+
+
+
+
+
 # Another classification - use the biggest rain events - more than 20 mm  
 
 

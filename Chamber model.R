@@ -173,7 +173,7 @@ r_squared_P <- cor(All_model4_P, summary_Cham$meanRsoil, use = "complete.obs")^2
 
 # Create df with all measured and modelled fluxes
 Rsoil_df <- summary_Cham %>%
-  select(date, meanRsoil, max_pulse_duration, )
+  select(date, meanRsoil, max_pulse_duration)
 
 Rsoil_df$PulseM <- All_model4_P
 Rsoil_df$NonPulseM <- ALL_model4_NP
@@ -205,7 +205,114 @@ legend(x = "topleft",
        lty = c(NA, 1),
        bty = "n")
 
-Rsoil_df$Rsoil_Combined <- Rsoil1$`case_when(...)`
+# Add sesonality to the models results #########
+
+Rsoil1$date <- as.Date(Rsoil1$date)
+Rsoil1$DOY <- yday (Rsoil1$date)
+
+Rsoil1$Season = vector(mode = 'character', length = nrow(Rsoil1))
+Rsoil1$Season[Rsoil1$DOY %in% c(1:59,305:366)] = 'Winter'
+Rsoil1$Season[Rsoil1$DOY %in% 60:181] = 'Spring'
+Rsoil1$Season[Rsoil1$DOY %in% 182:304] = 'Summer'
+
+Rsoil1$Rsoil_Combined <- Rsoil1$`case_when(...)`
+
+Rsoil1_W <- Rsoil1 %>%
+  na.omit() %>%
+  filter(Season == 'Winter') 
+
+Rsoil1_W$year <- substr(Rsoil1_W$date, 1,4)
+
+############
+Rsoil1_W %>%
+  na.omit() %>%
+  filter (year == 2018) %>%
+  ggplot(aes(x=date))+
+  geom_point(aes(y = meanRsoil),shape=20, color = "blue", size = 2)+
+  geom_point(aes(y=MeanM),shape=20, size = 2, color = "red")+
+  geom_point(aes(y=Rsoil_Combined),shape=20, size = 2, color = "green")+
+  geom_point(aes(y=threshold15),shape=20, size = 2, color = "cyan")+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab("Date")+
+  ylim(0,1.5)+
+  ggtitle ("Winter")
+
+Rsoil_WP <- Rsoil1_W %>%
+  filter(max_pulse_duration > 0)
+
+
+plot(Rsoil_WP$meanRsoil)
+
+
+Rsoil1$year <- substr(Rsoil1$date, 1,4)
+
+Rsoil_WP1 <- Rsoil1 %>%
+  filter(year == 2018) %>% 
+  filter(DOY %in% (46:59))
+
+plot(Rsoil_WP1$meanRsoil)
+
+
+Rsoil_WP1$Pulse_day = vector(mode = 'character', length = nrow(Rsoil_WP1))
+Rsoil_WP1$Pulse_day[Rsoil_WP1$DOY %in% 46] = '-1'
+Rsoil_WP1$Pulse_day[Rsoil_WP1$DOY %in% 47] = '0'
+Rsoil_WP1$Pulse_day[Rsoil_WP1$DOY %in% 48] = '1'
+Rsoil_WP1$Pulse_day[Rsoil_WP1$DOY %in% 49] = '2'
+Rsoil_WP1$Pulse_day[Rsoil_WP1$DOY %in% 50] = '3'
+Rsoil_WP1$Pulse_day[Rsoil_WP1$DOY %in% 51] = '4'
+Rsoil_WP1$Pulse_day[Rsoil_WP1$DOY %in% 52] = '5'
+Rsoil_WP1$Pulse_day[Rsoil_WP1$DOY %in% 53] = '6'
+Rsoil_WP1$Pulse_day[Rsoil_WP1$DOY %in% 54] = '7'
+Rsoil_WP1$Pulse_day[Rsoil_WP1$DOY %in% 55] = '8'
+Rsoil_WP1$Pulse_day[Rsoil_WP1$DOY %in% 56] = '9'
+Rsoil_WP1$Pulse_day[Rsoil_WP1$DOY %in% 57] = '10'
+Rsoil_WP1$Pulse_day[Rsoil_WP1$DOY %in% 58] = '11'
+Rsoil_WP1$Pulse_day[Rsoil_WP1$DOY %in% 59] = '12'
+
+
+
+plot(Rsoil_WP1$Pulse_day, Rsoil_WP1$meanRsoil, type = "p", col = "blue", xlab = "Pulse duration, days", 
+     ylab =  "Rsoil, µmol m-2 s-1", cex = 0.8,
+     ylim = c(0,1),
+     xlim = c(-1,12))
+
+points(Rsoil_WP1$Pulse_day, Rsoil_WP1$Rsoil_Combined, col="green", pch = 16, cex = 0.4, alpha=0.5)
+points(Rsoil_WP1$Pulse_day, Rsoil_WP1$MeanM, col="red", pch = 16, cex = 0.4, alpha=0.5)
+points(Rsoil_WP1$Pulse_day, Rsoil_WP1$threshold15, col="cyan", pch = 16, cex = 0.4, alpha=0.5)
+
+
+# create the legend
+legend(x = "topleft",
+       legend = c("WINTER Measured Rsoil", "P-NP model", "Mean model", "15% model"),
+       pch = c(1, 16),
+       col = c("blue", "green", "red", "cyan"),
+       lty = c(NA, 1),
+       bty = "n")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ Rsoil_df$Rsoil_Combined <- Rsoil1$`case_when(...)`
 
 Rsoil_df %>%
   na.omit() %>%
@@ -286,9 +393,9 @@ sum(Rsoildf_new$meanRsoil)
 sum(Rsoildf_new$MeanM)
 sum(Rsoildf_new$Rsoil_Combined)
 
-######### Difference Rsoil Measured - Modelled 
-Rsoildf_new$diffMean <- Rsoildf_new$culMeasured - Rsoildf_new$culMeanMod
-Rsoildf_new$diffComb <- Rsoildf_new$culMeasured - Rsoildf_new$culCombined
+######### Difference Modelled - Rsoil Measured 
+Rsoildf_new$diffMean <- Rsoildf_new$culMeanMod - Rsoildf_new$culMeasured
+Rsoildf_new$diffComb <-  Rsoildf_new$culCombined - Rsoildf_new$culMeasured 
 
 Rsoildf_new$diff15M <- Rsoildf_new15$diffComb
 
@@ -325,14 +432,14 @@ Rsoildf_new %>%
   #xlim(0,4)
 
 
-Rsoildf_new$diffMeanV <- Rsoildf_new$meanRsoil - Rsoildf_new$MeanM
-Rsoildf_new$diffCombV <- Rsoildf_new$meanRsoil - Rsoildf_new$Rsoil_Combined
+Rsoildf_new$diffMeanV <- Rsoildf_new$MeanM - Rsoildf_new$meanRsoil
+Rsoildf_new$diffCombV <- Rsoildf_new$Rsoil_Combined - Rsoildf_new$meanRsoil
 
 Rsoildf_new$diff15Meas <- Rsoildf_new15$diffCombV
 
 plot(Rsoildf_new$date,Rsoildf_new$diffCombV,  type = "l", col = "blue", xlab = "Year", 
      ylab =  "Difference from measured Rsoil", #cex = 0.8,
-     ylim = c(-3,6)
+     ylim = c(-5,4)
 )
 lines(Rsoildf_new$date, Rsoildf_new$diffMeanV, type = "l", col = "red")
 lines(Rsoildf_new$date, Rsoildf_new$diff15Meas, type = "l", col = "cyan")
@@ -343,6 +450,27 @@ legend(x = "topleft",
        col = c("blue", "red", "cyan"),
        lty = c(NA, 1, 1, 1),
        bty = "n")
+
+
+
+Rsoildf_new$Comb15 <- Rsoildf_new15$Rsoil_Combined
+
+Rsoildf_new %>%
+  na.omit() %>%
+  ggplot(aes(x = meanRsoil, y = MeanM))+
+  geom_point(col = "red")+
+  geom_point(aes(x = meanRsoil, y=Rsoil_Combined), col = "blue")+
+  geom_point(aes(x = meanRsoil, y=Comb15), col = "cyan")+
+  stat_regline_equation(aes(label = paste(..rr.label..)))+
+  stat_smooth(method = "lm",formula = y ~ x ,size = 1)+
+  ylab(~paste("Modelled Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab(~paste("Measured Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  theme_classic()+
+  ylim(0,4)+
+  xlim(0,4)
+
+
+
 
 
 ##### Find model parameters for each year ######################

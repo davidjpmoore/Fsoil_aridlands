@@ -139,9 +139,9 @@ All_meanGPP = years_sum1$meanGPP
 All_GPPmax = max(years_sum1$meanGPP, na.rm = TRUE)
 
 Param_model4_All <- nls(meanRECO ~ FrefL*((All_meanGPP/All_GPPmax +nL)/1+nL) *(1-c4L*(0.1-All_meanSWC5)^2)*exp(b4L*All_meanST5), 
-                      data = years_sum1,
-                      start = list(FrefL=0.75,  c4L=56.54, b4L=0.04, nL=0.84),
-                      control = nls.control(maxiter = 1000, minFactor = 0.01)
+                        data = years_sum1,
+                        start = list(FrefL=0.75,  c4L=56.54, b4L=0.04, nL=0.84),
+                        control = nls.control(maxiter = 1000, minFactor = 0.01)
 )
 Summary_Model4_All = summary(Param_model4_All)
 
@@ -209,9 +209,9 @@ for(i in seq_along(yearID1)) {
   # fit model for each sub "i"
   Param_model4_NP1 <- nlsLM(meanRECO ~ FrefNP*((meanGPP_NP/GPPmax_NP +n)/1+n) *
                               (1-c4*(0.1-meanSWC5_NP)^2)*exp(b4*meanST5_NP), 
-                           data = individual_DFs1,
-                           start = start1, trace = TRUE,
-                            )
+                            data = individual_DFs1,
+                            start = start1, trace = TRUE,
+  )
   
   # store IDs
   params.pre1[i,1] <- yearID1[i]
@@ -248,14 +248,14 @@ for(i in seq_along(yearID)) {
   
   # fit model for each sub "i"
   Param_model4_P1 <- nlsLM(meanRECO ~ FrefP*((meanGPP_P/GPPmax_P +n )/1+n) *(1-c4*(0.1-meanSWC5_P)^2)*exp(b4*meanST5_P), 
-                         data = individual_DFs,
-                         start = start, trace = TRUE,
-                         #control = nls.control(maxiter = 1000, minFactor = 0.01)
-                         )
+                           data = individual_DFs,
+                           start = start, trace = TRUE,
+                           #control = nls.control(maxiter = 1000, minFactor = 0.01)
+  )
   
   # store IDs
   params.pre[i,1] <- yearID[i]
- 
+  
   # store fit parameters
   params.pre[i,2:ncol(params.pre)] <- Param_model4_P1$m$getPars()
   
@@ -288,11 +288,11 @@ for(i in seq_along(yearID2)) {
   
   # fit model for each sub "i"
   Param_model4_All1 <- nlsLM(meanRECO ~ FrefL*((All_meanGPP/All_GPPmax +nL)/1+nL)*(1-c4L*(0.1-All_meanSWC5)^2)*exp(b4L*All_meanST5), 
-                           data = individual_DFs2,
-                           start = start2, trace = TRUE,
-                           #control = nls.control(maxiter = 1000, minFactor = 0.01)
+                             data = individual_DFs2,
+                             start = start2, trace = TRUE,
+                             #control = nls.control(maxiter = 1000, minFactor = 0.01)
   )
-
+  
   # store IDs
   params.pre2[i,1] <- yearID2[i]
   
@@ -347,7 +347,7 @@ Reco_allMean = sum(All_model4, na.rm=TRUE)
 
 
 plot(ALL_model4_NP,All_model4_P, xlab = "Non-Pulse Model Reco", ylab = "Pulse Model Reco")
- 
+
 ###################### Next step - Combined model ################################
 ##################################################################################
 
@@ -364,10 +364,10 @@ Reco_df$MeanM <- All_model4
 Reco1 <- Reco_df %>%
   select (date, meanRECO, max_pulse_duration, PulseM, NonPulseM, MeanM) %>%
   mutate(case_when(max_pulse_duration == 0 ~ NonPulseM,
-                  max_pulse_duration == 8 ~ PulseM,
-                max_pulse_duration == 14 ~ PulseM,
-                max_pulse_duration == 20 ~ PulseM))
-                         
+                   max_pulse_duration == 8 ~ PulseM,
+                   max_pulse_duration == 14 ~ PulseM,
+                   max_pulse_duration == 20 ~ PulseM))
+
 
 
 Reco_Measured = sum(Reco1$meanRECO, na.rm = TRUE)
@@ -379,7 +379,7 @@ Reco1$thresholdM <- Reco15$Reco_Combined
 
 plot(Reco_df$date, Reco_df$meanRECO, type = "p", col = "blue", xlab = "Timestamp", 
      ylab =  "Reco, µmol m-2 s-1", cex = 0.8)
-     
+
 points(Reco1$date, Reco1$`case_when(...)`, col="green", pch = 16, cex = 0.4, alpha=0.5)
 points(Reco1$date, Reco1$MeanM, col="red", pch = 16, cex = 0.4, alpha=0.5)
 points(Reco1$date, Reco1$thresholdM, col="cyan", pch = 16, cex = 0.4, alpha=0.5)
@@ -404,7 +404,7 @@ Reco_df %>%
   ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
   xlab("Timestamp")+
   ylim(0,4)
-  
+
 plot(Reco_df$meanRECO, Reco_df$Reco_Combined, type = "p", col = "black", xlab = "Mesured Reco", 
      ylab =  "Modelled Reco", cex = 0.8)
 
@@ -425,7 +425,7 @@ rmse_CombinedMod <- sqrt(sum((Reco_df$Reco_Combined - Reco_df$meanRECO)^2, na.rm
 
 # calculate MAPE -  Mean absolute percent error
 mape_CombinedMod <- mean(abs((Reco_df$Reco_Combined - Reco_df$meanRECO) / Reco_df$meanRECO), na.rm=TRUE) * 100
- 
+
 # calculate R-squared 
 r_squared_CombinedMod <- cor(Reco_df$Reco_Combined, Reco_df$meanRECO, use = "complete.obs")^2
 
@@ -528,7 +528,7 @@ Recodf_new %>%
   xlab(~paste("Measured Reco, ", mu, "mol m"^-2,"s"^-1))+
   theme_classic()+
   ylim(0,4)
-  #stat_cor(aes(label = after_stat(rr.label)), col = "black")
+#stat_cor(aes(label = after_stat(rr.label)), col = "black")
 
 
 
@@ -569,7 +569,7 @@ AIC_3 <- AIC(Param_model4_All)
 
 # Print the result
 cat("Automated AIC:", AIC_3, "\n")
- 
+
 
 # For combined MODEL ###########
 loglik <- logLik(Param_model4_All)
