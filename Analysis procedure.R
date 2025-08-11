@@ -4,14 +4,14 @@
 # In this file you can read 12 steps of our analysis from raw data
 # to graphs we use in the paper:
 
-# Step 1 - Open file "Read_eddy.R" 
-# Step 2 - Open file "Pulse and NP eddy.R"
-# Step 3 - Open file "Rain and pulses eddy.R"
-# Step 4 - Open file "Seasons and pulses.R"
-# Step 5 - Open file "GPP vs Reco eddy.R" 
-# Step 6 - Open file "SWC and ST space.R"
-# + additional Step - Open file "15% Threshold.R"
-# Step 7 - Open file "Eddy model 2.R" 
+# Step 1 - Open file "Read_eddy.R" +
+# Step 2 - Open file "Pulse and NP eddy.R" +
+# Step 3 - Open file "Rain and pulses.R" +
+# Step 4 - Open file "Seasons and pulses.R" +
+# Step 5 - Open file "GPP vs Reco eddy.R" +
+# Step 6 - Open file "SWC and ST space.R" +
+# + additional Step - Open file "15% Threshold.R" 
+# Step 7 - Open files "Eddy model 2.R" +  "Eddy model 3.R"
 
 # Uncertainty found
 
@@ -24,7 +24,7 @@
 
 
  
-#################### That's all! Mission complete! ######################
+#################### That's all! Mission completed! ######################
 
 # I found one big uncertainty between our data frames for Pulse and non-Pulse time
 # In your case the size of Pulse df = 1116 obs + 25 variables, Non-pulse df = 1806 obs + 25 variables

@@ -14,7 +14,9 @@ library(matrixStats)
 # In the next block we will create figures for pulses for 3 seasons ###
 # Spring, Summer and Winter pulses - We need make the mean Values for each season #####
 
-### USW9sum was created in the file "Rain and pulses.R" ##########
+
+USW9sum <- read.csv("data/USW9sum.csv")
+USWkg12_20_summary <- read.csv("data/USWkg12_20_summary.csv")
 
 
 USW9sum$Season = vector(mode = 'character', length = nrow(USW9sum))
@@ -244,26 +246,6 @@ MaxWin$Pulse_day[MaxWin$DOY %in% 340] = '14'
 
 
 ################# Graph with Standard Errors!!!! #####################
-MaxWin %>%
-  ggplot(aes(x=DOY))+
-  geom_point(aes(y = meanFlux),size=2)+
-  geom_point(aes(y=meanSWC/10), color = 'blue', size=2)+
-  theme(text = element_text(size = 15), plot.background = element_rect(fill = "white"),
-        panel.background = element_rect(fill = "white", colour = "black",
-                                        size = 2, linetype = "solid")
-        #plot.background = element_rect(fill = "#BFD5E3")
-  )+
-  geom_errorbar(aes(ymin=meanFlux - (SD_Flux/sqrt(8)), ymax= meanFlux + (SD_Flux/sqrt(8))), width=.2,
-                  position=position_dodge(.9)) +
-  geom_errorbar(aes(ymin=meanSWC/10 - ((SD_SWC/10)/sqrt(8)), ymax= meanSWC/10 + ((SD_SWC/10)/sqrt(8))), 
-                width=.2, position=position_dodge(.9))+
-  #theme_get()+
-  xlab('DOY')+
-  ggtitle('Mean Winter pulse')+
-  scale_y_continuous(name=~paste("Reco, ", mu, "mol m"^-2,"s"^-1),
-                     sec.axis = sec_axis( trans=~.*10, 
-                                          name="SWC 5 cm , %"))
-
 MaxWin$Pulse_day <- as.numeric(as.character(MaxWin$Pulse_day))
 
 MaxWin %>%
@@ -286,11 +268,6 @@ MaxWin %>%
   scale_y_continuous(name=~paste("Reco, ", mu, "mol m"^-2,"s"^-1),
                      sec.axis = sec_axis( trans=~.*10, 
                                           name="SWC 5 cm , %"))
-
-
-
-
-
 
 
 

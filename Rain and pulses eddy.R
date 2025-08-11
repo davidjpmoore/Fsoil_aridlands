@@ -11,8 +11,6 @@ library(units)
 # In this file we need to make some analysis of data we observed ###
 # and plot the main dependencies and interactions ##################
 
-#### In This file we take the figures for Fig1 and Fig 2a (max pulse size) ##########
-
 # Open two files for analysis 
 USWkg12_20_summary <- read.csv("data/USWkg12_20_summary.csv", 
                                header=TRUE, na.strings="NaN", skip=0)
@@ -57,5 +55,13 @@ USW9sum %>%
   xlab('Days')+
   theme_gray()+
   theme(text = element_text(size = 12))
+
+
+
+# This is our Figure 1.
+
+
+write.csv(USW9sum, file = "data/USW9sum.csv")
+write.csv(USWkg12_20_summary, file = "data/USWkg12_20_summary.csv")
 
 
