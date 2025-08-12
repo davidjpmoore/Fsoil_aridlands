@@ -15,12 +15,12 @@
 
 # Uncertainty found
 
-# Step 8 - Open file "Read_chamber.R"
-# Step 9 - Open file "Pulse and NP chamber.R" 
-# Step 10 - Open file "GPP vs Rsoil chamber.R" 
-# Step 11 - Open file "SWC ST space chamber.R"
-# + additional Step - Open file "15% for Rsoil.R"
-# Step 12 - Open file "Chamber model.R" 
+# Step 8 - Open file "Read_chamber.R" +
+# Step 9 - Open file "Pulse and NP chamber.R" +
+# Step 10 - Open file "GPP vs Rsoil chamber.R" +
+# Step 11 - Open file "SWC ST space chamber.R" +
+# + additional Step - Open file "15% for Rsoil.R" +
+# Step 12 - Open file "Chamber model.R" +
 
 
  

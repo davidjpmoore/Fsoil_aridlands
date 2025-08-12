@@ -17,6 +17,10 @@ library(ggpubr)
 summary_Cham <- read.csv("data/All summary chamber.csv")
 Pulse_Cham <- read.csv("data/Pulse sum chamber.csv")
 NonPulse_Cham <- read.csv("data/NonPulse sum chamber.csv")
+Rsoil15 <- read.csv("data/Rsoil15.csv")
+Rsoildf_new15 <- read.csv("data/Rsoildf_new15.csv")
+
+
 
 # Make sure in the Date format
 NonPulse_Cham$date <- as.Date(NonPulse_Cham$date)
@@ -296,23 +300,9 @@ legend(x = "topleft",
 
 
 
+################################################ Continue with modelling ###########################
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- Rsoil_df$Rsoil_Combined <- Rsoil1$`case_when(...)`
+Rsoil_df$Rsoil_Combined <- Rsoil1$`case_when(...)`
 
 Rsoil_df %>%
   na.omit() %>%

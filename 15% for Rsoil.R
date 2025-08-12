@@ -94,7 +94,7 @@ Summary_Model4_P_15 = summary(Param_model4_P_15)
 
 # Parameters:
 #   Estimate Std. Error t value Pr(>|t|)    
-#FrefP_15  0.371242   0.046867   7.921 2.39e-14 ***
+#FrefP_15   0.371242   0.046867   7.921 2.39e-14 ***
 #  c4       -2.272085   0.690553  -3.290  0.00109 ** 
 #  b4        0.046795   0.003131  14.947  < 2e-16 ***
 #  n         0.338840   0.037098   9.134  < 2e-16 ***
@@ -125,10 +125,10 @@ Summary_Model4_All = summary(Param_model4_All)
 
 #Parameters:
 #  Estimate Std. Error t value Pr(>|t|)    
-#FrefL  0.916427   0.062004  14.780   <2e-16 ***
+#FrefL   0.916427   0.062004  14.780   <2e-16 ***
 #  c4L   -0.244660   0.542270  -0.451    0.652    
-#b4L    0.031851   0.001996  15.960   <2e-16 ***
-#  nL     0.137391   0.007402  18.561   <2e-16 ***
+#b4L     0.031851   0.001996  15.960   <2e-16 ***
+#  nL    0.137391   0.007402  18.561   <2e-16 ***
 #  ---
 #  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
@@ -155,7 +155,7 @@ plot(years_sum2$date, years_sum2$meanRsoil, #type = "p",
 # Add the model output time series to the plot - CORRECT FIGURE
 points(years_sum2$date, ALL_model4_NP_15, col = "red", pch = 16, cex = 0.4)
 points(years_sum2$date, All_model4_P_15, col = "cyan", pch = 16, cex = 0.4, alpha=0.5)
-points(years_sum2$date, All_model4, col = "green", pch = 16, cex = 0.4, alpha=0.5)
+points(years_sum2$date, All_model4_15, col = "green", pch = 16, cex = 0.4, alpha=0.5)
 
 # create the legend
 legend(x = "topleft",
@@ -176,7 +176,7 @@ Rsoil_df15 <- summary_Cham %>%
 
 Rsoil_df15$PulseM_15 <- All_model4_P_15
 Rsoil_df15$NonPulseM_15 <- ALL_model4_NP_15
-Rsoil_df15$MeanM_15 <- All_model4
+Rsoil_df15$MeanM_15 <- All_model4_15
 
 Rsoil15 <- Rsoil_df15 %>%
   select (date, meanRsoil, max_pulse_duration, PulseM_15, NonPulseM_15, MeanM_15) %>%
@@ -371,7 +371,7 @@ Rsoildf_new15$diffCombV <- Rsoildf_new15$Rsoil_Combined - Rsoildf_new15$meanRsoi
 
 plot(Rsoildf_new15$date,Rsoildf_new15$diffCombV,  type = "l", col = "blue", xlab = "Year", 
      ylab =  "Difference from measured Rsoil", #cex = 0.8,
-     ylim = c(-3,6)
+     ylim = c(-5,6)
 )
 lines(Rsoildf_new15$date, Rsoildf_new15$diffMeanV, type = "l", col = "red")
 
@@ -382,4 +382,6 @@ legend(x = "topleft",
        lty = c(NA, 1, 1),
        bty = "n")
 
+write.csv(Rsoil15, file= "data/Rsoil15.csv")
+write.csv(Rsoildf_new15, file= "data/Rsoildf_new15.csv")
 
