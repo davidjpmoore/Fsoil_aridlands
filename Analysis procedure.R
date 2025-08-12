@@ -11,7 +11,7 @@
 # Step 5 - Open file "GPP vs Reco eddy.R" +
 # Step 6 - Open file "SWC and ST space.R" +
 # + additional Step - Open file "15% Threshold.R" +
-# Step 7 - Open files "Eddy model 2.R" +  "Eddy model 3.R"
+# Step 7 - Open files "Eddy model 2.R" +
 
 # Uncertainty found
 

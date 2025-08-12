@@ -208,26 +208,7 @@ legend(x = "topleft",
 Reco15$Reco_Combined <- Reco15$`case_when(...)`
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+write.csv(Reco15, file = "data/Reco15.csv")
 
 
 
@@ -416,4 +397,5 @@ legend(x = "topleft",
        lty = c(NA, 1, 1),
        bty = "n")
 
+write.csv(Recodf_new15, file = "data/Recodf_new15.csv")
 

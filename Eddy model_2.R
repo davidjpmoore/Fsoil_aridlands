@@ -6,7 +6,7 @@ library(tidyr)
 library(tidyverse)
 library(lubridate)
 library(ggplot2)
-library(units)
+library(units) 
 library(stats)
 library(grDevices)
 library(readr)
@@ -71,7 +71,7 @@ Summary_Model4_NP = summary(Param_model4_NP)
 
 
 FrefNP = 0.561731
-SMoptNP =0.125 
+SMoptNP = 0.125 
 c4NP = 8.106202
 b4NP =  0.034162 
 nNP=  0.129719
@@ -374,11 +374,14 @@ Reco_Measured = sum(Reco1$meanRECO, na.rm = TRUE)
 Reco_PandNP = sum(Reco1$`case_when(...)`, na.rm = TRUE)
 Reco_MeanMod = sum(Reco1$MeanM, na.rm = TRUE)
 
+
+Reco15 <- read.csv("data/Reco15.csv")
+
+
 Reco1$thresholdM <- Reco15$Reco_Combined
 
 
-plot(Reco_df$date, Reco_df$meanRECO, type = "p", col = "blue", xlab = "Timestamp", 
-     ylab =  "Reco, µmol m-2 s-1", cex = 0.8)
+plot(Reco_df$date, Reco_df$meanRECO, type = "p", col = "blue", xlab = "Timestamp", ylab =  "Reco, µmol m-2 s-1", cex = 0.8)
      
 points(Reco1$date, Reco1$`case_when(...)`, col="green", pch = 16, cex = 0.4, alpha=0.5)
 points(Reco1$date, Reco1$MeanM, col="red", pch = 16, cex = 0.4, alpha=0.5)
@@ -453,6 +456,10 @@ Recodf_new$culMeasured <- ave(Recodf_new$meanRECO, FUN = cumsum)
 Recodf_new$culMeanMod <- ave(Recodf_new$MeanM, FUN = cumsum)  
 Recodf_new$culModelled <- ave(Recodf_new$Reco_Combined, FUN = cumsum)  
 
+
+Recodf_new15 <- read.csv("data/Recodf_new15.csv")
+  
+  
 Recodf_new$ThresholdCum <- Recodf_new15$culModelled
 
 
@@ -508,6 +515,7 @@ Recodf_new %>%
 
 
 ### Calculate differences from the measured values Measured - Modelled #########
+
 Recodf_new$diff15Meas <- Recodf_new15$diffCombV
 Recodf_new$Comb15 <- Recodf_new15$Reco_Combined
 
