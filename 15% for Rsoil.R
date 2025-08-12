@@ -335,8 +335,8 @@ legend(x = "topleft",
        bty = "n")
 
 
-Rsoildf_new15$diffMean <- Rsoildf_new15$culMeanMod - Rsoildf_new15$culMeasured 
-Rsoildf_new15$diffComb <- Rsoildf_new15$culModelled - Rsoildf_new15$culMeasured 
+Rsoildf_new15$diffMean <- Rsoildf_new15$culMeasured - Rsoildf_new15$culMeanMod  
+Rsoildf_new15$diffComb <- Rsoildf_new15$culMeasured - Rsoildf_new15$culModelled 
 
 
 plot(Rsoildf_new15$date,Rsoildf_new15$diffComb,  type = "l", col = "blue", xlab = "Year", 
@@ -365,8 +365,8 @@ Rsoildf_new15 %>%
   xlab('Year')
 
 
-Rsoildf_new15$diffMeanV <-  Rsoildf_new15$MeanM_15 - Rsoildf_new15$meanRsoil
-Rsoildf_new15$diffCombV <- Rsoildf_new15$Rsoil_Combined - Rsoildf_new15$meanRsoil 
+Rsoildf_new15$diffMeanV <-  Rsoildf_new15$meanRsoil-Rsoildf_new15$MeanM_15 
+Rsoildf_new15$diffCombV <- Rsoildf_new15$meanRsoil - Rsoildf_new15$Rsoil_Combined
 
 
 plot(Rsoildf_new15$date,Rsoildf_new15$diffCombV,  type = "l", col = "blue", xlab = "Year", 

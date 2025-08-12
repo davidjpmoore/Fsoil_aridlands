@@ -350,8 +350,8 @@ legend(x = "topleft",
        bty = "n")
 
 
-Recodf_new15$diffMean <- Recodf_new15$culMeanMod - Recodf_new15$culMeasured 
-Recodf_new15$diffComb <- Recodf_new15$culModelled - Recodf_new15$culMeasured 
+Recodf_new15$diffMean <- Recodf_new15$culMeasured - Recodf_new15$culMeanMod 
+Recodf_new15$diffComb <- Recodf_new15$culMeasured - Recodf_new15$culModelled 
 
 
 plot(Recodf_new15$date,Recodf_new15$diffComb,  type = "l", col = "blue", xlab = "Year", 
@@ -380,8 +380,8 @@ Recodf_new15 %>%
   xlab('Year')
 
 
-Recodf_new15$diffMeanV <- Recodf_new15$MeanM_15 - Recodf_new15$meanRECO 
-Recodf_new15$diffCombV <- Recodf_new15$Reco_Combined - Recodf_new15$meanRECO
+Recodf_new15$diffMeanV <- Recodf_new15$meanRECO - Recodf_new15$MeanM_15 
+Recodf_new15$diffCombV <- Recodf_new15$meanRECO - Recodf_new15$Reco_Combined 
 
 
 plot(Recodf_new15$date,Recodf_new15$diffCombV,  type = "l", col = "blue", xlab = "Year", 

@@ -243,6 +243,22 @@ Rsoil1_W %>%
   ylim(0,1.5)+
   ggtitle ("Winter")
 
+########### we need to rearrange the df - Rsoil1_W ##############
+RsoilWinter_long <- Rsoil1_W %>%
+  select(-max_pulse_duration, -PulseM, -NonPulseM, -`case_when(...)`, -Season,-year,-DOY) %>%
+  pivot_longer(!date, names_to = "income", values_to = "count")
+
+RsoilWinter_long %>%
+  ggplot(aes(x= date, y = count, fill = income))+
+  geom_col()+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab("Date")
+  
+
+#################################################################
+
 Rsoil_WP <- Rsoil1_W %>%
   filter(max_pulse_duration > 0)
 
@@ -384,8 +400,8 @@ sum(Rsoildf_new$MeanM)
 sum(Rsoildf_new$Rsoil_Combined)
 
 ######### Difference Modelled - Rsoil Measured 
-Rsoildf_new$diffMean <- Rsoildf_new$culMeanMod - Rsoildf_new$culMeasured
-Rsoildf_new$diffComb <-  Rsoildf_new$culCombined - Rsoildf_new$culMeasured 
+Rsoildf_new$diffMean <- Rsoildf_new$culMeasured - Rsoildf_new$culMeanMod 
+Rsoildf_new$diffComb <-  Rsoildf_new$culMeasured - Rsoildf_new$culCombined 
 
 Rsoildf_new$diff15M <- Rsoildf_new15$diffComb
 
@@ -407,6 +423,8 @@ legend(x = "topleft",
        bty = "n")
 
 
+########################################
+
 Rsoildf_new %>%
   ggplot(aes(x=date))+ 
   geom_line(aes(y = diffMean, col = 'diffMean'))+
@@ -422,14 +440,14 @@ Rsoildf_new %>%
   #xlim(0,4)
 
 
-Rsoildf_new$diffMeanV <- Rsoildf_new$MeanM - Rsoildf_new$meanRsoil
-Rsoildf_new$diffCombV <- Rsoildf_new$Rsoil_Combined - Rsoildf_new$meanRsoil
+Rsoildf_new$diffMeanV <- Rsoildf_new$meanRsoil - Rsoildf_new$MeanM 
+Rsoildf_new$diffCombV <- Rsoildf_new$meanRsoil - Rsoildf_new$Rsoil_Combined 
 
 Rsoildf_new$diff15Meas <- Rsoildf_new15$diffCombV
 
 plot(Rsoildf_new$date,Rsoildf_new$diffCombV,  type = "l", col = "blue", xlab = "Year", 
      ylab =  "Difference from measured Rsoil", #cex = 0.8,
-     ylim = c(-5,4)
+     ylim = c(-2,6)
 )
 lines(Rsoildf_new$date, Rsoildf_new$diffMeanV, type = "l", col = "red")
 lines(Rsoildf_new$date, Rsoildf_new$diff15Meas, type = "l", col = "cyan")
@@ -458,6 +476,166 @@ Rsoildf_new %>%
   theme_classic()+
   ylim(0,4)+
   xlim(0,4)
+
+
+
+Rsoildf_long <- Rsoildf_new %>%
+  select(date, diffCombV, diffMeanV, diff15Meas) %>%
+  pivot_longer(!date, names_to = "income", values_to = "count")
+
+Rsoildf_long$date <- as.Date(Rsoildf_long$date)
+Rsoildf_long$DOY <- yday (Rsoildf_long$date)
+
+Rsoildf_long$Season = vector(mode = 'character', length = nrow(Rsoildf_long))
+Rsoildf_long$Season[Rsoildf_long$DOY %in% c(1:59,305:366)] = 'Winter'
+Rsoildf_long$Season[Rsoildf_long$DOY %in% 60:181] = 'Spring'
+Rsoildf_long$Season[Rsoildf_long$DOY %in% 182:304] = 'Summer'
+
+
+Rsoildf_long %>%
+  filter(income == 'diffCombV') %>%
+  ggplot(aes(x= date, y = count, fill = Season))+
+  geom_col()+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab("Date")+
+  ggtitle("Differences Measured VS Combined model")+
+  ylim(-1,6)
+
+
+errorComb <- Rsoildf_long %>%
+  filter(income == 'diffCombV')
+ 
+meanSprComb <- mean(errorComb$count[errorComb$Season == 'Spring'])
+meanSumComb <- mean(errorComb$count[errorComb$Season == 'Summer'])
+meanWinComb <- mean(errorComb$count[errorComb$Season == 'Winter'])
+
+sumSprComb <- sum(errorComb$count[errorComb$Season == 'Spring'])
+sumSumComb <- sum(errorComb$count[errorComb$Season == 'Summer'])
+sumWinComb <- sum(errorComb$count[errorComb$Season == 'Winter'])
+
+
+Rsoildf_long %>%
+  filter(income == 'diffMeanV') %>%
+  ggplot(aes(x= date, y = count, fill = Season))+
+  geom_col()+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab("Date")+
+  ggtitle("Differences Measured VS Mean model")+
+  ylim(-1,6)
+
+errorMean <- Rsoildf_long %>%
+  filter(income == 'diffMeanV')
+
+meanSprMean <- mean(errorMean$count[errorMean$Season == 'Spring'])
+meanSumMean <- mean(errorMean$count[errorMean$Season == 'Summer'])
+meanWinMean <- mean(errorMean$count[errorMean$Season == 'Winter'])
+
+sumSprMean <- sum(errorMean$count[errorMean$Season == 'Spring'])
+sumSumMean <- sum(errorMean$count[errorMean$Season == 'Summer'])
+sumWinMean <- sum(errorMean$count[errorMean$Season == 'Winter'])
+
+
+Rsoildf_long %>%
+  filter(income == 'diff15Meas') %>%
+  ggplot(aes(x= date, y = count, fill = Season))+
+  geom_col()+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab("Date")+
+  ggtitle("Differences Measured VS 15% model")+
+  ylim(-1,6)
+
+error15 <- Rsoildf_long %>%
+  filter(income == 'diff15Meas')
+
+meanSpr15 <- mean(error15$count[error15$Season == 'Spring'])
+meanSum15 <- mean(error15$count[error15$Season == 'Summer'])
+meanWin15 <- mean(error15$count[error15$Season == 'Winter'])
+
+sumSpr15 <- sum(error15$count[error15$Season == 'Spring'])
+sumSum15 <- sum(error15$count[error15$Season == 'Summer'])
+sumWin15 <- sum(error15$count[error15$Season == 'Winter'])
+
+
+
+################## Make all differ-s with modules ####################
+
+Rsoildf_long$modules <- abs(Rsoildf_long$count)
+
+Rsoildf_long %>%
+  filter(income == 'diffCombV') %>%
+  ggplot(aes(x= date, y = modules, fill = Season))+
+  geom_col()+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab("Date")+
+  ggtitle("Differences Measured VS Combined model")+
+  ylim(0,6)
+
+
+errorComb1 <- Rsoildf_long %>%
+  filter(income == 'diffCombV')
+
+meanSprComb1 <- mean(errorComb1$modules[errorComb1$Season == 'Spring'])
+meanSumComb1 <- mean(errorComb1$modules[errorComb1$Season == 'Summer'])
+meanWinComb1 <- mean(errorComb1$modules[errorComb1$Season == 'Winter'])
+
+sumSprComb1 <- sum(errorComb1$modules[errorComb1$Season == 'Spring'])
+sumSumComb1 <- sum(errorComb1$modules[errorComb1$Season == 'Summer'])
+sumWinComb1 <- sum(errorComb1$modules[errorComb1$Season == 'Winter'])
+
+
+Rsoildf_long %>%
+  filter(income == 'diffMeanV') %>%
+  ggplot(aes(x= date, y = modules, fill = Season))+
+  geom_col()+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab("Date")+
+  ggtitle("Differences Measured VS Mean model")+
+  ylim(0,6)
+
+errorMean1 <- Rsoildf_long %>%
+  filter(income == 'diffMeanV')
+
+meanSprMean1 <- mean(errorMean1$modules[errorMean1$Season == 'Spring'])
+meanSumMean1 <- mean(errorMean1$modules[errorMean1$Season == 'Summer'])
+meanWinMean1 <- mean(errorMean1$modules[errorMean1$Season == 'Winter'])
+
+sumSprMean1 <- sum(errorMean1$modules[errorMean1$Season == 'Spring'])
+sumSumMean1 <- sum(errorMean1$modules[errorMean1$Season == 'Summer'])
+sumWinMean1 <- sum(errorMean1$modules[errorMean1$Season == 'Winter'])
+
+
+Rsoildf_long %>%
+  filter(income == 'diff15Meas') %>%
+  ggplot(aes(x= date, y = modules, fill = Season))+
+  geom_col()+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab("Date")+
+  ggtitle("Differences Measured VS 15% model")+
+  ylim(0,6)
+
+error15_1 <- Rsoildf_long %>%
+  filter(income == 'diff15Meas')
+
+meanSpr15_1 <- mean(error15_1$modules[error15_1$Season == 'Spring'])
+meanSum15_1 <- mean(error15_1$modules[error15_1$Season == 'Summer'])
+meanWin15_1 <- mean(error15_1$modules[error15_1$Season == 'Winter'])
+
+sumSpr15_1 <- sum(error15_1$modules[error15_1$Season == 'Spring'])
+sumSum15_1 <- sum(error15_1$modules[error15_1$Season == 'Summer'])
+sumWin15_1 <- sum(error15_1$modules[error15_1$Season == 'Winter'])
+
 
 
 

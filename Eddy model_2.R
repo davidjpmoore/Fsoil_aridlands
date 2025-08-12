@@ -12,6 +12,7 @@ library(grDevices)
 library(readr)
 library(ggpubr)
 library(minpack.lm)
+library(modules)
 
 
 # Read other pulse division docs - with "DM" in their names
@@ -554,6 +555,168 @@ legend(x = "topleft",
        col = c("blue", "red", "cyan"),
        lty = c(NA, 1, 1, 1),
        bty = "n")
+
+
+
+Recodf_long <- Recodf_new %>%
+  select(date, diffCombV, diffMeanV, diff15Meas) %>%
+  pivot_longer(!date, names_to = "income", values_to = "count")
+
+Recodf_long$date <- as.Date(Recodf_long$date)
+Recodf_long$DOY <- yday (Recodf_long$date)
+
+Recodf_long$Season = vector(mode = 'character', length = nrow(Recodf_long))
+Recodf_long$Season[Recodf_long$DOY %in% c(1:59,305:366)] = 'Winter'
+Recodf_long$Season[Recodf_long$DOY %in% 60:181] = 'Spring'
+Recodf_long$Season[Recodf_long$DOY %in% 182:304] = 'Summer'
+
+
+Recodf_long %>%
+  filter(income == 'diffCombV') %>%
+  ggplot(aes(x= date, y = count, fill = Season))+
+  geom_col()+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab("Date")+
+  ggtitle("Differences Measured VS Combined model")+
+  ylim(-1,2)
+
+
+errorComb <- Recodf_long %>%
+  filter(income == 'diffCombV')
+
+meanSprComb <- mean(errorComb$count[errorComb$Season == 'Spring'])
+meanSumComb <- mean(errorComb$count[errorComb$Season == 'Summer'])
+meanWinComb <- mean(errorComb$count[errorComb$Season == 'Winter'])
+
+sumSprComb <- sum(errorComb$count[errorComb$Season == 'Spring'])
+sumSumComb <- sum(errorComb$count[errorComb$Season == 'Summer'])
+sumWinComb <- sum(errorComb$count[errorComb$Season == 'Winter'])
+
+
+Recodf_long %>%
+  filter(income == 'diffMeanV') %>%
+  ggplot(aes(x= date, y = count, fill = Season))+
+  geom_col()+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab("Date")+
+  ggtitle("Differences Measured VS Mean model")+
+  ylim(-1,2)
+
+errorMean <- Recodf_long %>%
+  filter(income == 'diffMeanV')
+
+meanSprMean <- mean(errorMean$count[errorMean$Season == 'Spring'])
+meanSumMean <- mean(errorMean$count[errorMean$Season == 'Summer'])
+meanWinMean <- mean(errorMean$count[errorMean$Season == 'Winter'])
+
+sumSprMean <- sum(errorMean$count[errorMean$Season == 'Spring'])
+sumSumMean <- sum(errorMean$count[errorMean$Season == 'Summer'])
+sumWinMean <- sum(errorMean$count[errorMean$Season == 'Winter'])
+
+
+Recodf_long %>%
+  filter(income == 'diff15Meas') %>%
+  ggplot(aes(x= date, y = count, fill = Season))+
+  geom_col()+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab("Date")+
+  ggtitle("Differences Measured VS 15% model")+
+  ylim(-1,2)
+
+error15 <- Recodf_long %>%
+  filter(income == 'diff15Meas')
+
+meanSpr15 <- mean(error15$count[error15$Season == 'Spring'])
+meanSum15 <- mean(error15$count[error15$Season == 'Summer'])
+meanWin15 <- mean(error15$count[error15$Season == 'Winter'])
+
+sumSpr15 <- sum(error15$count[error15$Season == 'Spring'])
+sumSum15 <- sum(error15$count[error15$Season == 'Summer'])
+sumWin15 <- sum(error15$count[error15$Season == 'Winter'])
+
+
+
+################## Make all differ-s with modules ####################
+
+Recodf_long$modules <- abs(Recodf_long$count)
+
+Recodf_long %>%
+  filter(income == 'diffCombV') %>%
+  ggplot(aes(x= date, y = modules, fill = Season))+
+  geom_col()+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab("Date")+
+  ggtitle("Differences Measured VS Combined model")+
+  ylim(0,2)
+
+
+errorComb1 <- Recodf_long %>%
+  filter(income == 'diffCombV')
+
+meanSprComb1 <- mean(errorComb1$modules[errorComb1$Season == 'Spring'])
+meanSumComb1 <- mean(errorComb1$modules[errorComb1$Season == 'Summer'])
+meanWinComb1 <- mean(errorComb1$modules[errorComb1$Season == 'Winter'])
+
+sumSprComb1 <- sum(errorComb1$modules[errorComb1$Season == 'Spring'])
+sumSumComb1 <- sum(errorComb1$modules[errorComb1$Season == 'Summer'])
+sumWinComb1 <- sum(errorComb1$modules[errorComb1$Season == 'Winter'])
+
+
+Recodf_long %>%
+  filter(income == 'diffMeanV') %>%
+  ggplot(aes(x= date, y = modules, fill = Season))+
+  geom_col()+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab("Date")+
+  ggtitle("Differences Measured VS Mean model")+
+  ylim(0,2)
+
+errorMean1 <- Recodf_long %>%
+  filter(income == 'diffMeanV')
+
+meanSprMean1 <- mean(errorMean1$modules[errorMean1$Season == 'Spring'])
+meanSumMean1 <- mean(errorMean1$modules[errorMean1$Season == 'Summer'])
+meanWinMean1 <- mean(errorMean1$modules[errorMean1$Season == 'Winter'])
+
+sumSprMean1 <- sum(errorMean1$modules[errorMean1$Season == 'Spring'])
+sumSumMean1 <- sum(errorMean1$modules[errorMean1$Season == 'Summer'])
+sumWinMean1 <- sum(errorMean1$modules[errorMean1$Season == 'Winter'])
+
+
+Recodf_long %>%
+  filter(income == 'diff15Meas') %>%
+  ggplot(aes(x= date, y = modules, fill = Season))+
+  geom_col()+
+  theme_bw()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab("Date")+
+  ggtitle("Differences Measured VS 15% model")+
+  ylim(0,2)
+
+error15_1 <- Recodf_long %>%
+  filter(income == 'diff15Meas')
+
+meanSpr15_1 <- mean(error15_1$modules[error15_1$Season == 'Spring'])
+meanSum15_1 <- mean(error15_1$modules[error15_1$Season == 'Summer'])
+meanWin15_1 <- mean(error15_1$modules[error15_1$Season == 'Winter'])
+
+sumSpr15_1 <- sum(error15_1$modules[error15_1$Season == 'Spring'])
+sumSum15_1 <- sum(error15_1$modules[error15_1$Season == 'Summer'])
+sumWin15_1 <- sum(error15_1$modules[error15_1$Season == 'Winter'])
+
+
+
 
 
 ######### AIC calculation ################
