@@ -4,6 +4,16 @@
 # In this file you can read 12 steps of our analysis from raw data
 # to graphs we use in the paper:
 
+#######
+# In your list	In your directory
+# "Eddy model 2.R"	Eddy model_2.R (underscore, not space)
+# "15% Threshold.R"	present ✅
+# "15% for Rsoil.R"	present ✅
+# "Rain and pulses.R"	Rain and pulses eddy.R
+# "Eddy model 2.R"	Eddy model_2.R
+########
+
+
 # Step 1 - Open file "Read_eddy.R" +
 # Step 2 - Open file "Pulse and NP eddy.R" +
 # Step 3 - Open file "Rain and pulses.R" +
