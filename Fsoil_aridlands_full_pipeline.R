@@ -20,7 +20,8 @@ library(units)
 
 # First file upload from the folder on your computer because it's too big
 
-USWkg12_18 <- read.csv("data/AddedPartionedCflux_US-Wkg_HH_201212312330_201812312330.csv", header=TRUE, na.strings="NaN", skip=0)
+USWkg12_18 <- read.csv("C://Users/user/Documents/Fsoil data/AddedPartionedCflux_US-Wkg_HH_201212312330_201812312330.csv", 
+                       header=TRUE, na.strings="NaN", skip=0)
 
 # Other files from the Data folder in GitHub
 
@@ -1150,13 +1151,6 @@ plot(years_sum_Pulse0$meanSWC5, years_sum_Pulse0$meanST5,
 # >>> 15% Threshold.R
 # =====================================================
 
-###########################################################################
-################## THRESHOLD MOISTURE SEARCH ##############################
-###########################################################################
-
-# 13-03-2025
-# Anastasia Makhnykina
-
 library(dplyr)
 library(tidyr)
 library(tidyverse)
@@ -1210,10 +1204,10 @@ GPPmax_NP_15 <- max(years_sum2_15less$meanGPP, na.rm = TRUE)
 
 ########## Fit Non-Pulse model ##################
 Param_model4_NP_15 <- nls(meanRECO ~ FrefNP_15*((meanGPP_NP_15/GPPmax_NP_15 +n)/1+n) *
-                         (1-c4*(0.1-meanSWC5_NP_15)^2)*exp(b4*meanST5_NP_15), 
-                       data = years_sum2_15less,
-                       start = list(FrefNP_15=0.75, c4=56.54, b4=0.04, n=0.84),
-                       control = nls.control(maxiter = 1000, minFactor = 0.01)
+                            (1-c4*(0.1-meanSWC5_NP_15)^2)*exp(b4*meanST5_NP_15), 
+                          data = years_sum2_15less,
+                          start = list(FrefNP_15=0.75, c4=56.54, b4=0.04, n=0.84),
+                          control = nls.control(maxiter = 1000, minFactor = 0.01)
 )
 Summary_Model4_NP_15 = summary(Param_model4_NP_15)
 
@@ -1240,9 +1234,9 @@ meanGPP_P_15 = years_sum2_15more$meanGPP
 GPPmax_P_15 = max(years_sum2_15more$meanGPP, na.rm=TRUE)
 
 Param_model4_P_15 <- nls(meanRECO ~ FrefP_15*((meanGPP_P_15/GPPmax_P_15 +n)/1+n) *(1-c4*(0.1-meanSWC5_P_15)^2)*exp(b4*meanST5_P_15), 
-                      data = years_sum2_15more,
-                      start = list(FrefP_15=0.75, c4=56.54, b4=0.04, n=0.84),
-                      control = nls.control(maxiter = 1000, minFactor = 0.01)
+                         data = years_sum2_15more,
+                         start = list(FrefP_15=0.75, c4=56.54, b4=0.04, n=0.84),
+                         control = nls.control(maxiter = 1000, minFactor = 0.01)
 )
 Summary_Model4_P_15 = summary(Param_model4_P_15)
 
@@ -1264,18 +1258,17 @@ nP_15 = 0.400895
 ########## Fit All-time model ##################
 
 # Setting up drivers for all time
-SoilMoisture_all =years_sum1$meanSWC5/100
-All_meanSWC5 = SoilMoisture_all
-All_meanST5 = years_sum1$meanST5
-All_meanGPP = years_sum1$meanGPP
-All_GPPmax = max(years_sum1$meanGPP, na.rm = TRUE)
+All_meanSWC5_15 = years_sum1$meanSWC5/100
+All_meanST5_15 = years_sum1$meanST5
+All_meanGPP_15 = years_sum1$meanGPP
+All_GPPmax_15 = max(years_sum1$meanGPP, na.rm = TRUE)
 
-Param_model4_All <- nls(meanRECO ~ FrefL*((All_meanGPP/All_GPPmax +nL)/1+nL) *(1-c4L*(0.1-All_meanSWC5)^2)*exp(b4L*All_meanST5), 
-                        data = years_sum1,
-                        start = list(FrefL=0.75,  c4L=56.54, b4L=0.04, nL=0.84),
-                        control = nls.control(maxiter = 1000, minFactor = 0.01)
+Param_model4_All_15 <- nls(meanRECO ~ FrefL*((All_meanGPP_15/All_GPPmax_15 +nL)/1+nL) *(1-c4L*(0.1-All_meanSWC5_15)^2)*exp(b4L*All_meanST5_15), 
+                           data = years_sum1,
+                           start = list(FrefL=0.75,  c4L=56.54, b4L=0.04, nL=0.84),
+                           control = nls.control(maxiter = 1000, minFactor = 0.01)
 )
-Summary_Model4_All = summary(Param_model4_All)
+Summary_Model4_All_15 = summary(Param_model4_All_15)
 
 #Parameters:
 #  Estimate Std. Error t value Pr(>|t|)    
@@ -1287,19 +1280,19 @@ Summary_Model4_All = summary(Param_model4_All)
 #  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 # Mean parameters
-FrefL = 1.136042
-SMoptL =0.125 
-c4L = -7.755161   
-b4L = 0.036016
-nL= 0.079803
+FrefL_15 = 1.136042
+SMoptL_15 =0.125 
+c4L_15 = -7.755161   
+b4L_15 = 0.036016
+nL_15 = 0.079803
 
 
 #run model for full time series
-ALL_model4_NP_15 = FrefNP_15*((All_meanGPP/All_GPPmax +nNP_15)/1+nNP_15) *(1-c4NP_15*(SMoptNP_15-All_meanSWC5)^2)*exp(b4NP_15*All_meanST5)
+ALL_model4_NP_15 = FrefNP_15*((All_meanGPP_15/All_GPPmax_15 +nNP_15)/1+nNP_15) *(1-c4NP_15*(SMoptNP_15-All_meanSWC5_15)^2)*exp(b4NP_15*All_meanST5_15)
 #run model for full time series based on pulse time parameters
-All_model4_P_15 = FrefP_15*((All_meanGPP/All_GPPmax +nP_15)/1+nP_15) *(1-c4P_15*(SMoptP_15-All_meanSWC5)^2)*exp(b4P_15*All_meanST5)
+All_model4_P_15 = FrefP_15*((All_meanGPP_15/All_GPPmax_15 +nP_15)/1+nP_15) *(1-c4P_15*(SMoptP_15-All_meanSWC5_15)^2)*exp(b4P_15*All_meanST5_15)
 #run all time model
-All_model4_15 = FrefL*((All_meanGPP/All_GPPmax +nL)/1+nL) *(1-c4L*(SMoptL-All_meanSWC5)^2)*exp(b4L*All_meanST5)
+All_model4_15 = FrefL_15*((All_meanGPP_15/All_GPPmax_15 +nL_15)/1+nL_15) *(1-c4L_15*(SMoptL_15-All_meanSWC5_15)^2)*exp(b4L_15*All_meanST5_15)
 
 
 # Plot the RECO time series 
@@ -1361,6 +1354,17 @@ legend(x = "topleft",
 Reco15$Reco_Combined <- Reco15$`case_when(...)`
 
 
+write.csv(Reco15, file = "data/Reco15.csv")
+
+
+
+
+
+
+
+
+
+
 ##### Find model parameters for each year ######################
 ################################################################
 
@@ -1372,7 +1376,7 @@ years_sum2_15less$year <- as.numeric(as.character(years_sum2_15less$year))
 
 yearID1 <- unique(years_sum2_15less$year)
 
-start1 <- list(FrefNP=0.75, c4=56.54, b4=0.04, n=0.84)
+start1 <- list(FrefNP_15=0.75, c4=56.54, b4=0.04, n=0.84)
 
 # create empty data.frame to store IDs and parameters
 params.pre1 <- data.frame(matrix(nrow = length(yearID1), ncol = 1+length(start1)))
@@ -1384,8 +1388,8 @@ for(i in seq_along(yearID1)) {
   individual_DFs1 <- years_sum2_15less %>% filter (year %in% yearID1[i])
   
   # fit model for each sub "i"
-  Param_model4_NP1 <- nlsLM(meanRECO ~ FrefNP*((meanGPP_NP/GPPmax_NP +n)/1+n) *
-                              (1-c4*(0.1-meanSWC5_NP)^2)*exp(b4*meanST5_NP), 
+  Param_model4_NP1 <- nlsLM(meanRECO ~ FrefNP_15*((meanGPP_NP_15/GPPmax_NP_15 +n)/1+n) *
+                              (1-c4*(0.1-meanSWC5_NP_15)^2)*exp(b4*meanST5_NP_15), 
                             data = individual_DFs1,
                             start = start1, #trace = TRUE,
   )
@@ -1409,7 +1413,7 @@ years_sum2_15more$year <- as.numeric(as.character(years_sum2_15more$year))
 
 yearID <- unique(years_sum2_15more$year)
 
-start <- list(FrefP=0.75, c4=56.54, b4=0.04, n=0.84)
+start <- list(FrefP_15=0.75, c4=56.54, b4=0.04, n=0.84)
 
 # create empty data.frame to store IDs and parameters
 params.pre <- data.frame(matrix(nrow = length(yearID), ncol = 1+length(start)))
@@ -1422,7 +1426,8 @@ for(i in seq_along(yearID)) {
   individual_DFs <- years_sum2_15more%>% filter (year %in% yearID[i])
   
   # fit model for each sub "i"
-  Param_model4_P1 <- nlsLM(meanRECO ~ FrefP*((meanGPP_P/GPPmax_P +n )/1+n) *(1-c4*(0.1-meanSWC5_P)^2)*exp(b4*meanST5_P), 
+  Param_model4_P1 <- nlsLM(meanRECO ~ FrefP_15*((meanGPP_P_15/GPPmax_P_15 +n)/1+n)* 
+                             (1-c4*(0.1-meanSWC5_P_15)^2)*exp(b4*meanST5_P_15), 
                            data = individual_DFs,
                            start = start, trace = TRUE,
                            #control = nls.control(maxiter = 1000, minFactor = 0.01)
@@ -1491,8 +1496,8 @@ legend(x = "topleft",
        bty = "n")
 
 
-Recodf_new15$diffMean <- Recodf_new15$culMeasured - Recodf_new15$culMeanMod
-Recodf_new15$diffComb <- Recodf_new15$culMeasured - Recodf_new15$culModelled
+Recodf_new15$diffMean <- Recodf_new15$culMeasured - Recodf_new15$culMeanMod 
+Recodf_new15$diffComb <- Recodf_new15$culMeasured - Recodf_new15$culModelled 
 
 
 plot(Recodf_new15$date,Recodf_new15$diffComb,  type = "l", col = "blue", xlab = "Year", 
@@ -1521,8 +1526,8 @@ Recodf_new15 %>%
   xlab('Year')
 
 
-Recodf_new15$diffMeanV <- Recodf_new15$meanRECO - Recodf_new15$MeanM_15
-Recodf_new15$diffCombV <- Recodf_new15$meanRECO - Recodf_new15$Reco_Combined
+Recodf_new15$diffMeanV <- Recodf_new15$meanRECO - Recodf_new15$MeanM_15 
+Recodf_new15$diffCombV <- Recodf_new15$meanRECO - Recodf_new15$Reco_Combined 
 
 
 plot(Recodf_new15$date,Recodf_new15$diffCombV,  type = "l", col = "blue", xlab = "Year", 
@@ -1538,8 +1543,7 @@ legend(x = "topleft",
        lty = c(NA, 1, 1),
        bty = "n")
 
-
-
+write.csv(Recodf_new15, file = "data/Recodf_new15.csv")
 
 
 # =====================================================
@@ -1909,7 +1913,7 @@ summary_Cham$date <- as.Date(summary_Cham$date)
 
 
 years_sum2 <- summary_Cham %>%
-  select(c(2:7 | 9:10))
+  select(c(2:7 | 9))
 
 
 #### Divide df years_sum1 to two dfs based on different moisture values ########
@@ -2039,7 +2043,7 @@ plot(years_sum2$date, years_sum2$meanRsoil, #type = "p",
 # Add the model output time series to the plot - CORRECT FIGURE
 points(years_sum2$date, ALL_model4_NP_15, col = "red", pch = 16, cex = 0.4)
 points(years_sum2$date, All_model4_P_15, col = "cyan", pch = 16, cex = 0.4, alpha=0.5)
-points(years_sum2$date, All_model4, col = "green", pch = 16, cex = 0.4, alpha=0.5)
+points(years_sum2$date, All_model4_15, col = "green", pch = 16, cex = 0.4, alpha=0.5)
 
 # create the legend
 legend(x = "topleft",
@@ -2060,7 +2064,7 @@ Rsoil_df15 <- summary_Cham %>%
 
 Rsoil_df15$PulseM_15 <- All_model4_P_15
 Rsoil_df15$NonPulseM_15 <- ALL_model4_NP_15
-Rsoil_df15$MeanM_15 <- All_model4
+Rsoil_df15$MeanM_15 <- All_model4_15
 
 Rsoil15 <- Rsoil_df15 %>%
   select (date, meanRsoil, max_pulse_duration, PulseM_15, NonPulseM_15, MeanM_15) %>%
