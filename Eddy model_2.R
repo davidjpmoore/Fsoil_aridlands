@@ -398,6 +398,119 @@ legend(x = "topleft",
 
 Reco_df$Reco_Combined <- Reco1$`case_when(...)`
 
+
+######################  Additional analysis ##############################
+
+Reco1$STmean <- years_sum1$meanST5
+Reco1$SWCmean <- years_sum1$meanSWC5
+Reco1$Reco_Combined <- Reco1$`case_when(...)`
+
+
+Reco2_NP <- Reco1 %>%
+  filter(max_pulse_duration == 0) %>%
+  select(meanRECO,MeanM, thresholdM, Reco_Combined, STmean)
+
+
+Reco2_long_NP_Tsoil <- Reco2_NP %>%
+  pivot_longer(!STmean, names_to = "Models", values_to = "values")
+
+
+Reco2_long_NP_Tsoil %>%
+  ggplot(aes(x=STmean, y=values, col = Models))+
+  geom_point(shape = 1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil temperature, °C')+
+  ylim(0,4) +
+  xlim(0,40)+
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~")),
+                        size = 3
+  )+
+  stat_smooth(method = "nls"
+              , formula = y ~  exp(  as.numeric(x)
+              )
+        #      , method.args = list( start = c( A = 0.8, B = 0.05 ) )
+        #      , se=FALSE
+  )+
+  stat_cor(aes(label = paste(..p.label.., sep = "~")), 
+          size = 3,
+          label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
+  ggtitle ('NP time')
+
+
+
+
+Reco2_P <- Reco1 %>%
+  filter(max_pulse_duration > 0) %>%
+  select(meanRECO,MeanM, thresholdM, Reco_Combined, STmean)
+
+
+Reco2_long_P_Tsoil <- Reco2_P %>%
+  pivot_longer(!STmean, names_to = "Models", values_to = "values")
+
+
+Reco2_long_P_Tsoil %>%
+  ggplot(aes(x=STmean, y=values, col = Models))+
+  geom_point(shape = 1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil temperature, °C')+
+  ylim(0,4) +
+  xlim(0,40)+
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~")),
+                        size = 3
+  )+
+  stat_smooth(method = "nls"
+              , formula = y ~  exp(  as.numeric(x)
+              )
+              #      , method.args = list( start = c( A = 0.8, B = 0.05 ) )
+              #      , se=FALSE
+  )+
+  stat_cor(aes(label = paste(..p.label.., sep = "~")), 
+           size = 3,
+           label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
+  ggtitle ('P time')
+
+
+Reco2_all <- Reco1 %>%
+  #filter(max_pulse_duration > 0) %>%
+  select(meanRECO,MeanM, thresholdM, Reco_Combined, STmean)
+
+
+Reco2_long_all_Tsoil <- Reco2_all %>%
+  pivot_longer(!STmean, names_to = "Models", values_to = "values")
+
+
+Reco2_long_all_Tsoil %>%
+  ggplot(aes(x=STmean, y=values, col = Models))+
+  geom_point(shape = 1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil temperature, °C')+
+  ylim(0,4) +
+  xlim(0,40)+
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~")),
+                        size = 3
+  )+
+  stat_smooth(method = "nls"
+              , formula = y ~  exp(  as.numeric(x)
+              )
+              #      , method.args = list( start = c( A = 0.8, B = 0.05 ) )
+              #      , se=FALSE
+  )+
+  stat_cor(aes(label = paste(..p.label.., sep = "~")), 
+           size = 3,
+           label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
+  ggtitle ('All time')
+
+
+
+######################################################################################
+
+
 Reco_df %>%
   na.omit() %>%
   ggplot(aes(x=date))+
@@ -423,6 +536,7 @@ Reco_df %>%
   xlab(~paste("Measured Reco, ", mu, "mol m"^-2,"s"^-1))+
   ylim(0,5)+
   xlim(0,5)
+
 
 # calculate RMSE COMBINED MODEL
 rmse_CombinedMod <- sqrt(sum((Reco_df$Reco_Combined - Reco_df$meanRECO)^2, na.rm=TRUE)/nrow(Reco_df))
