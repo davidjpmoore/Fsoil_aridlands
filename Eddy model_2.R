@@ -420,7 +420,7 @@ Reco2_long_NP_Tsoil %>%
   geom_point(shape = 1)+
   theme_classic()+
   theme(text = element_text(size = 15))+
-  ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
   xlab('Soil temperature, °C')+
   ylim(0,4) +
   xlim(0,40)+
@@ -455,7 +455,7 @@ Reco2_long_P_Tsoil %>%
   geom_point(shape = 1)+
   theme_classic()+
   theme(text = element_text(size = 15))+
-  ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
   xlab('Soil temperature, °C')+
   ylim(0,4) +
   xlim(0,40)+
@@ -488,7 +488,7 @@ Reco2_long_all_Tsoil %>%
   geom_point(shape = 1)+
   theme_classic()+
   theme(text = element_text(size = 15))+
-  ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
   xlab('Soil temperature, °C')+
   ylim(0,4) +
   xlim(0,40)+
@@ -497,6 +497,108 @@ Reco2_long_all_Tsoil %>%
   )+
   stat_smooth(method = "nls"
               , formula = y ~  exp(  as.numeric(x)
+              )
+              #      , method.args = list( start = c( A = 0.8, B = 0.05 ) )
+              #      , se=FALSE
+  )+
+  stat_cor(aes(label = paste(..p.label.., sep = "~")), 
+           size = 3,
+           label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
+  ggtitle ('All time')
+
+
+
+Reco3_NP <- Reco1 %>%
+  filter(max_pulse_duration == 0) %>%
+  select(meanRECO,MeanM, thresholdM, Reco_Combined, SWCmean)
+
+
+Reco3_long_NP_SWC <- Reco3_NP %>%
+  pivot_longer(!SWCmean, names_to = "Models", values_to = "values")
+
+
+Reco3_long_NP_SWC %>%
+  ggplot(aes(x=SWCmean, y=values, col = Models))+
+  geom_point(shape = 1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil moisture, %')+
+  ylim(0,4) +
+  xlim(0,40)+
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~")),
+                        size = 3
+  )+
+  stat_smooth(method = "nls"
+              , formula = y ~  poly(  as.numeric(x)
+              )
+              #      , method.args = list( start = c( A = 0.8, B = 0.05 ) )
+              #      , se=FALSE
+  )+
+  stat_cor(aes(label = paste(..p.label.., sep = "~")), 
+           size = 3,
+           label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
+  ggtitle ('NP time')
+
+
+
+
+Reco3_P <- Reco1 %>%
+  filter(max_pulse_duration > 0) %>%
+  select(meanRECO,MeanM, thresholdM, Reco_Combined, SWCmean)
+
+
+Reco3_long_P_SWC <- Reco3_P %>%
+  pivot_longer(!SWCmean, names_to = "Models", values_to = "values")
+
+
+Reco3_long_P_SWC %>%
+  ggplot(aes(x=SWCmean, y=values, col = Models))+
+  geom_point(shape = 1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil moisture, %')+
+  ylim(0,4) +
+  xlim(0,40)+
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~")),
+                        size = 3
+  )+
+  stat_smooth(method = "nls"
+              , formula = y ~  poly(  as.numeric(x)
+              )
+              #      , method.args = list( start = c( A = 0.8, B = 0.05 ) )
+              #      , se=FALSE
+  )+
+  stat_cor(aes(label = paste(..p.label.., sep = "~")), 
+           size = 3,
+           label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
+  ggtitle ('P time')
+
+
+Reco3_all <- Reco1 %>%
+  #filter(max_pulse_duration > 0) %>%
+  select(meanRECO,MeanM, thresholdM, Reco_Combined, SWCmean)
+
+
+Reco3_long_all_SWC <- Reco3_all %>%
+  pivot_longer(!SWCmean, names_to = "Models", values_to = "values")
+
+
+Reco3_long_all_SWC %>%
+  ggplot(aes(x=SWCmean, y=values, col = Models))+
+  geom_point(shape = 1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil moisture, %')+
+  ylim(0,4) +
+  xlim(0,40)+
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~")),
+                        size = 3
+  )+
+  stat_smooth(method = "nls"
+              , formula = y ~  poly(  as.numeric(x)
               )
               #      , method.args = list( start = c( A = 0.8, B = 0.05 ) )
               #      , se=FALSE

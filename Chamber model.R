@@ -209,7 +209,232 @@ legend(x = "topleft",
        lty = c(NA, 1),
        bty = "n")
 
-# Add sesonality to the models results #########
+
+################# Additional analysis ###################################
+
+Rsoil1$STmean <- summary_Cham$meanTsoil
+Rsoil1$SWCmean <- summary_Cham$meanSWC
+#Reco1$Reco_Combined <- Reco1$`case_when(...)`
+
+
+Rsoil2_NP <- Rsoil1 %>%
+  filter(max_pulse_duration == 0) %>%
+  select(meanRsoil,MeanM, threshold15, Rsoil_Combined, STmean)
+
+
+Rsoil2_long_NP_Tsoil <- Rsoil2_NP %>%
+  pivot_longer(!STmean, names_to = "Models", values_to = "values")
+
+
+Rsoil2_long_NP_Tsoil %>%
+  ggplot(aes(x=STmean, y=values, col = Models))+
+  geom_point(shape = 1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil temperature, °C')+
+  ylim(0,4) +
+  xlim(0,40)+
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~")),
+                        size = 3
+  )+
+  stat_smooth(method = "nls"
+              , formula = y ~  exp(  as.numeric(x)
+              )
+              #      , method.args = list( start = c( A = 0.8, B = 0.05 ) )
+              #      , se=FALSE
+  )+
+  stat_cor(aes(label = paste(..p.label.., sep = "~")), 
+           size = 3,
+           label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
+  ggtitle ('NP time')
+
+
+
+
+Rsoil2_P <- Rsoil1 %>%
+  filter(max_pulse_duration > 0) %>%
+  select(meanRsoil,MeanM, threshold15, Rsoil_Combined, STmean)
+
+
+Rsoil2_long_P_Tsoil <- Rsoil2_P %>%
+  pivot_longer(!STmean, names_to = "Models", values_to = "values")
+
+
+Rsoil2_long_P_Tsoil %>%
+  ggplot(aes(x=STmean, y=values, col = Models))+
+  geom_point(shape = 1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil temperature, °C')+
+  ylim(0,4) +
+  xlim(0,40)+
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~")),
+                        size = 3
+  )+
+  stat_smooth(method = "nls"
+              , formula = y ~  exp(  as.numeric(x)
+              )
+              #      , method.args = list( start = c( A = 0.8, B = 0.05 ) )
+              #      , se=FALSE
+  )+
+  stat_cor(aes(label = paste(..p.label.., sep = "~")), 
+           size = 3,
+           label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
+  ggtitle ('P time')
+
+
+
+
+Rsoil2_all <- Rsoil1 %>%
+  #filter(max_pulse_duration == 0) %>%
+  select(meanRsoil,MeanM, threshold15, Rsoil_Combined, STmean)
+
+
+Rsoil2_long_all_Tsoil <- Rsoil2_all %>%
+  pivot_longer(!STmean, names_to = "Models", values_to = "values")
+
+
+Rsoil2_long_all_Tsoil %>%
+  ggplot(aes(x=STmean, y=values, col = Models))+
+  geom_point(shape = 1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil temperature, °C')+
+  ylim(0,4) +
+  xlim(0,40)+
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~")),
+                        size = 3
+  )+
+  stat_smooth(method = "nls"
+              , formula = y ~  exp(  as.numeric(x)
+              )
+              #      , method.args = list( start = c( A = 0.8, B = 0.05 ) )
+              #      , se=FALSE
+  )+
+  stat_cor(aes(label = paste(..p.label.., sep = "~")), 
+           size = 3,
+           label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
+  ggtitle ('All time')
+
+
+########with SWC
+
+Rsoil1$SWC <- Rsoil1$SWCmean*100
+
+Rsoil3_NP <- Rsoil1 %>%
+  filter(max_pulse_duration == 0) %>%
+  select(meanRsoil,MeanM, threshold15, Rsoil_Combined, SWC)
+
+
+Rsoil3_long_NP_SWC <- Rsoil3_NP %>%
+  pivot_longer(!SWC, names_to = "Models", values_to = "values")
+
+
+Rsoil3_long_NP_SWC%>%
+  ggplot(aes(x=SWC, y=values, col = Models))+
+  geom_point(shape = 1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil moisture, %')+
+  ylim(0,4) +
+  xlim(0,40)+
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~")),
+                        size = 3
+  )+
+  stat_smooth(method = "nls"
+              , formula = y ~  poly(  as.numeric(x)
+              )
+              #      , method.args = list( start = c( A = 0.8, B = 0.05 ) )
+              #      , se=FALSE
+  )+
+  stat_cor(aes(label = paste(..p.label.., sep = "~")), 
+           size = 3,
+           label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
+  ggtitle ('NP time')
+
+
+Rsoil3_P <- Rsoil1 %>%
+  filter(max_pulse_duration > 0) %>%
+  select(meanRsoil,MeanM, threshold15, Rsoil_Combined, SWC)
+
+
+Rsoil3_long_P_SWC <- Rsoil3_P %>%
+  pivot_longer(!SWC, names_to = "Models", values_to = "values")
+
+
+Rsoil3_long_P_SWC %>%
+  ggplot(aes(x=SWC, y=values, col = Models))+
+  geom_point(shape = 1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil moisture, %')+
+  ylim(0,4) +
+  xlim(0,40)+
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~")),
+                        size = 3
+  )+
+  stat_smooth(method = "nls"
+              , formula = y ~  poly(  as.numeric(x)
+              )
+              #      , method.args = list( start = c( A = 0.8, B = 0.05 ) )
+              #      , se=FALSE
+  )+
+  stat_cor(aes(label = paste(..p.label.., sep = "~")), 
+           size = 3,
+           label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
+  ggtitle ('P time')
+
+
+
+
+Rsoil3_all <- Rsoil1 %>%
+  #filter(max_pulse_duration == 0) %>%
+  select(meanRsoil,MeanM, threshold15, Rsoil_Combined, SWC)
+
+
+Rsoil3_long_all_SWC <- Rsoil3_all %>%
+  pivot_longer(!SWC, names_to = "Models", values_to = "values")
+
+
+Rsoil3_long_all_SWC %>%
+  ggplot(aes(x=SWC, y=values, col = Models))+
+  geom_point(shape = 1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Soil emission, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil moisture, %')+
+  ylim(0,4) +
+  xlim(0,40)+
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~")),
+                        size = 3
+  )+
+  stat_smooth(method = "nls"
+              , formula = y ~  exp(  as.numeric(x)
+              )
+              #      , method.args = list( start = c( A = 0.8, B = 0.05 ) )
+              #      , se=FALSE
+  )+
+  stat_cor(aes(label = paste(..p.label.., sep = "~")), 
+           size = 3,
+           label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
+  ggtitle ('All time')
+
+
+
+
+
+
+
+
+
+##########################################################################
+
+# Add seasonality to the models results #########
 
 Rsoil1$date <- as.Date(Rsoil1$date)
 Rsoil1$DOY <- yday (Rsoil1$date)
@@ -635,6 +860,13 @@ meanWin15_1 <- mean(error15_1$modules[error15_1$Season == 'Winter'])
 sumSpr15_1 <- sum(error15_1$modules[error15_1$Season == 'Spring'])
 sumSum15_1 <- sum(error15_1$modules[error15_1$Season == 'Summer'])
 sumWin15_1 <- sum(error15_1$modules[error15_1$Season == 'Winter'])
+
+
+
+
+
+
+
 
 
 
