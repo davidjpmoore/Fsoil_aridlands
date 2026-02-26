@@ -15,27 +15,23 @@ ys1 <- read_csv("out/derived/years_sum1_DM.csv", show_col_types = FALSE) %>%
 
 less <- filter(ys1, !Threshold_15) %>%
   mutate(meanSWC5_NP_15 = meanSWC5/100,
-         meanST5_NP_15  = meanST5,
-         meanGPP_NP_15  = meanGPP,
-         GPPmax_NP_15   = max(meanGPP, na.rm=TRUE))
+         meanST5_NP_15  = meanST5)
 
 more <- filter(ys1, Threshold_15) %>%
   mutate(meanSWC5_P_15 = meanSWC5/100,
-         meanST5_P_15  = meanST5,
-         meanGPP_P_15  = meanGPP,
-         GPPmax_P_15   = max(meanGPP, na.rm=TRUE))
+         meanST5_P_15  = meanST5)
 
 lower <- c(Fref=0,   c4=-100, b4=0,     n=0.0001)
 upper <- c(Fref=10,  c4= 100, b4=0.20,  n=1.0)
 
 m_np <- fit_nlsLM(
-  meanRECO ~ Fref*((meanGPP_NP_15/GPPmax_NP_15 + n)/(1 + n)) *
+  meanRECO ~ Fref*((All_meanGPP/All_GPPmax + n)/(1 + n)) *
     (1 - c4*(0.1 - meanSWC5_NP_15)^2) * exp(b4*meanST5_NP_15),
   data=less, start=c(Fref=0.75, c4=30, b4=0.04, n=0.08),
   lower=lower, upper=upper
 )
 m_p  <- fit_nlsLM(
-  meanRECO ~ Fref*((meanGPP_P_15/GPPmax_P_15 + n)/(1 + n)) *
+  meanRECO ~ Fref*((All_meanGPP/All_GPPmax + n)/(1 + n)) *
     (1 - c4*(0.1 - meanSWC5_P_15)^2) * exp(b4*meanST5_P_15),
   data=more, start=c(Fref=0.35, c4=-10, b4=0.06, n=0.40),
   lower=lower, upper=upper
