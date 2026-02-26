@@ -214,8 +214,9 @@ legend(x = "topleft",
 
 Rsoil1$STmean <- summary_Cham$meanTsoil
 Rsoil1$SWCmean <- summary_Cham$meanSWC
-#Reco1$Reco_Combined <- Reco1$`case_when(...)`
+Rsoil1$Rsoil_Combined <- Rsoil1$`case_when(...)`
 
+####################### NP time ##########################
 
 Rsoil2_NP <- Rsoil1 %>%
   filter(max_pulse_duration == 0) %>%
@@ -250,7 +251,35 @@ Rsoil2_long_NP_Tsoil %>%
   ggtitle ('NP time')
 
 
+########################
+Rsoil2_long_NP_Tsoil$STmean <- format(round(Rsoil2_long_NP_Tsoil$STmean, 2), nsmall = 2)
 
+Rsoil2_long_NP_Tsoil$STmean <- as.numeric(as.character(Rsoil2_long_NP_Tsoil$STmean))
+
+Rsoil2_long_NP_Tsoil$STgroup = vector(mode = 'character', length = nrow(Rsoil2_long_NP_Tsoil))
+Rsoil2_long_NP_Tsoil$STgroup[Rsoil2_long_NP_Tsoil$STmean <= 4.99] = '1'
+Rsoil2_long_NP_Tsoil$STgroup[Rsoil2_long_NP_Tsoil$STmean >= 5.00 & Rsoil2_long_NP_Tsoil$STmean <= 9.99] = '2'
+Rsoil2_long_NP_Tsoil$STgroup[Rsoil2_long_NP_Tsoil$STmean >= 10.00 & Rsoil2_long_NP_Tsoil$STmean <= 14.99] = '3'
+Rsoil2_long_NP_Tsoil$STgroup[Rsoil2_long_NP_Tsoil$STmean >= 15.00 & Rsoil2_long_NP_Tsoil$STmean <= 19.99] = '4'
+Rsoil2_long_NP_Tsoil$STgroup[Rsoil2_long_NP_Tsoil$STmean >= 20.00 & Rsoil2_long_NP_Tsoil$STmean <= 24.99] = '5'
+Rsoil2_long_NP_Tsoil$STgroup[Rsoil2_long_NP_Tsoil$STmean >= 25.00 & Rsoil2_long_NP_Tsoil$STmean <= 29.99] = '6'
+Rsoil2_long_NP_Tsoil$STgroup[Rsoil2_long_NP_Tsoil$STmean >= 30.00 & Rsoil2_long_NP_Tsoil$STmean <= 34.99] = '7'
+Rsoil2_long_NP_Tsoil$STgroup[Rsoil2_long_NP_Tsoil$STmean >= 35.00 & Rsoil2_long_NP_Tsoil$STmean <= 39.99] = '8'
+Rsoil2_long_NP_Tsoil$STgroup[Rsoil2_long_NP_Tsoil$STmean >= 40.00 ] = '9'
+
+
+Rsoil2_long_NP_Tsoil %>%
+  ggplot(aes(x=STgroup, y=values, col = Models))+
+  geom_boxplot()+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil temperature group')+
+  ylim(0,4) +
+  ggtitle ('NP time')
+
+
+################## Pulse time #################### 
 
 Rsoil2_P <- Rsoil1 %>%
   filter(max_pulse_duration > 0) %>%
@@ -284,8 +313,35 @@ Rsoil2_long_P_Tsoil %>%
            label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
   ggtitle ('P time')
 
+########################
+Rsoil2_long_P_Tsoil$STmean <- format(round(Rsoil2_long_P_Tsoil$STmean, 2), nsmall = 2)
+
+Rsoil2_long_P_Tsoil$STmean <- as.numeric(as.character(Rsoil2_long_P_Tsoil$STmean))
+
+Rsoil2_long_P_Tsoil$STgroup = vector(mode = 'character', length = nrow(Rsoil2_long_P_Tsoil))
+Rsoil2_long_P_Tsoil$STgroup[Rsoil2_long_P_Tsoil$STmean <= 4.99] = '1'
+Rsoil2_long_P_Tsoil$STgroup[Rsoil2_long_P_Tsoil$STmean >= 5.00 & Rsoil2_long_P_Tsoil$STmean <= 9.99] = '2'
+Rsoil2_long_P_Tsoil$STgroup[Rsoil2_long_P_Tsoil$STmean >= 10.00 & Rsoil2_long_P_Tsoil$STmean <= 14.99] = '3'
+Rsoil2_long_P_Tsoil$STgroup[Rsoil2_long_P_Tsoil$STmean >= 15.00 & Rsoil2_long_P_Tsoil$STmean <= 19.99] = '4'
+Rsoil2_long_P_Tsoil$STgroup[Rsoil2_long_P_Tsoil$STmean >= 20.00 & Rsoil2_long_P_Tsoil$STmean <= 24.99] = '5'
+Rsoil2_long_P_Tsoil$STgroup[Rsoil2_long_P_Tsoil$STmean >= 25.00 & Rsoil2_long_P_Tsoil$STmean <= 29.99] = '6'
+Rsoil2_long_P_Tsoil$STgroup[Rsoil2_long_P_Tsoil$STmean >= 30.00 & Rsoil2_long_P_Tsoil$STmean <= 34.99] = '7'
+Rsoil2_long_P_Tsoil$STgroup[Rsoil2_long_P_Tsoil$STmean >= 35.00 & Rsoil2_long_P_Tsoil$STmean <= 39.99] = '8'
+Rsoil2_long_P_Tsoil$STgroup[Rsoil2_long_P_Tsoil$STmean >= 40.00 ] = '9'
 
 
+Rsoil2_long_P_Tsoil %>%
+  ggplot(aes(x=STgroup, y=values, col = Models))+
+  geom_boxplot()+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil temperature group')+
+  ylim(0,4) +
+  ggtitle ('P time')
+
+
+######################## All time ######################
 
 Rsoil2_all <- Rsoil1 %>%
   #filter(max_pulse_duration == 0) %>%
@@ -319,6 +375,35 @@ Rsoil2_long_all_Tsoil %>%
            label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
   ggtitle ('All time')
 
+########################
+Rsoil2_long_all_Tsoil$STmean <- format(round(Rsoil2_long_all_Tsoil$STmean, 2), nsmall = 2)
+
+Rsoil2_long_all_Tsoil$STmean <- as.numeric(as.character(Rsoil2_long_all_Tsoil$STmean))
+
+Rsoil2_long_all_Tsoil$STgroup = vector(mode = 'character', length = nrow(Rsoil2_long_all_Tsoil))
+Rsoil2_long_all_Tsoil$STgroup[Rsoil2_long_all_Tsoil$STmean <= 4.99] = '1'
+Rsoil2_long_all_Tsoil$STgroup[Rsoil2_long_all_Tsoil$STmean >= 5.00 & Rsoil2_long_all_Tsoil$STmean <= 9.99] = '2'
+Rsoil2_long_all_Tsoil$STgroup[Rsoil2_long_all_Tsoil$STmean >= 10.00 & Rsoil2_long_all_Tsoil$STmean <= 14.99] = '3'
+Rsoil2_long_all_Tsoil$STgroup[Rsoil2_long_all_Tsoil$STmean >= 15.00 & Rsoil2_long_all_Tsoil$STmean <= 19.99] = '4'
+Rsoil2_long_all_Tsoil$STgroup[Rsoil2_long_all_Tsoil$STmean >= 20.00 & Rsoil2_long_all_Tsoil$STmean <= 24.99] = '5'
+Rsoil2_long_all_Tsoil$STgroup[Rsoil2_long_all_Tsoil$STmean >= 25.00 & Rsoil2_long_all_Tsoil$STmean <= 29.99] = '6'
+Rsoil2_long_all_Tsoil$STgroup[Rsoil2_long_all_Tsoil$STmean >= 30.00 & Rsoil2_long_all_Tsoil$STmean <= 34.99] = '7'
+Rsoil2_long_all_Tsoil$STgroup[Rsoil2_long_all_Tsoil$STmean >= 35.00 & Rsoil2_long_all_Tsoil$STmean <= 39.99] = '8'
+Rsoil2_long_all_Tsoil$STgroup[Rsoil2_long_all_Tsoil$STmean >= 40.00 ] = '9'
+
+
+Rsoil2_long_all_Tsoil %>%
+  ggplot(aes(x=STgroup, y=values, col = Models))+
+  geom_boxplot()+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil temperature group')+
+  ylim(0,4) +
+  ggtitle ('All time')
+
+
+
 
 ########with SWC
 
@@ -328,6 +413,7 @@ Rsoil3_NP <- Rsoil1 %>%
   filter(max_pulse_duration == 0) %>%
   select(meanRsoil,MeanM, threshold15, Rsoil_Combined, SWC)
 
+############## Non-pulse time #########################
 
 Rsoil3_long_NP_SWC <- Rsoil3_NP %>%
   pivot_longer(!SWC, names_to = "Models", values_to = "values")
@@ -356,6 +442,34 @@ Rsoil3_long_NP_SWC%>%
            label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
   ggtitle ('NP time')
 
+########################
+Rsoil3_long_NP_SWC$SWC <- format(round(Rsoil3_long_NP_SWC$SWC, 2), nsmall = 2)
+
+Rsoil3_long_NP_SWC$SWC <- as.numeric(as.character(Rsoil3_long_NP_SWC$SWC))
+
+Rsoil3_long_NP_SWC$SWCgroup = vector(mode = 'character', length = nrow(Rsoil3_long_NP_SWC))
+Rsoil3_long_NP_SWC$SWCgroup[Rsoil3_long_NP_SWC$SWC <= 4.99] = '1'
+Rsoil3_long_NP_SWC$SWCgroup[Rsoil3_long_NP_SWC$SWC >= 5.00 & Rsoil3_long_NP_SWC$SWC <= 9.99] = '2'
+Rsoil3_long_NP_SWC$SWCgroup[Rsoil3_long_NP_SWC$SWC >= 10.00 & Rsoil3_long_NP_SWC$SWC <= 14.99] = '3'
+Rsoil3_long_NP_SWC$SWCgroup[Rsoil3_long_NP_SWC$SWC >= 15.00 & Rsoil3_long_NP_SWC$SWC <= 19.99] = '4'
+Rsoil3_long_NP_SWC$SWCgroup[Rsoil3_long_NP_SWC$SWC >= 20.00 & Rsoil3_long_NP_SWC$SWC <= 24.99] = '5'
+Rsoil3_long_NP_SWC$SWCgroup[Rsoil3_long_NP_SWC$SWC >= 25.00 & Rsoil3_long_NP_SWC$SWC <= 29.99] = '6'
+Rsoil3_long_NP_SWC$SWCgroup[Rsoil3_long_NP_SWC$SWC >= 30.00 & Rsoil3_long_NP_SWC$SWC <= 34.99] = '7'
+Rsoil3_long_NP_SWC$SWCgroup[Rsoil3_long_NP_SWC$SWC >= 35.00 & Rsoil3_long_NP_SWC$SWC <= 39.99] = '8'
+Rsoil3_long_NP_SWC$SWCgroup[Rsoil3_long_NP_SWC$SWC >= 40.00 ] = '9'
+
+
+Rsoil3_long_NP_SWC %>%
+  ggplot(aes(x=SWCgroup, y=values, col = Models))+
+  geom_boxplot()+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil moisture group')+
+  ylim(0,4) +
+  ggtitle ('NP time')
+
+################ Pulse time #####################
 
 Rsoil3_P <- Rsoil1 %>%
   filter(max_pulse_duration > 0) %>%
@@ -389,8 +503,35 @@ Rsoil3_long_P_SWC %>%
            label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
   ggtitle ('P time')
 
+########################
+Rsoil3_long_P_SWC$SWC <- format(round(Rsoil3_long_P_SWC$SWC, 2), nsmall = 2)
+
+Rsoil3_long_P_SWC$SWC <- as.numeric(as.character(Rsoil3_long_P_SWC$SWC))
+
+Rsoil3_long_P_SWC$SWCgroup = vector(mode = 'character', length = nrow(Rsoil3_long_P_SWC))
+Rsoil3_long_P_SWC$SWCgroup[Rsoil3_long_P_SWC$SWC <= 4.99] = '1'
+Rsoil3_long_P_SWC$SWCgroup[Rsoil3_long_P_SWC$SWC >= 5.00 & Rsoil3_long_P_SWC$SWC <= 9.99] = '2'
+Rsoil3_long_P_SWC$SWCgroup[Rsoil3_long_P_SWC$SWC >= 10.00 & Rsoil3_long_P_SWC$SWC <= 14.99] = '3'
+Rsoil3_long_P_SWC$SWCgroup[Rsoil3_long_P_SWC$SWC >= 15.00 & Rsoil3_long_P_SWC$SWC <= 19.99] = '4'
+Rsoil3_long_P_SWC$SWCgroup[Rsoil3_long_P_SWC$SWC >= 20.00 & Rsoil3_long_P_SWC$SWC <= 24.99] = '5'
+Rsoil3_long_P_SWC$SWCgroup[Rsoil3_long_P_SWC$SWC >= 25.00 & Rsoil3_long_P_SWC$SWC <= 29.99] = '6'
+Rsoil3_long_P_SWC$SWCgroup[Rsoil3_long_P_SWC$SWC >= 30.00 & Rsoil3_long_P_SWC$SWC <= 34.99] = '7'
+Rsoil3_long_P_SWC$SWCgroup[Rsoil3_long_P_SWC$SWC >= 35.00 & Rsoil3_long_P_SWC$SWC <= 39.99] = '8'
+Rsoil3_long_P_SWC$SWCgroup[Rsoil3_long_P_SWC$SWC >= 40.00 ] = '9'
 
 
+Rsoil3_long_P_SWC %>%
+  ggplot(aes(x=SWCgroup, y=values, col = Models))+
+  geom_boxplot()+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil moisture group')+
+  ylim(0,4) +
+  ggtitle ('P time')
+
+
+################ All time ###################
 
 Rsoil3_all <- Rsoil1 %>%
   #filter(max_pulse_duration == 0) %>%
@@ -425,10 +566,32 @@ Rsoil3_long_all_SWC %>%
   ggtitle ('All time')
 
 
+########################
+Rsoil3_long_all_SWC$SWC <- format(round(Rsoil3_long_all_SWC$SWC, 2), nsmall = 2)
+
+Rsoil3_long_all_SWC$SWC <- as.numeric(as.character(Rsoil3_long_all_SWC$SWC))
+
+Rsoil3_long_all_SWC$SWCgroup = vector(mode = 'character', length = nrow(Rsoil3_long_all_SWC))
+Rsoil3_long_all_SWC$SWCgroup[Rsoil3_long_all_SWC$SWC <= 4.99] = '1'
+Rsoil3_long_all_SWC$SWCgroup[Rsoil3_long_all_SWC$SWC >= 5.00 & Rsoil3_long_all_SWC$SWC <= 9.99] = '2'
+Rsoil3_long_all_SWC$SWCgroup[Rsoil3_long_all_SWC$SWC >= 10.00 & Rsoil3_long_all_SWC$SWC <= 14.99] = '3'
+Rsoil3_long_all_SWC$SWCgroup[Rsoil3_long_all_SWC$SWC >= 15.00 & Rsoil3_long_all_SWC$SWC <= 19.99] = '4'
+Rsoil3_long_all_SWC$SWCgroup[Rsoil3_long_all_SWC$SWC >= 20.00 & Rsoil3_long_all_SWC$SWC <= 24.99] = '5'
+Rsoil3_long_all_SWC$SWCgroup[Rsoil3_long_all_SWC$SWC >= 25.00 & Rsoil3_long_all_SWC$SWC <= 29.99] = '6'
+Rsoil3_long_all_SWC$SWCgroup[Rsoil3_long_all_SWC$SWC >= 30.00 & Rsoil3_long_all_SWC$SWC <= 34.99] = '7'
+Rsoil3_long_all_SWC$SWCgroup[Rsoil3_long_all_SWC$SWC >= 35.00 & Rsoil3_long_all_SWC$SWC <= 39.99] = '8'
+Rsoil3_long_all_SWC$SWCgroup[Rsoil3_long_all_SWC$SWC >= 40.00 ] = '9'
 
 
-
-
+Rsoil3_long_all_SWC %>%
+  ggplot(aes(x=SWCgroup, y=values, col = Models))+
+  geom_boxplot()+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Rsoil, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil moisture group')+
+  ylim(0,4) +
+  ggtitle ('All time')
 
 
 
