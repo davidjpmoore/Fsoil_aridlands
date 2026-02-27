@@ -41,3 +41,5 @@ for (s in scripts) {
   sys.source(s, envir = .GlobalEnv, chdir = FALSE)
 }
 message("All done.")
+
+##### Perhaps we could separate pulse contributions by season.
