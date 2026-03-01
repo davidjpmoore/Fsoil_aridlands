@@ -83,13 +83,13 @@ fit_NP  <- fit_one(df_np,    "NonPulse")
 fit_P   <- fit_one(df_pulse, "Pulse")
 
 # --- daily predictions on ALL dates for all three fits
-new_all <- df_all %>% select(date, meanSWC, meanTsoil, meanGPP, meanRsoil) %>% mutate(GPPmax=GPPmax_global)
+new_all <- df_all %>% select(date, meanSWC, meanTsoil, meanGPP, meanRsoil, max_pulse_duration) %>% mutate(GPPmax=GPPmax_global)
 pred_All <- as.numeric(predict(fit_All,  newdata=new_all))
 pred_NP  <- as.numeric(predict(fit_NP,   newdata=new_all))
 pred_P   <- as.numeric(predict(fit_P,    newdata=new_all))
 
-# --- threshold switch (>= 0.15 -> Pulse fit; else NonPulse fit)
-pred_Thr <- ifelse(new_all$meanSWC >= 0.15, pred_P, pred_NP)
+# --- threshold switch (pulse event -> Pulse fit; else NonPulse fit)
+pred_Thr <- ifelse(new_all$max_pulse_duration > 0, pred_P, pred_NP)
 
 # --- metrics + AIC utilities
 rss  <- function(o,p) sum((o-p)^2, na.rm=TRUE)

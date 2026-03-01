@@ -53,15 +53,11 @@ pred_all <- with(ys1,  co_all[["Fref"]]*((All_meanGPP/All_GPPmax + co_all[["n"]]
                    (1 - co_all[["c4"]]*(0.1 - All_meanSWC5)^2) * exp(co_all[["b4"]]*All_meanST5))
 
 out <- ys1 %>%
-  select(date, meanRECO, max_pulse_duration) %>%
+  select(date, meanRECO, All_meanSWC5) %>%
   mutate(NonPulseM_15 = pred_np,
          PulseM_15    = pred_p,
          MeanM_15     = pred_all,
-         Reco_Combined = dplyr::case_when(
-           max_pulse_duration == 0 ~ NonPulseM_15,
-           max_pulse_duration %in% c(8,14,20) ~ PulseM_15,
-           TRUE ~ MeanM_15
-         ))
+         Reco_Combined = ifelse(All_meanSWC5 >= 0.15, PulseM_15, NonPulseM_15))
 
 metrics <- tibble(
   model = c("Combined15","Pulse15","NonPulse15","MeanAll"),
