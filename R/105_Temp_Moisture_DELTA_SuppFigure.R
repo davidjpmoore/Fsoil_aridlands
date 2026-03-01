@@ -1,4 +1,16 @@
 # R/105_Temp_Moisture_DELTA_SuppFigure.R
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# WARNING: This script reads out/derived/years_sum1_DM.csv
+# That file may be a manually copied placeholder (from data/years_sum1_DM.csv)
+# and NOT generated from raw eddy data via 01_read_eddy.R + 02_define_pulses.R.
+# Before finalising any manuscript results, regenerate this file by running:
+#   source("R/01_read_eddy.R")
+#   source("R/02_define_pulses.R")
+# This requires the full 2012-2018 AmeriFlux HH file which is currently missing
+# from the repository. See CLAUDE.md for details.
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 suppressPackageStartupMessages({
   library(dplyr); library(readr); library(tidyr); library(ggplot2); library(scales)
 })

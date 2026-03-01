@@ -5,6 +5,17 @@
 # 16-05-2024  (revised)
 # Anastasia Makhnykina
 
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# WARNING: This script reads out/derived/years_sum1_DM.csv (pulse definitions)
+# That file may be a manually copied placeholder (from data/years_sum1_DM.csv)
+# and NOT generated from raw eddy data via 01_read_eddy.R + 02_define_pulses.R.
+# Before finalising any manuscript results, regenerate this file by running:
+#   source("R/01_read_eddy.R")
+#   source("R/02_define_pulses.R")
+# This requires the full 2012-2018 AmeriFlux HH file which is currently missing
+# from the repository. See CLAUDE.md for details.
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 # Portable setup import (works whether run from project root or from R/)
 setup_path <- if (file.exists("R/00_setup.R")) "R/00_setup.R" else "00_setup.R"
 if (file.exists(setup_path)) source(setup_path)
