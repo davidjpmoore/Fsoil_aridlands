@@ -398,6 +398,378 @@ legend(x = "topleft",
 
 Reco_df$Reco_Combined <- Reco1$`case_when(...)`
 
+
+######################  Additional analysis ##############################
+
+Reco1$STmean <- years_sum1$meanST5
+Reco1$SWCmean <- years_sum1$meanSWC5
+Reco1$Reco_Combined <- Reco1$`case_when(...)`
+
+################ Non-pulse time #######################
+
+Reco2_NP <- Reco1 %>%
+  filter(max_pulse_duration == 0) %>%
+  select(meanRECO,MeanM, thresholdM, Reco_Combined, STmean)
+
+
+Reco2_long_NP_Tsoil <- Reco2_NP %>%
+  pivot_longer(!STmean, names_to = "Models", values_to = "values")
+
+
+Reco2_long_NP_Tsoil %>%
+  ggplot(aes(x=STmean, y=values, col = Models))+
+  geom_point(shape = 1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil temperature, °C')+
+  ylim(0,4) +
+  xlim(0,40)+
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~")),
+                        size = 3
+  )+
+  stat_smooth(method = "nls"
+              , formula = y ~  exp(  as.numeric(x)
+              )
+        #      , method.args = list( start = c( A = 0.8, B = 0.05 ) )
+        #      , se=FALSE
+  )+
+  stat_cor(aes(label = paste(..p.label.., sep = "~")), 
+          size = 3,
+          label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
+  ggtitle ('NP time')
+
+######################
+Reco2_long_NP_Tsoil$STmean <- format(round(Reco2_long_NP_Tsoil$STmean, 2), nsmall = 2)
+
+Reco2_long_NP_Tsoil$STmean <- as.numeric(as.character(Reco2_long_NP_Tsoil$STmean))
+
+Reco2_long_NP_Tsoil$STgroup = vector(mode = 'character', length = nrow(Reco2_long_NP_Tsoil))
+Reco2_long_NP_Tsoil$STgroup[Reco2_long_NP_Tsoil$STmean <= 4.99] = '1'
+Reco2_long_NP_Tsoil$STgroup[Reco2_long_NP_Tsoil$STmean >= 5.00 & Reco2_long_NP_Tsoil$STmean <= 9.99] = '2'
+Reco2_long_NP_Tsoil$STgroup[Reco2_long_NP_Tsoil$STmean >= 10.00 & Reco2_long_NP_Tsoil$STmean <= 14.99] = '3'
+Reco2_long_NP_Tsoil$STgroup[Reco2_long_NP_Tsoil$STmean >= 15.00 & Reco2_long_NP_Tsoil$STmean <= 19.99] = '4'
+Reco2_long_NP_Tsoil$STgroup[Reco2_long_NP_Tsoil$STmean >= 20.00 & Reco2_long_NP_Tsoil$STmean <= 24.99] = '5'
+Reco2_long_NP_Tsoil$STgroup[Reco2_long_NP_Tsoil$STmean >= 25.00 & Reco2_long_NP_Tsoil$STmean <= 29.99] = '6'
+Reco2_long_NP_Tsoil$STgroup[Reco2_long_NP_Tsoil$STmean >= 30.00 & Reco2_long_NP_Tsoil$STmean <= 34.99] = '7'
+Reco2_long_NP_Tsoil$STgroup[Reco2_long_NP_Tsoil$STmean >= 35.00 & Reco2_long_NP_Tsoil$STmean <= 39.99] = '8'
+
+Reco2_long_NP_Tsoil %>%
+  ggplot(aes(x=STgroup, y=values, col = Models))+
+  geom_boxplot()+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil temperature group')+
+  ylim(0,4) +
+  ggtitle ('NP time')
+
+
+
+
+
+################ Pulse time #######################
+
+Reco2_P <- Reco1 %>%
+  filter(max_pulse_duration > 0) %>%
+  select(meanRECO,MeanM, thresholdM, Reco_Combined, STmean)
+
+
+Reco2_long_P_Tsoil <- Reco2_P %>%
+  pivot_longer(!STmean, names_to = "Models", values_to = "values")
+
+
+Reco2_long_P_Tsoil %>%
+  ggplot(aes(x=STmean, y=values, col = Models))+
+  geom_point(shape = 1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil temperature, °C')+
+  ylim(0,4) +
+  xlim(0,40)+
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~")),
+                        size = 3
+  )+
+  stat_smooth(method = "nls"
+              , formula = y ~  exp(  as.numeric(x)
+              )
+              #      , method.args = list( start = c( A = 0.8, B = 0.05 ) )
+              #      , se=FALSE
+  )+
+  stat_cor(aes(label = paste(..p.label.., sep = "~")), 
+           size = 3,
+           label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
+  ggtitle ('P time')
+
+######################
+Reco2_long_P_Tsoil$STmean <- format(round(Reco2_long_P_Tsoil$STmean, 2), nsmall = 2)
+
+Reco2_long_P_Tsoil$STmean <- as.numeric(as.character(Reco2_long_P_Tsoil$STmean))
+
+Reco2_long_P_Tsoil$STgroup = vector(mode = 'character', length = nrow(Reco2_long_P_Tsoil))
+Reco2_long_P_Tsoil$STgroup[Reco2_long_P_Tsoil$STmean <= 4.99] = '1'
+Reco2_long_P_Tsoil$STgroup[Reco2_long_P_Tsoil$STmean >= 5.00 & Reco2_long_P_Tsoil$STmean <= 9.99] = '2'
+Reco2_long_P_Tsoil$STgroup[Reco2_long_P_Tsoil$STmean >= 10.00 & Reco2_long_P_Tsoil$STmean <= 14.99] = '3'
+Reco2_long_P_Tsoil$STgroup[Reco2_long_P_Tsoil$STmean >= 15.00 & Reco2_long_P_Tsoil$STmean <= 19.99] = '4'
+Reco2_long_P_Tsoil$STgroup[Reco2_long_P_Tsoil$STmean >= 20.00 & Reco2_long_P_Tsoil$STmean <= 24.99] = '5'
+Reco2_long_P_Tsoil$STgroup[Reco2_long_P_Tsoil$STmean >= 25.00 & Reco2_long_P_Tsoil$STmean <= 29.99] = '6'
+Reco2_long_P_Tsoil$STgroup[Reco2_long_P_Tsoil$STmean >= 30.00 & Reco2_long_P_Tsoil$STmean <= 34.99] = '7'
+Reco2_long_P_Tsoil$STgroup[Reco2_long_P_Tsoil$STmean >= 35.00 & Reco2_long_P_Tsoil$STmean <= 39.99] = '8'
+
+Reco2_long_P_Tsoil %>%
+  ggplot(aes(x=STgroup, y=values, col = Models))+
+  geom_boxplot()+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil temperature group')+
+  #ylim(0,4) +
+  ggtitle ('P time')
+
+################ All time #######################
+
+Reco2_all <- Reco1 %>%
+  #filter(max_pulse_duration > 0) %>%
+  select(meanRECO,MeanM, thresholdM, Reco_Combined, STmean)
+
+
+Reco2_long_all_Tsoil <- Reco2_all %>%
+  pivot_longer(!STmean, names_to = "Models", values_to = "values")
+
+
+Reco2_long_all_Tsoil %>%
+  ggplot(aes(x=STmean, y=values, col = Models))+
+  geom_point(shape = 1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil temperature, °C')+
+  ylim(0,4) +
+  xlim(0,40)+
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~")),
+                        size = 3
+  )+
+  stat_smooth(method = "nls"
+              , formula = y ~  exp(  as.numeric(x)
+              )
+              #      , method.args = list( start = c( A = 0.8, B = 0.05 ) )
+              #      , se=FALSE
+  )+
+  stat_cor(aes(label = paste(..p.label.., sep = "~")), 
+           size = 3,
+           label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
+  ggtitle ('All time')
+
+######################
+Reco2_long_all_Tsoil$STmean <- format(round(Reco2_long_all_Tsoil$STmean, 2), nsmall = 2)
+
+Reco2_long_all_Tsoil$STmean <- as.numeric(as.character(Reco2_long_all_Tsoil$STmean))
+
+Reco2_long_all_Tsoil$STgroup = vector(mode = 'character', length = nrow(Reco2_long_all_Tsoil))
+Reco2_long_all_Tsoil$STgroup[Reco2_long_all_Tsoil$STmean <= 4.99] = '1'
+Reco2_long_all_Tsoil$STgroup[Reco2_long_all_Tsoil$STmean >= 5.00 & Reco2_long_all_Tsoil$STmean <= 9.99] = '2'
+Reco2_long_all_Tsoil$STgroup[Reco2_long_all_Tsoil$STmean >= 10.00 & Reco2_long_all_Tsoil$STmean <= 14.99] = '3'
+Reco2_long_all_Tsoil$STgroup[Reco2_long_all_Tsoil$STmean >= 15.00 & Reco2_long_all_Tsoil$STmean <= 19.99] = '4'
+Reco2_long_all_Tsoil$STgroup[Reco2_long_all_Tsoil$STmean >= 20.00 & Reco2_long_all_Tsoil$STmean <= 24.99] = '5'
+Reco2_long_all_Tsoil$STgroup[Reco2_long_all_Tsoil$STmean >= 25.00 & Reco2_long_all_Tsoil$STmean <= 29.99] = '6'
+Reco2_long_all_Tsoil$STgroup[Reco2_long_all_Tsoil$STmean >= 30.00 & Reco2_long_all_Tsoil$STmean <= 34.99] = '7'
+Reco2_long_all_Tsoil$STgroup[Reco2_long_all_Tsoil$STmean >= 35.00 & Reco2_long_all_Tsoil$STmean <= 39.99] = '8'
+
+Reco2_long_all_Tsoil %>%
+  ggplot(aes(x=STgroup, y=values, col = Models))+
+  geom_boxplot()+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil temperature group')+
+  ylim(0,4) +
+  ggtitle ('All time')
+
+
+
+
+#################### Non-pulse time ##########################
+
+Reco3_NP <- Reco1 %>%
+  filter(max_pulse_duration == 0) %>%
+  select(meanRECO,MeanM, thresholdM, Reco_Combined, SWCmean)
+
+
+Reco3_long_NP_SWC <- Reco3_NP %>%
+  pivot_longer(!SWCmean, names_to = "Models", values_to = "values")
+
+
+Reco3_long_NP_SWC %>%
+  ggplot(aes(x=SWCmean, y=values, col = Models))+
+  geom_point(shape = 1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil moisture, %')+
+  ylim(0,4) +
+  xlim(0,40)+
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~")),
+                        size = 3
+  )+
+  stat_smooth(method = "nls"
+              , formula = y ~  poly(  as.numeric(x)
+              )
+              #      , method.args = list( start = c( A = 0.8, B = 0.05 ) )
+              #      , se=FALSE
+  )+
+  stat_cor(aes(label = paste(..p.label.., sep = "~")), 
+           size = 3,
+           label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
+  ggtitle ('NP time')
+
+#####################
+Reco3_long_NP_SWC$SWCmean <- format(round(Reco3_long_NP_SWC$SWCmean, 2), nsmall = 2)
+
+Reco3_long_NP_SWC$SWCmean <- as.numeric(as.character(Reco3_long_NP_SWC$SWCmean))
+
+Reco3_long_NP_SWC$SWCgroup = vector(mode = 'character', length = nrow(Reco3_long_NP_SWC))
+Reco3_long_NP_SWC$SWCgroup[Reco3_long_NP_SWC$SWCmean <= 4.99] = '1'
+Reco3_long_NP_SWC$SWCgroup[Reco3_long_NP_SWC$SWCmean >= 5.00 & Reco3_long_NP_SWC$SWCmean <= 9.99] = '2'
+Reco3_long_NP_SWC$SWCgroup[Reco3_long_NP_SWC$SWCmean >= 10.00 & Reco3_long_NP_SWC$SWCmean <= 14.99] = '3'
+Reco3_long_NP_SWC$SWCgroup[Reco3_long_NP_SWC$SWCmean >= 15.00 & Reco3_long_NP_SWC$SWCmean <= 19.99] = '4'
+Reco3_long_NP_SWC$SWCgroup[Reco3_long_NP_SWC$SWCmean >= 20.00 & Reco3_long_NP_SWC$SWCmean <= 24.99] = '5'
+
+Reco3_long_NP_SWC %>%
+  ggplot(aes(x=SWCgroup, y=values, col = Models))+
+  geom_boxplot()+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil moisture group')+
+  ylim(0,4) +
+  ggtitle ('NP time')
+
+
+
+################ Pulse time ########################
+
+Reco3_P <- Reco1 %>%
+  filter(max_pulse_duration > 0) %>%
+  select(meanRECO,MeanM, thresholdM, Reco_Combined, SWCmean)
+
+
+Reco3_long_P_SWC <- Reco3_P %>%
+  pivot_longer(!SWCmean, names_to = "Models", values_to = "values")
+
+
+Reco3_long_P_SWC %>%
+  ggplot(aes(x=SWCmean, y=values, col = Models))+
+  geom_point(shape = 1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil moisture, %')+
+  ylim(0,4) +
+  xlim(0,40)+
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~")),
+                        size = 3
+  )+
+  stat_smooth(method = "nls"
+              , formula = y ~  poly(  as.numeric(x)
+              )
+              #      , method.args = list( start = c( A = 0.8, B = 0.05 ) )
+              #      , se=FALSE
+  )+
+  stat_cor(aes(label = paste(..p.label.., sep = "~")), 
+           size = 3,
+           label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
+  ggtitle ('P time')
+
+##############################
+Reco3_long_P_SWC$SWCmean <- format(round(Reco3_long_P_SWC$SWCmean, 2), nsmall = 2)
+
+Reco3_long_P_SWC$SWCmean <- as.numeric(as.character(Reco3_long_P_SWC$SWCmean))
+
+Reco3_long_P_SWC$SWCgroup = vector(mode = 'character', length = nrow(Reco3_long_P_SWC))
+Reco3_long_P_SWC$SWCgroup[Reco3_long_P_SWC$SWCmean < 4.99] = '1'
+Reco3_long_P_SWC$SWCgroup[Reco3_long_P_SWC$SWCmean >= 5.00 & Reco3_long_P_SWC$SWCmean <= 9.99] = '2'
+Reco3_long_P_SWC$SWCgroup[Reco3_long_P_SWC$SWCmean >= 10.00 & Reco3_long_P_SWC$SWCmean <= 14.99] = '3'
+Reco3_long_P_SWC$SWCgroup[Reco3_long_P_SWC$SWCmean >= 15.00 & Reco3_long_P_SWC$SWCmean <= 19.99] = '4'
+Reco3_long_P_SWC$SWCgroup[Reco3_long_P_SWC$SWCmean >= 20.00 & Reco3_long_P_SWC$SWCmean <= 24.99] = '5'
+Reco3_long_P_SWC$SWCgroup[Reco3_long_P_SWC$SWCmean >= 25.00 & Reco3_long_P_SWC$SWCmean <= 29.99] = '6'
+
+
+Reco3_long_P_SWC %>%
+  ggplot(aes(x=SWCgroup, y=values, col = Models))+
+  geom_boxplot()+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil moisture group')+
+  ylim(0,4) +
+  ggtitle ('P time')
+
+
+################ All time ########################
+
+Reco3_all <- Reco1 %>%
+  #filter(max_pulse_duration > 0) %>%
+  select(meanRECO,MeanM, thresholdM, Reco_Combined, SWCmean)
+
+
+Reco3_long_all_SWC <- Reco3_all %>%
+  pivot_longer(!SWCmean, names_to = "Models", values_to = "values")
+
+
+Reco3_long_all_SWC %>%
+  ggplot(aes(x=SWCmean, y=values, col = Models))+
+  geom_point(shape = 1)+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil moisture, %')+
+  ylim(0,4) +
+  xlim(0,40)+
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~")),
+                        size = 3
+  )+
+  stat_smooth(method = "nls"
+              , formula = y ~  poly(  as.numeric(x)
+              )
+              #      , method.args = list( start = c( A = 0.8, B = 0.05 ) )
+              #      , se=FALSE
+  )+
+  stat_cor(aes(label = paste(..p.label.., sep = "~")), 
+           size = 3,
+           label.x.npc = "centre", digits = 3, p.accuracy = 0.001)+
+  ggtitle ('All time')
+
+###############
+Reco3_long_all_SWC$SWCmean <- format(round(Reco3_long_all_SWC$SWCmean, 2), nsmall = 2)
+
+Reco3_long_all_SWC$SWCmean <- as.numeric(as.character(Reco3_long_all_SWC$SWCmean))
+
+Reco3_long_all_SWC$SWCgroup = vector(mode = 'character', length = nrow(Reco3_long_all_SWC))
+Reco3_long_all_SWC$SWCgroup[Reco3_long_all_SWC$SWCmean <= 4.99] = '1'
+Reco3_long_all_SWC$SWCgroup[Reco3_long_all_SWC$SWCmean >= 5.00 & Reco3_long_all_SWC$SWCmean <= 9.99] = '2'
+Reco3_long_all_SWC$SWCgroup[Reco3_long_all_SWC$SWCmean >= 10.00 & Reco3_long_all_SWC$SWCmean <= 14.99] = '3'
+Reco3_long_all_SWC$SWCgroup[Reco3_long_all_SWC$SWCmean >= 15.00 & Reco3_long_all_SWC$SWCmean <= 19.99] = '4'
+Reco3_long_all_SWC$SWCgroup[Reco3_long_all_SWC$SWCmean >= 20.00 & Reco3_long_all_SWC$SWCmean <= 24.99] = '5'
+Reco3_long_all_SWC$SWCgroup[Reco3_long_all_SWC$SWCmean >= 25.00 & Reco3_long_all_SWC$SWCmean <= 29.99] = '6'
+
+
+
+Reco3_long_all_SWC %>%
+  ggplot(aes(x=SWCgroup, y=values, col = Models))+
+  geom_boxplot()+
+  theme_classic()+
+  theme(text = element_text(size = 15))+
+  ylab(~paste("Reco, ", mu, "mol m"^-2,"s"^-1))+
+  xlab('Soil moisture group')+
+  ylim(0,4) +
+  ggtitle ('All time')
+
+
+#######################
+
+
+
 Reco_df %>%
   na.omit() %>%
   ggplot(aes(x=date))+
@@ -424,6 +796,7 @@ Reco_df %>%
   ylim(0,5)+
   xlim(0,5)
 
+
 # calculate RMSE COMBINED MODEL
 rmse_CombinedMod <- sqrt(sum((Reco_df$Reco_Combined - Reco_df$meanRECO)^2, na.rm=TRUE)/nrow(Reco_df))
 
@@ -441,6 +814,20 @@ mape_MeanMod <- mean(abs((Reco_df$MeanM - Reco_df$meanRECO) / Reco_df$meanRECO),
 
 # calculate R-squared
 r_squared_MeanMod <- cor(Reco_df$MeanM, Reco_df$meanRECO, use = "complete.obs")^2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
