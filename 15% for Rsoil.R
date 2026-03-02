@@ -294,6 +294,7 @@ mape_15Mod <- mean(abs((Rsoil15$Rsoil_Combined - Rsoil15$meanRsoil) / Rsoil15$me
 r_squared_15Mod <- cor(Rsoil15$Rsoil_Combined, Rsoil15$meanRsoil, use = "complete.obs")^2
 
 
+
 # calculate Stat for PULSE MODEL
 rmse_P15Mod <- sqrt(sum((Rsoil15$PulseM_15 - Rsoil15$meanRsoil)^2, na.rm=TRUE)/nrow(Rsoil15))
 mape_P15Mod <- mean(abs((Rsoil15$PulseM_15 - Rsoil15$meanRsoil) / Rsoil15$meanRsoil), na.rm=TRUE) * 100

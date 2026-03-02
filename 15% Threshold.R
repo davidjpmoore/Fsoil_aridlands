@@ -304,10 +304,8 @@ params.pre
 # calculate Stat for 15 MODEL
 rmse_15Mod <- sqrt(sum((Reco15$Reco_Combined - Reco15$meanRECO)^2, na.rm=TRUE)/nrow(Reco15))
 mape_15Mod <- mean(abs((Reco15$Reco_Combined - Reco15$meanRECO) / Reco15$meanRECO), na.rm=TRUE) * 100
-
 # calculate R-squared
 r_squared_15Mod <- cor(Reco15$Reco_Combined, Reco15$meanRECO, use = "complete.obs")^2
-
 
 # calculate Stat for PULSE MODEL
 rmse_P15Mod <- sqrt(sum((Reco15$PulseM_15 - Reco15$meanRECO)^2, na.rm=TRUE)/nrow(Reco15))
