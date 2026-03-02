@@ -29,9 +29,19 @@ Fsoil_aridlands/
 │   ├── figs/                 # All figures; pub/ subfolder for publication-ready
 │   ├── chamber/              # Chamber model outputs
 │   └── model_eval/chamber/   # Model evaluation metrics and diagnostics
+├── legacy/                   # READ-ONLY reference copies of original scripts
+│   ├── Eddy model_2.R        # Original RECO model (1162 lines — complete version)
+│   ├── Chamber model.R       # Original Rsoil model (1187 lines — complete version)
+│   ├── 15% Threshold.R       # Original SWC-threshold RECO model
+│   └── 15% for Rsoil.R       # Original SWC-threshold Rsoil model
 ├── Archive/ & Deprecated/    # Old scripts — ignore
-└── *.R (root)                # Legacy scripts — ignore; superseded by R/
+└── *.R (root)                # Shorter root-level copies — use legacy/ for reference
 ```
+
+> **Note on root-level legacy scripts**: The files `Eddy model_2.R` and `Chamber model.R`
+> in the project root are shorter (775 and 792 lines) than the versions in `legacy/`
+> (1162 and 1187 lines). The `legacy/` copies are the complete originals from Anastasia
+> and are the authoritative reference for manuscript comparison.
 
 ---
 
@@ -141,6 +151,12 @@ These rules encode scientific decisions made by the research team. They are not 
 ### ~~Bug 3~~ — `R/12_13_chamber_models.R` lines 86 & 92: Classification mismatch in `pred_Thr` — **FIXED** (branch `bug-fixes`)
 - **Was**: NP and Pulse models fitted on rainfall-event-based splits (from `NonPulse_sum_chamber.csv` / `Pulse_sum_chamber.csv`), but `pred_Thr` switched using SWC: `ifelse(meanSWC >= 0.15, pred_P, pred_NP)`.
 - **Fix applied**: added `max_pulse_duration` to the `select()` on line 86; changed switch on line 92 to `ifelse(max_pulse_duration > 0, pred_P, pred_NP)`, matching the rainfall-event criterion used in training.
+
+> **Bug 1 verification for `12_13_chamber_models.R`** (confirmed 2026-03-02): Unlike the
+> legacy `Chamber model.R`, the refactored script correctly uses a single
+> `GPPmax_global = max(df_all$meanGPP)` injected via `mutate(GPPmax = GPPmax_global)`
+> inside `fit_one()` before every fit. All three models (All, NP, Pulse) and all
+> predictions use the same global scalar. **Bug 1 does not exist in this script.**
 
 ### Bug 4 — `R/14_Robust_RsoilModels.R` lines 217–228: `cv_year_block_threshold` is not true CV
 - **Problem**: The function receives pre-computed `pred_NP_all` and `pred_P_all` from models fitted on **all data including the held-out year**. There is data leakage — the reported `cv_Thr` is optimistic and cannot be compared fairly to `cv_All`, `cv_NP`, and `cv_P` which are true leave-one-year-out.
@@ -274,9 +290,32 @@ source("R/14_Robust_RsoilModels.R")
 
 ---
 
+## Legacy Script Analysis (completed 2026-03-02)
+
+A detailed review of the four original scripts that produced Tables 2 and 4 revealed
+the following. **The legacy manuscript metrics are based on models with Bugs 1 and 2;
+the refactored results will differ.**
+
+| Legacy script | Model | Training split | GPPmax: fitting | GPPmax: prediction | Switch criterion | Bugs |
+|---|---|---|---|---|---|---|
+| `Eddy model_2.R` | Mean (RECO) | All days | Global | Global | — | None |
+| `Eddy model_2.R` | P-NP Combined (RECO) | Rainfall-event | **Per-subset** | Global | Rainfall-event | Bug 1 |
+| `Chamber model.R` | Mean (Rsoil) | All days | Global | Global | — | None |
+| `Chamber model.R` | P-NP Combined (Rsoil) | Rainfall-event | **Per-subset** | Global | Rainfall-event | Bug 1 |
+| `15% Threshold.R` | 15% Combined (RECO) | SWC-threshold | **Per-subset** | Global | **Rainfall-event** | Bug 1 + Bug 2 |
+| `15% for Rsoil.R` | 15% Combined (Rsoil) | SWC-threshold | **Per-subset** | Global | **Rainfall-event** | Bug 1 + Bug 2 |
+
+Key finding: in ALL legacy scripts, NP and Pulse models were fitted with a per-subset
+GPPmax (Bug 1). In the threshold scripts, models were trained on SWC splits but the
+combined prediction switched on rainfall-event labels (Bug 2). The P-NP scripts
+switched on rainfall-event labels consistently with their training — so Bug 2 was
+absent there, but Bug 1 was present.
+
+---
+
 ## Open Architectural Questions (resolve before further development)
 
-### 1. Three-way RECO comparison not yet implemented
+### 1. Three-way RECO comparison not yet implemented — **PI decision required**
 
 The manuscript comparison requires three full-record predictions for the same flux
 variable: (1) lumped MeanAll, (2) SWC-threshold switch, and (3) rainfall-event switch.
@@ -286,14 +325,16 @@ For **Rsoil (chamber)**, the two switch models exist in separate legacy scripts:
 - `13_chamber_model.R` — rainfall-event splits (no switch; `12_13_chamber_models.R` adds the switch)
 
 For **RECO (eddy)**, the rainfall-event switch model **does not exist anywhere in the
-codebase**. Script `07_threshold15_RECO.R` produces only the SWC-threshold switch.
-A rainfall-event switch for RECO would require fitting separate NP/Pulse models on
-`max_pulse_duration == 0` and `> 0` splits, then applying an event-based switch —
-this has not been implemented.
+refactored codebase**. Script `07_threshold15_RECO.R` produces only the SWC-threshold
+switch. The legacy `Eddy model_2.R` had the rainfall-event P-NP switch (NP trained on
+`years_sum_Pulse0`, P on `years_sum_Pulse1`, switching on `max_pulse_duration`), but
+it has not been ported to the refactored `R/` pipeline.
 
-**Do not add this without explicit PI confirmation of the design.**
+**PI must decide**: Should a rainfall-event P-NP switch for RECO be implemented in
+`R/`? If yes, this is a new script (or addition to `07`) — do not add without explicit
+confirmation.
 
-### 2. Relationship between scripts 12, 13, and 12_13 needs clarification
+### 2. Relationship between scripts 12, 13, and 12_13 — **PI decision required**
 
 Three scripts fit Rsoil chamber models:
 
@@ -307,9 +348,21 @@ Three scripts fit Rsoil chamber models:
 superseded but not deleted. `99_chamber_model_investigation.R` reads outputs from the
 legacy 12 and 13 scripts, which are no longer produced by the active pipeline.
 
-**Before further development:** confirm which scripts are canonical, whether 12 and 13
-should be retired, and what the intended three-way comparison structure is for both
-RECO and Rsoil.
+Note: `12_13_chamber_models.R` currently produces only the rainfall-event P-NP switch.
+It does **not** produce a SWC-threshold switch for Rsoil, which was in the legacy
+`15% for Rsoil.R`. For the three-way Rsoil comparison, a SWC-threshold Rsoil model
+is also needed.
+
+**PI must decide**: (a) Are scripts 12 and 13 retired? (b) Should `12_13_chamber_models.R`
+be extended to also fit and output a SWC-threshold Rsoil switch (mirroring what `07`
+does for RECO)? (c) What is the canonical three-way comparison structure for Rsoil?
+
+### 3. Manuscript Table 2/4 numbers will change — **PI should be aware**
+
+Because Bugs 1 and 2 are now fixed in the refactored scripts, all threshold-model
+metrics (RMSE, MAPE, R²) will differ from the published/submitted values. The P-NP
+model metrics will also shift due to Bug 1 (GPPmax normalization). A full pipeline run
+with the complete raw data is required before final numbers can be reported.
 
 ---
 
@@ -322,3 +375,4 @@ RECO and Rsoil.
 - `14_Robust_RsoilModels.R` is the most rigorous modelling script — it adds multi-start optimization (30 starts), year-blocked CV, and threshold grid search.
 - Publication figures go to `out/figs/pub/` (scripts 103, 104, 105).
 - **Two open bugs remain** (Bugs 4–5 above) — do not assume model output is fully correct until these are fixed. Bugs 1, 2, and 3 are resolved on `bug-fixes`.
+- **Three science/architecture decisions are pending** (see Open Architectural Questions above) — do not proceed with new model development until the PI has resolved them.
