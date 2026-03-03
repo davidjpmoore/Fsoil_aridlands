@@ -32,8 +32,8 @@ more <- filter(ys1, Threshold_15) %>%
   mutate(meanSWC5_P_15 = meanSWC5/100,
          meanST5_P_15  = meanST5)
 
-lower <- c(Fref=0,   c4=-100, b4=0,     n=0.0001)
-upper <- c(Fref=10,  c4= 100, b4=0.20,  n=1.0)
+lower <- c(Fref=0,   c4=-35, b4=0,     n=0.0001)
+upper <- c(Fref=10,  c4= 35, b4=0.20,  n=1.0)
 
 m_np <- fit_nlsLM(
   meanRECO ~ Fref*((All_meanGPP/All_GPPmax + n)/(1 + n)) *
@@ -56,12 +56,12 @@ m_all <- fit_nlsLM(
 
 co_np  <- coef(m_np); co_p <- coef(m_p); co_all <- coef(m_all)
 
-pred_np  <- with(ys1,  co_np[["Fref"]]*((All_meanGPP/All_GPPmax + co_np[["n"]])/(1+co_np[["n"]]))*
-                   (1 - co_np[["c4"]]*(0.1 - All_meanSWC5)^2) * exp(co_np[["b4"]]*All_meanST5))
-pred_p   <- with(ys1,  co_p [["Fref"]]*((All_meanGPP/All_GPPmax + co_p [["n"]])/(1+co_p [["n"]]))*
-                   (1 - co_p [["c4"]]*(0.1 - All_meanSWC5)^2) * exp(co_p [["b4"]]*All_meanST5))
-pred_all <- with(ys1,  co_all[["Fref"]]*((All_meanGPP/All_GPPmax + co_all[["n"]])/(1+co_all[["n"]]))*
-                   (1 - co_all[["c4"]]*(0.1 - All_meanSWC5)^2) * exp(co_all[["b4"]]*All_meanST5))
+pred_np  <- pmax(with(ys1,  co_np[["Fref"]]*((All_meanGPP/All_GPPmax + co_np[["n"]])/(1+co_np[["n"]]))*
+                   (1 - co_np[["c4"]]*(0.1 - All_meanSWC5)^2) * exp(co_np[["b4"]]*All_meanST5)), 0)
+pred_p   <- pmax(with(ys1,  co_p [["Fref"]]*((All_meanGPP/All_GPPmax + co_p [["n"]])/(1+co_p [["n"]]))*
+                   (1 - co_p [["c4"]]*(0.1 - All_meanSWC5)^2) * exp(co_p [["b4"]]*All_meanST5)), 0)
+pred_all <- pmax(with(ys1,  co_all[["Fref"]]*((All_meanGPP/All_GPPmax + co_all[["n"]])/(1+co_all[["n"]]))*
+                   (1 - co_all[["c4"]]*(0.1 - All_meanSWC5)^2) * exp(co_all[["b4"]]*All_meanST5)), 0)
 
 out <- ys1 %>%
   select(date, meanRECO, All_meanSWC5) %>%

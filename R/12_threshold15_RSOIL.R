@@ -171,14 +171,14 @@ start_np  <- list(FrefNP= 0.9,  c4NP = 5, b4NP= 0.02, nNP = 0.10)
 start_p   <- list(FrefP = 0.45, c4P  = 2, b4P = 0.04, nP  = 0.30)
 
 # Bounds to keep terms sane (prevents “non-sensible value” issues)
-lower_all <- c(FrefL=0,   c4L=-50, b4L=0,    nL=0)
-upper_all <- c(FrefL=10,  c4L= 50, b4L=0.15, nL=1)
+lower_all <- c(FrefL=0,   c4L=-35, b4L=0,    nL=0)
+upper_all <- c(FrefL=10,  c4L= 35, b4L=0.15, nL=1)
 
-lower_np  <- c(FrefNP=0,  c4NP=-50, b4NP=0,  nNP=0)
-upper_np  <- c(FrefNP=10, c4NP= 50, b4NP=0.15,nNP=1)
+lower_np  <- c(FrefNP=0,  c4NP=-35, b4NP=0,  nNP=0)
+upper_np  <- c(FrefNP=10, c4NP= 35, b4NP=0.15,nNP=1)
 
-lower_p   <- c(FrefP=0,   c4P=-50,  b4P=0,   nP=0)
-upper_p   <- c(FrefP=10,  c4P= 50,  b4P=0.15,nP=1)
+lower_p   <- c(FrefP=0,   c4P=-35,  b4P=0,   nP=0)
+upper_p   <- c(FrefP=10,  c4P= 35,  b4P=0.15,nP=1)
 
 # ---------- fits (each with GLOBAL GPPmax in the model frame) ----------
 fit_all <- fit_nlsLM_safe(form_all, df_all, start_all, lower_all, upper_all)
@@ -193,26 +193,26 @@ coef_all <- coef(fit_all); coef_np <- coef(fit_np); coef_p <- coef(fit_p)
 print(list(all = coef_all, np = coef_np, pulse = coef_p))
 
 # ---------- predict full series (ALWAYS using GLOBAL GPPmax) ----------
-pred_all <- with(years_sum2,
+pred_all <- pmax(with(years_sum2,
                  coef_all[["FrefL"]] *
                    ((meanGPP/All_GPPmax + coef_all[["nL"]])/(1 + coef_all[["nL"]])) *
                    (1 - coef_all[["c4L"]] * (0.1 - meanSWC)^2) *
                    exp(coef_all[["b4L"]] * meanTsoil)
-)
+), 0)
 
-pred_np <- with(years_sum2,
+pred_np <- pmax(with(years_sum2,
                 coef_np[["FrefNP"]] *
                   ((meanGPP/All_GPPmax + coef_np[["nNP"]])/(1 + coef_np[["nNP"]])) *
                   (1 - coef_np[["c4NP"]] * (0.1 - meanSWC)^2) *
                   exp(coef_np[["b4NP"]] * meanTsoil)
-)
+), 0)
 
-pred_p <- with(years_sum2,
+pred_p <- pmax(with(years_sum2,
                coef_p[["FrefP"]] *
                  ((meanGPP/All_GPPmax + coef_p[["nP"]])/(1 + coef_p[["nP"]])) *
                  (1 - coef_p[["c4P"]] * (0.1 - meanSWC)^2) *
                  exp(coef_p[["b4P"]] * meanTsoil)
-)
+), 0)
 
 # ---------- combined series (by SWC threshold) ----------
 years_sum2 <- years_sum2 %>%

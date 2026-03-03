@@ -71,8 +71,8 @@ fit_one <- function(df, label, starts = list(Fref=.75, c4=5, b4=.03, n=.15)) {
   # Consistent bounds, 12-style: allow c4 < 0
   nlsLM(
     form, data = d, start = starts,
-    lower   = c(Fref = 0,   c4 = -200, b4 = 0,   n = 0),
-    upper   = c(Fref = 5,   c4 =  200, b4 = 0.2, n = 5),
+    lower   = c(Fref = 0,   c4 = -35, b4 = 0,   n = 0),
+    upper   = c(Fref = 5,   c4 =  35, b4 = 0.2, n = 5),
     control = nls.lm.control(maxiter = 1000)
   )
 }
@@ -84,9 +84,9 @@ fit_P   <- fit_one(df_pulse, "Pulse")
 
 # --- daily predictions on ALL dates for all three fits
 new_all <- df_all %>% select(date, meanSWC, meanTsoil, meanGPP, meanRsoil, max_pulse_duration) %>% mutate(GPPmax=GPPmax_global)
-pred_All <- as.numeric(predict(fit_All,  newdata=new_all))
-pred_NP  <- as.numeric(predict(fit_NP,   newdata=new_all))
-pred_P   <- as.numeric(predict(fit_P,    newdata=new_all))
+pred_All <- pmax(as.numeric(predict(fit_All,  newdata=new_all)), 0)
+pred_NP  <- pmax(as.numeric(predict(fit_NP,   newdata=new_all)), 0)
+pred_P   <- pmax(as.numeric(predict(fit_P,    newdata=new_all)), 0)
 
 # --- threshold switch (pulse event -> Pulse fit; else NonPulse fit)
 pred_Thr <- ifelse(new_all$max_pulse_duration > 0, pred_P, pred_NP)

@@ -97,8 +97,8 @@ aic_from_fit <- function(fit, n_obs) {
 # bounds sets
 get_bounds <- function(style=c("12","13")){
   style <- match.arg(style)
-  if (style=="12") list(lower=c(Fref=0, c4=-200, b4=0,   n=0), upper=c(Fref=5, c4=200, b4=0.2, n=5))
-  else             list(lower=c(Fref=0, c4=   0, b4=0,   n=0), upper=c(Fref=5, c4=200, b4=0.2, n=5))
+  if (style=="12") list(lower=c(Fref=0, c4=-35, b4=0,   n=0), upper=c(Fref=5, c4=35, b4=0.2, n=5))
+  else             list(lower=c(Fref=0, c4=  0, b4=0,   n=0), upper=c(Fref=5, c4=35, b4=0.2, n=5))
 }
 
 
@@ -175,7 +175,7 @@ fit_multistart <- function(df, style, nstart = MULTISTART, start_hint = NULL) {
 }
 
 
-predict_all_days <- function(fit, new_all) as.numeric(predict(fit, newdata=new_all))
+predict_all_days <- function(fit, new_all) pmax(as.numeric(predict(fit, newdata=new_all)), 0)
 
 # year-block CV (leave-one-year-out)
 cv_year_block <- function(fit, df_train, df_full) {
@@ -189,7 +189,7 @@ cv_year_block <- function(fit, df_train, df_full) {
                     lower=get_bounds("12")$lower, upper=get_bounds("12")$upper,
                     control=nls.lm.control(maxiter=500)), silent=TRUE)
     if (inherits(f2,"try-error")) { rmse_test <- c(rmse_test, NA_real_); next }
-    pred <- as.numeric(predict(f2, newdata=test))
+    pred <- pmax(as.numeric(predict(f2, newdata=test)), 0)
     rmse_test <- c(rmse_test, rmse(test$meanRsoil, pred))
   }
   mean(rmse_test, na.rm=TRUE)
@@ -207,7 +207,7 @@ cv_year_block_subset <- function(df_subset, fit_seed, bounds_style) {
                     upper=get_bounds(bounds_style)$upper,
                     control=nls.lm.control(maxiter=500)), silent=TRUE)
     if (inherits(f2,"try-error")) { rm <- c(rm, NA_real_); next }
-    pred <- as.numeric(predict(f2, newdata=test))
+    pred <- pmax(as.numeric(predict(f2, newdata=test)), 0)
     rm   <- c(rm, rmse(test$meanRsoil, pred))
   }
   mean(rm, na.rm=TRUE)
@@ -246,8 +246,8 @@ cv_year_block_threshold <- function(df_all_full, cutoff,
       rm <- c(rm, NA_real_); next
     }
 
-    pred_low  <- as.numeric(predict(f_low,  newdata = test))
-    pred_high <- as.numeric(predict(f_high, newdata = test))
+    pred_low  <- pmax(as.numeric(predict(f_low,  newdata = test)), 0)
+    pred_high <- pmax(as.numeric(predict(f_high, newdata = test)), 0)
     pt <- ifelse(test$meanSWC >= cutoff, pred_high, pred_low)
 
     rm <- c(rm, rmse(test$meanRsoil, pt))
