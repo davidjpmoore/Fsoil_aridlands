@@ -156,9 +156,9 @@ save_if_ok <- function(df, fname, title) {
 }
 
 paths <- c(
-  save_if_ok(ys1, "gpp_vs_reco_all.png",   "All time"),
-  save_if_ok(p1,  "gpp_vs_reco_pulse.png", "Pulse time"),
-  save_if_ok(p0,  "gpp_vs_reco_nonpulse.png", "Non-pulse time")
+  save_if_ok(ys1, "Fig4a_GPP_vs_Reco_AllDays.png",      "All time"),
+  save_if_ok(p1,  "Fig4b_GPP_vs_Reco_PulseDays.png",    "Pulse time"),
+  save_if_ok(p0,  "Fig4c_GPP_vs_Reco_NonPulseDays.png", "Non-pulse time")
 )
 
 # Checklist

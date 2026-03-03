@@ -64,7 +64,7 @@ df_all %>%
   xlab(~paste("GPP, ", mu, "mol m"^-2, " s"^-1)) +
   ggtitle("All time") +
   ylim(0, 6)
-if (nrow(df_all)) save_last_plot("gpp_vs_rsoil_all.png", 6, 5, 300)
+if (nrow(df_all)) save_last_plot("Fig4d_GPP_vs_Rsoil_AllDays.png", 6, 5, 300)
 
 # Plot figure for Pulse time
 df_pulse %>%
@@ -85,7 +85,7 @@ df_pulse %>%
   xlab(~paste("GPP, ", mu, "mol m"^-2, " s"^-1)) +
   ggtitle("Pulse time") +
   ylim(0, 6)
-if (nrow(df_pulse)) save_last_plot("gpp_vs_rsoil_pulse.png", 6, 5, 300)
+if (nrow(df_pulse)) save_last_plot("Fig4e_GPP_vs_Rsoil_PulseDays.png", 6, 5, 300)
 
 # Plot figure for non-pulse time
 df_non %>%
@@ -107,4 +107,4 @@ df_non %>%
   ggtitle("Non-Pulse time") +
   ylim(0, 6) +
   xlim(0, 6)
-if (nrow(df_non)) save_last_plot("gpp_vs_rsoil_nonpulse.png", 6, 5, 300)
+if (nrow(df_non)) save_last_plot("Fig4f_GPP_vs_Rsoil_NonPulseDays.png", 6, 5, 300)

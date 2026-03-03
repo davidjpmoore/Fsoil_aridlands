@@ -36,9 +36,9 @@ plot_season_hist <- function(dat, season, fname) {
   save_plot(p, fname)
 }
 
-plot_season_hist(USW9sum, "Winter", "season_winter_reco_hist.png")
-plot_season_hist(USW9sum, "Spring", "season_spring_reco_hist.png")
-plot_season_hist(USW9sum, "Summer", "season_summer_reco_hist.png")
+plot_season_hist(USW9sum, "Winter", "Fig3a_SeasonalPulses_WinterHist.png")
+plot_season_hist(USW9sum, "Spring", "Fig3b_SeasonalPulses_SpringHist.png")
+plot_season_hist(USW9sum, "Summer", "Fig3c_SeasonalPulses_SummerHist.png")
 
 # ----- Pulse composites (replicates your hand-picked windows) -------------
 # Helper: compute composite mean ± SE across windows for RECO and SWC5
@@ -102,7 +102,7 @@ winter_windows <- list(
 
 comp_win <- composite_from_windows(USWkg12_20_summary, winter_windows, scale_swc = 10)
 p_win <- plot_composite(comp_win, "Mean Winter pulse", scale_label = 10)
-save_plot(p_win, "composite_winter.png", w=7.5, h=4.5)
+save_plot(p_win, "Fig3d_SeasonalPulses_WinterComposite.png", w=7.5, h=4.5)
 
 # Spring windows (from your code)
 spring_windows <- list(
@@ -115,7 +115,7 @@ spring_windows <- list(
 )
 comp_spr <- composite_from_windows(USWkg12_20_summary, spring_windows, scale_swc = 15)
 p_spr <- plot_composite(comp_spr, "Mean Spring pulse", scale_label = 15)
-save_plot(p_spr, "composite_spring.png", w=7.5, h=4.5)
+save_plot(p_spr, "Fig3e_SeasonalPulses_SpringComposite.png", w=7.5, h=4.5)
 
 # Summer windows (from your code; fixed typo on SWC3sd origin)
 summer_windows <- list(
@@ -129,4 +129,4 @@ summer_windows <- list(
 )
 comp_sum <- composite_from_windows(USWkg12_20_summary, summer_windows, scale_swc = 10)
 p_sum <- plot_composite(comp_sum, "Mean Summer pulse", scale_label = 10)
-save_plot(p_sum, "composite_summer.png", w=7.5, h=4.5)
+save_plot(p_sum, "Fig3f_SeasonalPulses_SummerComposite.png", w=7.5, h=4.5)

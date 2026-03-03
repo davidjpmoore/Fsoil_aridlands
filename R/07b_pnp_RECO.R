@@ -180,7 +180,7 @@ p_ts <- ggplot(out, aes(date)) +
     x     = NULL,
     title = "RECO time series — rainfall-event P-NP model"
   )
-save_plot(p_ts, "reco_ts_overlay_PNP.png", w = 7.5)
+save_plot(p_ts, "Fig6c_RecoModels_PNP_TimeSeries.png", w = 7.5)
 
 # Cumulative RECO: measured vs P-NP switch vs lumped mean
 cum <- out %>%
@@ -201,6 +201,6 @@ p_cum <- ggplot(cum, aes(date)) +
     x     = NULL,
     title = "Cumulative RECO — rainfall-event P-NP model"
   )
-save_plot(p_cum, "reco_cumulative_PNP.png", w = 7.5)
+save_plot(p_cum, "Fig6d_RecoModels_PNP_Cumulative.png", w = 7.5)
 
 message("Figures written to out/figs/")

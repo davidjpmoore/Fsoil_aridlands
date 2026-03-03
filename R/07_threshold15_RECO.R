@@ -94,7 +94,7 @@ p_ts <- ggplot(out, aes(date)) +
   geom_point(aes(y=MeanM_15),     color="green4",size=0.5, alpha=.6) +
   labs(y = expression(paste("Reco (", mu, "mol ", m^{-2}," ", s^{-1},")")), x = NULL,
        title = "RECO time series with model overlays (15% threshold)")
-save_plot(p_ts, "reco_ts_overlay_15.png", w=7.5)
+save_plot(p_ts, "Fig6a_RecoModels_15pct_TimeSeries.png", w=7.5)
 
 cum <- out %>%
   drop_na(meanRECO, Reco_Combined, MeanM_15) %>%
@@ -109,4 +109,4 @@ p_cum <- ggplot(cum, aes(date)) +
   geom_line(aes(y=culMean),     color="red")  +
   geom_line(aes(y=culCombined), color="green4") +
   labs(y="Cumulative Reco", x=NULL, title="Cumulative RECO")
-save_plot(p_cum, "reco_cumulative_15.png", w=7.5)
+save_plot(p_cum, "Fig6b_RecoModels_15pct_Cumulative.png", w=7.5)

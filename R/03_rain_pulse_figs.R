@@ -19,9 +19,9 @@ USW9sum <- USW9sum %>% mutate(diff = observation - lag(observation, default = fi
 p1 <- ggplot(USW9sum, aes(x=bigRmm))+
   geom_histogram(color="black", fill="white", bins=30)+
   labs(title='Rain > 5 mm', y='Frequency', x='Rain, mm')
-save_plot(p1, "rain_gt5_hist.png")
+save_plot(p1, "Fig1a_PrecipChar_DrySpells.png")
 
 p2 <- ggplot(USW9sum, aes(x=diff))+
   geom_histogram(color="black", fill="white", bins=30)+
   labs(title='Periods without rain', y='Frequency', x='Days')
-save_plot(p2, "dry_spell_hist.png")
+save_plot(p2, "Fig1b_PrecipChar_RainEvents.png")

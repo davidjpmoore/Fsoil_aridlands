@@ -84,7 +84,7 @@ if (nrow(Pulse_Cham)) {
   message("No rows in Pulse_Cham.")
 }
 # PULSE: ST vs Rsoil
-save_last_plot("st_vs_rsoil_pulse.png", width = 6, height = 5)
+save_last_plot("Fig5c_EnvControls_RsoilBubble_Pulse.png", width = 6, height = 5)
 
 
 # Non-pulse
@@ -106,7 +106,7 @@ if (nrow(NonPulse_Cham)) {
 }
 
 # NONPULSE: SWC vs Rsoil
-save_last_plot("swc_vs_rsoil_nonpulse.png", width = 6, height = 5)
+save_last_plot("Fig5d_EnvControls_RsoilBubble_NonPulse.png", width = 6, height = 5)
 
 
 # 

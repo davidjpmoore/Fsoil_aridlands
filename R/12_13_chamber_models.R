@@ -182,7 +182,7 @@ p_annual <- ggplot(annual, aes(year, Sum, group=Series)) +
   theme_bw() + theme(panel.grid = element_blank()) +
   labs(x="Year", y=expression(paste("Annual ", R[soil])),
        title="Annual sums: Observed vs Models (All / NP / Pulse / Threshold)")
-ggsave(file.path(fig_dir, "12_13_annual_sums.png"), p_annual, width=8, height=5, dpi=300)
+ggsave(file.path(fig_dir, "Fig7a_RsoilModels_AnnualSums.png"), p_annual, width=8, height=5, dpi=300)
 
 # --- Plot 2: Observed vs Predicted (facets)
 scatter_long <- pred_df %>%
@@ -196,6 +196,6 @@ p_scatter <- ggplot(scatter_long, aes(meanRsoil, Pred)) +
   labs(x=expression(paste("Observed ", R[soil])),
        y=expression(paste("Predicted ", R[soil])),
        title="Observed vs Predicted (faceted by model)")
-ggsave(file.path(fig_dir, "12_13_obs_vs_pred.png"), p_scatter, width=8, height=6, dpi=300)
+ggsave(file.path(fig_dir, "Fig7b_RsoilModels_ObsVsPred.png"), p_scatter, width=8, height=6, dpi=300)
 
 message("Done.")

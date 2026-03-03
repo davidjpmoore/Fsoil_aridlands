@@ -14,7 +14,7 @@ SHOW_PARAM_CORR   <- TRUE   # compute param correlation across multi-starts
 SHOW_DRIVER_COLL  <- TRUE   # summarize driver collinearity (All/NP/P)
 PLOT_RESIDUALS    <- TRUE   # residual vs fitted / drivers / QQ
 IN_DIR      <- "out/derived"
-FIG_DIR     <- "out/figs/14"
+FIG_DIR     <- "out/figs"
 EVAL_DIR    <- "out/model_eval/chamber/14"
 dir.create(FIG_DIR, recursive = TRUE, showWarnings = FALSE)
 dir.create(EVAL_DIR, recursive = TRUE, showWarnings = FALSE)
@@ -467,7 +467,7 @@ p_annual <- ggplot(annual, aes(year, Sum, color=Series)) +
   theme_bw() + theme(panel.grid=element_blank()) +
   labs(x="Year", y=expression(paste("Annual ", R[soil])),
        title="Annual sums (Obs vs Models) by bounds style")
-ggsave(file.path(FIG_DIR, "annual_sums_bounds.png"), p_annual, width=9, height=5, dpi=300)
+ggsave(file.path(FIG_DIR, "Fig7c_RsoilModels_Robust_AnnualSums.png"), p_annual, width=9, height=5, dpi=300)
 
 # Obs vs Pred (faceted by model incl. PN)
 p_sc <- preds_out %>%
@@ -481,11 +481,11 @@ p_sc <- preds_out %>%
   labs(x=expression(paste("Observed ", R[soil])),
        y=expression(paste("Predicted ", R[soil])),
        title="Observed vs Predicted (by bounds style)")
-ggsave(file.path(FIG_DIR, "obs_vs_pred_bounds.png"), p_sc, width=11, height=6, dpi=300)
+ggsave(file.path(FIG_DIR, "Fig7d_RsoilModels_Robust_ObsVsPred.png"), p_sc, width=11, height=6, dpi=300)
 
 # Residual ACF (All model, example)
 resids <- preds_out %>% mutate(res_All = Pred_All - meanRsoil)
-png(file.path(FIG_DIR, "residual_acf_All.png"), width=800, height=500)
+png(file.path(FIG_DIR, "Fig_Diagnostics_ACF_All.png"), width=800, height=500)
 acf(resids$res_All[is.finite(resids$res_All)], main="ACF of residuals (All model)")
 dev.off()
 
@@ -510,10 +510,10 @@ if (PLOT_RESIDUALS) {
     geom_abline(slope=1, intercept=0, linetype="dashed") +
     theme_bw() + theme(panel.grid=element_blank()) +
     labs(x="Theoretical Quantiles", y="Sample Quantiles", title="QQ Plot (Residuals)")
-  ggsave(file.path(FIG_DIR, "residual_vs_fitted_All.png"), p1, width=6, height=4, dpi=300)
-  ggsave(file.path(FIG_DIR, "residual_vs_SWC_All.png"),     p2, width=6, height=4, dpi=300)
-  ggsave(file.path(FIG_DIR, "residual_vs_Tsoil_All.png"),   p3, width=6, height=4, dpi=300)
-  ggsave(file.path(FIG_DIR, "residual_QQ_All.png"),         p4, width=6, height=4, dpi=300)
+  ggsave(file.path(FIG_DIR, "Fig_Diagnostics_ResvsFitted_All.png"), p1, width=6, height=4, dpi=300)
+  ggsave(file.path(FIG_DIR, "Fig_Diagnostics_ResvsSWC_All.png"),   p2, width=6, height=4, dpi=300)
+  ggsave(file.path(FIG_DIR, "Fig_Diagnostics_ResvsTsoil_All.png"), p3, width=6, height=4, dpi=300)
+  ggsave(file.path(FIG_DIR, "Fig_Diagnostics_QQ_All.png"),         p4, width=6, height=4, dpi=300)
 }
 
 # ===========================

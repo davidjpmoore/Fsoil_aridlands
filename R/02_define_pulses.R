@@ -46,12 +46,12 @@ years_sum_Pulse1 <- df %>% filter(days_since_rain_event <  max_pulse_duration)
 p_np <- ggplot(filter(years_sum_Pulse0, sum_R > 0), aes(x=sum_R)) +
   geom_histogram(color="black", fill="white", bins=30) +
   labs(title="Non-pulse time", x="Rainfall total (mm)", y="Frequency")
-save_plot(p_np, "rain_hist_nonpulse.png")
+save_plot(p_np, "Fig_DataQC_RainHistNonPulse.png")
 
 p_p  <- ggplot(filter(years_sum_Pulse1, sum_R > 0), aes(x=sum_R)) +
   geom_histogram(color="black", fill="white", bins=30) +
   labs(title="Pulse time", x="Rainfall total (mm)", y="Frequency")
-save_plot(p_p, "rain_hist_pulse.png")
+save_plot(p_p, "Fig_DataQC_RainHistPulse.png")
 
 write_csv(years_sum1,       "out/derived/years_sum1_DM.csv")
 write_csv(years_sum_Pulse0, "out/derived/years_sum_Pulse0_DM.csv")

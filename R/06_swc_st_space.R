@@ -30,5 +30,5 @@ bubble <- function(dat, title) {
     coord_cartesian(xlim=c(0,45), ylim=c(0,40)) +
     labs(title=title, x="Mean SWC 5 cm (%)", y="Mean Tsoil 5 cm (°C)")
 }
-save_plot(bubble(p1, "SWC and Soil T — during pulses"), "bubble_pulse.png")
-save_plot(bubble(p0, "SWC and Soil T — between pulses"), "bubble_nonpulse.png")
+save_plot(bubble(p1, "SWC and Soil T — during pulses"), "Fig5a_EnvControls_RecoBubble_Pulse.png")
+save_plot(bubble(p0, "SWC and Soil T — between pulses"), "Fig5b_EnvControls_RecoBubble_NonPulse.png")
