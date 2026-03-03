@@ -167,8 +167,8 @@ fit_subset <- function(df, label, starts = list(Fref = 0.75, c4 = 5.0, b4 = 0.03
   
   nlsLM(
     form, data = d, start = starts,
-    lower   = c(Fref = 0, c4 = 0,   b4 = 0,   n = 0),   # 13-style: c4 >= 0, n up to 5
-    upper   = c(Fref = 5, c4 = 200, b4 = 0.2, n = 5),
+    lower   = c(Fref = 0, c4 = 0,  b4 = 0,   n = 0),   # 13-style: c4 >= 0, n up to 5
+    upper   = c(Fref = 5, c4 = 35, b4 = 0.2, n = 5),
     control = nls.lm.control(maxiter = 1000)
   )
 }
@@ -195,9 +195,9 @@ newdata_all <- summary_Cham %>%
   select(date, meanRsoil, meanSWC, meanTsoil, meanGPP) %>%
   mutate(GPPmax = GPPmax_global)
 
-Pred_All       <- as.numeric(predict(fit_all,   newdata = newdata_all))
-Pred_NonPulse  <- as.numeric(predict(fit_np,    newdata = newdata_all))
-Pred_Pulse     <- as.numeric(predict(fit_pulse, newdata = newdata_all))
+Pred_All       <- pmax(as.numeric(predict(fit_all,   newdata = newdata_all)), 0)
+Pred_NonPulse  <- pmax(as.numeric(predict(fit_np,    newdata = newdata_all)), 0)
+Pred_Pulse     <- pmax(as.numeric(predict(fit_pulse, newdata = newdata_all)), 0)
 
 # ---------------------------
 # Metrics
