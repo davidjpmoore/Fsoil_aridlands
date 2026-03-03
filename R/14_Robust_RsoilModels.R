@@ -213,18 +213,46 @@ cv_year_block_subset <- function(df_subset, fit_seed, bounds_style) {
   mean(rm, na.rm=TRUE)
 }
 
-# Threshold CV: held-out year; apply fixed NP/P fits and a single cutoff
-cv_year_block_threshold <- function(df_all_full, pred_NP_all, pred_P_all, cutoff) {
+# Threshold CV: true leave-one-year-out — refit low/high components on training
+# years inside the loop, then apply the SWC switch to the held-out year.
+cv_year_block_threshold <- function(df_all_full, cutoff,
+                                    fit_seed_low, fit_seed_high,
+                                    bounds_style, min_n = 20) {
   yrs <- sort(unique(year(df_all_full$date)))
   rm <- c()
   for (y in yrs) {
-    test  <- df_all_full %>% filter(year(date)==y)
-    pt    <- ifelse(test$meanSWC >= cutoff,
-                    pred_P_all[year(df_all_full$date)==y],
-                    pred_NP_all[year(df_all_full$date)==y])
+    train <- df_all_full %>% filter(year(date) != y) %>% mutate(GPPmax = GPP_scale)
+    test  <- df_all_full %>% filter(year(date) == y) %>% mutate(GPPmax = GPP_scale)
+
+    train_low  <- train %>% filter(meanSWC <  cutoff)
+    train_high <- train %>% filter(meanSWC >= cutoff)
+
+    if (nrow(train_low) < min_n || nrow(train_high) < min_n) {
+      rm <- c(rm, NA_real_); next
+    }
+
+    f_low  <- try(nlsLM(form, data = train_low,
+                        start   = as.list(coef(fit_seed_low)),
+                        lower   = get_bounds(bounds_style)$lower,
+                        upper   = get_bounds(bounds_style)$upper,
+                        control = nls.lm.control(maxiter = 500)), silent = TRUE)
+    f_high <- try(nlsLM(form, data = train_high,
+                        start   = as.list(coef(fit_seed_high)),
+                        lower   = get_bounds(bounds_style)$lower,
+                        upper   = get_bounds(bounds_style)$upper,
+                        control = nls.lm.control(maxiter = 500)), silent = TRUE)
+
+    if (inherits(f_low, "try-error") || inherits(f_high, "try-error")) {
+      rm <- c(rm, NA_real_); next
+    }
+
+    pred_low  <- as.numeric(predict(f_low,  newdata = test))
+    pred_high <- as.numeric(predict(f_high, newdata = test))
+    pt <- ifelse(test$meanSWC >= cutoff, pred_high, pred_low)
+
     rm <- c(rm, rmse(test$meanRsoil, pt))
   }
-  mean(rm, na.rm=TRUE)
+  mean(rm, na.rm = TRUE)
 }
 
 
@@ -305,7 +333,8 @@ for (style in styles) {
   cv_NP  <- if (CV_FOR_NP_P_THR) cv_year_block_subset(df_np,    f_NP$best,  style) else NA_real_
   cv_P   <- if (CV_FOR_NP_P_THR) cv_year_block_subset(df_pulse, f_P$best,   style) else NA_real_
   cv_Thr <- if (CV_FOR_NP_P_THR && !is.null(best))
-    cv_year_block_threshold(new_all, pred_ThrLow, pred_ThrHigh, best_thr)
+    cv_year_block_threshold(new_all, best_thr,
+                            best$f_low$best, best$f_high$best, style)
   else NA_real_
   
   # ---------------------------
