@@ -105,6 +105,11 @@ run_script("R/06_swc_st_space.R")
 # switch) using nlsLM; write metrics -> out/derived/metrics_RECO_15.csv
 run_script("R/07_threshold15_RECO.R")
 
+# Fit RECO nonlinear models using rainfall-event P-NP switch (ported from
+# legacy/Eddy model_2.R with Bug 1 and formula fixes); write metrics
+# -> out/derived/metrics_RECO_PNP.csv
+run_script("R/07b_pnp_RECO.R")
+
 # =============================================================================
 # STREAM 2 -- Chamber pipeline
 # =============================================================================
