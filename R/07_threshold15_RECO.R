@@ -86,6 +86,8 @@ metrics <- tibble(
             rsq(out$meanRECO, out$MeanM_15))
 )
 write_csv(metrics, "out/derived/metrics_RECO_15.csv")
+message("\nMetrics (written to out/derived/metrics_RECO_15.csv):")
+print(metrics)
 
 p_ts <- ggplot(out, aes(date)) +
   geom_point(aes(y=meanRECO), color="blue", size=0.8) +

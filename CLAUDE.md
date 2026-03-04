@@ -95,7 +95,7 @@ The pipeline uses **two different ways** to define "pulse" vs "non-pulse". They 
 
 | Scheme | Definition | Used in |
 |--------|-----------|---------|
-| **Rainfall-event** | Within rainfall-triggered window (from `02_define_pulses.R`) | `08_read_chamber.R` splits; `12_13`, `13`, `14` model fitting |
+| **Rainfall-event** | Within rainfall-triggered window (from `02_define_pulses.R`) | `08_read_chamber.R` splits; `07b`, `12_13`, `13`, `14` model fitting |
 | **SWC-threshold** | `SWC ≥ 15%` (fraction ≥ 0.15) | `07` and `12` model fitting and switching |
 
 **Rule**: the classification used for fitting must match the classification used for switching predictions. Do not mix them within a script.
@@ -140,8 +140,10 @@ These rules encode scientific decisions made by the research team. They are not 
 
 ## Known Bugs (identified 2026-02-26) — all resolved on branch `bug-fixes`
 
-> **Branch status (2026-03-03)**: All five bugs are fixed and pushed to
-> `origin/bug-fixes`. The branch is ready for PI review before merging to `master`.
+> **Branch status (2026-03-04)**: All five bugs are fixed. `R/07b_pnp_RECO.R`
+> (rainfall-event P-NP switch for RECO) added and wired into `run_all.R`. Full
+> pipeline confirmed running cleanly from raw data. Branch is ready for PI review
+> before merging to `master`.
 
 ### ~~Bug 1~~ — `R/07_threshold15_RECO.R`: GPPmax mismatch between fitting and prediction — **FIXED** (commit `e7f91c5`)
 - **Was**: NP and Pulse models fitted using per-subset GPPmax; predictions used global `All_GPPmax`. Parameters `Fref` and `n` were calibrated under a different normalization than used at prediction time.
@@ -263,34 +265,52 @@ source("R/14_Robust_RsoilModels.R")
 
 **Note**: raw data files in `data/` are not in the repo. They must be present locally before running scripts 01 or 08.
 
-### Key outputs to check after running script 07
+### Key outputs to check after running scripts 07 and 07b
 
 | File | What it tells you |
 |------|------------------|
-| `out/derived/metrics_RECO_15.csv` | RMSE, MAPE, R² for all model variants |
-| `out/figs/reco_ts_overlay_15.png` | Time-series of observed vs modelled RECO |
-| `out/figs/reco_cumulative_15.png` | Cumulative RECO — good for spotting systematic bias |
-| R console | Printed coefficients for `m_np`, `m_p`, `m_all` |
+| `out/derived/metrics_RECO_15.csv` | RMSE, MAPE, R² — SWC-threshold switch model |
+| `out/derived/metrics_RECO_PNP.csv` | RMSE, MAPE, R² — rainfall-event P-NP switch model |
+| `out/figs/Fig6a_RecoModels_15pct_TimeSeries.png` | Time-series overlay, threshold model |
+| `out/figs/Fig6b_RecoModels_15pct_Cumulative.png` | Cumulative RECO, threshold model |
+| `out/figs/Fig6c_RecoModels_PNP_TimeSeries.png` | Time-series overlay, P-NP model |
+| `out/figs/Fig6d_RecoModels_PNP_Cumulative.png` | Cumulative RECO, P-NP model |
+| R console | Printed coefficients for `m_np`, `m_p`, `m_all` (both scripts) |
 
 ---
 
-## Full Pipeline Run Required Before Manuscript Results
+## Pipeline Status and Current Model Performance (updated 2026-03-04)
 
-> **The 2012–2018 AmeriFlux half-hourly eddy file is missing from the repository.**
->
-> The file `data/AddedPartionedCflux_US-Wkg_HH_201212312330_201812312330.csv` is required
-> by `01_read_eddy.R` to regenerate `out/derived/years_sum1_DM.csv` from raw data. Until
-> it is obtained and a full pipeline run is completed (scripts 01 → 02 → 07), the eddy
-> summary file in `out/derived/` is a manually copied placeholder from `data/years_sum1_DM.csv`.
->
-> **All model outputs and metrics produced while this file is missing must be treated as
-> provisional.** A full run from raw data — `source("R/run_all.R")` — is required before
-> any results are used in the manuscript.
->
-> Scripts that depend on this file carry a prominent `WARNING` comment at the top:
-> `05_gpp_vs_reco.R`, `07_threshold15_RECO.R`, `08_read_chamber.R`,
-> `103_Disprop_Pulse_Impact.R`, `104_Temp_Moisture_Space_Figure.R`,
-> `105_Temp_Moisture_DELTA_SuppFigure.R`.
+> **Full pipeline run from raw data confirmed.** `source("R/run_all.R")` runs cleanly
+> end-to-end. All derived CSVs and figures in `out/` reflect a complete run from the
+> raw AmeriFlux HH and chamber input files. The metrics below are from this run and
+> may be used as working results (subject to PI review before manuscript submission).
+
+### RECO metrics — eddy covariance 2012–2020 (scripts 07 and 07b)
+
+| Model | Script | RMSE | MAPE | R² |
+|-------|--------|------|------|----|
+| MeanAll (lumped) | 07 / 07b | 0.352 | 49.7% | 0.758 |
+| 15% threshold switch | 07 | 0.314 | 45.5% | 0.808 |
+| Rainfall-event P-NP switch | 07b | **0.303** | **41.7%** | **0.821** |
+| NonPulse_15 (applied to all) | 07 | 0.476 | 44.1% | 0.592 |
+| Pulse_15 (applied to all) | 07 | 0.622 | 123.9% | 0.535 |
+| NonPulse_PN (applied to all) | 07b | 0.411 | 39.1% | 0.730 |
+| Pulse_PN (applied to all) | 07b | 0.475 | 107.0% | 0.690 |
+
+Source files: `out/derived/metrics_RECO_15.csv`, `out/derived/metrics_RECO_PNP.csv`
+
+### Rsoil metrics — chamber 2017–2020 (script 14; optimal threshold = 0.13)
+
+| Model | RMSE | R² | CV RMSE (year-block) |
+|-------|------|----|----------------------|
+| All (lumped) | 0.334 | 0.692 | 0.328 |
+| P-NP switch (rainfall-event) | 0.316 | 0.726 | 0.321 |
+| Threshold switch (SWC < / ≥ 0.13) | **0.292** | **0.766** | 0.298 |
+| NonPulse (applied to all) | 0.394 | 0.574 | 0.211 |
+| Pulse (applied to all) | 0.382 | 0.599 | 0.416 |
+
+Source file: `out/model_eval/chamber/14/params_metrics.csv`
 
 ---
 
@@ -319,24 +339,19 @@ absent there, but Bug 1 was present.
 
 ## Open Architectural Questions (resolve before further development)
 
-### 1. Three-way RECO comparison not yet implemented — **PI decision required**
+### ~~1. Three-way RECO comparison not yet implemented~~ — **RESOLVED** (2026-03-04)
 
-The manuscript comparison requires three full-record predictions for the same flux
-variable: (1) lumped MeanAll, (2) SWC-threshold switch, and (3) rainfall-event switch.
+`R/07b_pnp_RECO.R` was added (commit `79979c3`) and wired into `run_all.R` (line 111).
+The three-way RECO comparison is now fully implemented:
 
-For **Rsoil (chamber)**, the two switch models exist in separate legacy scripts:
-- `12_threshold15_RSOIL.R` — SWC-threshold switch (trained and switched on SWC ≥ 15%)
-- `13_chamber_model.R` — rainfall-event splits (no switch; `12_13_chamber_models.R` adds the switch)
+| Script | Classification | Switch column | Output |
+|--------|---------------|---------------|--------|
+| `07_threshold15_RECO.R` | SWC ≥ 15% | `Reco_Combined` | `metrics_RECO_15.csv` |
+| `07b_pnp_RECO.R` | Rainfall-event | `Reco_PNP` | `metrics_RECO_PNP.csv` |
+| Both vs `MeanAll` | All days | `MeanM_*` | both files |
 
-For **RECO (eddy)**, the rainfall-event switch model **does not exist anywhere in the
-refactored codebase**. Script `07_threshold15_RECO.R` produces only the SWC-threshold
-switch. The legacy `Eddy model_2.R` had the rainfall-event P-NP switch (NP trained on
-`years_sum_Pulse0`, P on `years_sum_Pulse1`, switching on `max_pulse_duration`), but
-it has not been ported to the refactored `R/` pipeline.
-
-**PI must decide**: Should a rainfall-event P-NP switch for RECO be implemented in
-`R/`? If yes, this is a new script (or addition to `07`) — do not add without explicit
-confirmation.
+Corrections applied in `07b` vs legacy `Eddy model_2.R`: (a) single global GPPmax used
+in fitting and prediction (Bug 1 fix); (b) correct operator precedence `(GPP/GPPmax + n)/(1+n)`.
 
 ### 2. Relationship between scripts 12, 13, and 12_13 — **PI decision required**
 
@@ -379,4 +394,5 @@ with the complete raw data is required before final numbers can be reported.
 - `14_Robust_RsoilModels.R` is the most rigorous modelling script — it adds multi-start optimization (30 starts), year-blocked CV, and threshold grid search.
 - Publication figures go to `out/figs/pub/` (scripts 103, 104, 105).
 - **All five bugs are resolved** on branch `bug-fixes` (commits `e7f91c5`, `53be3ef`, `d17a0a8`, `047c42a`). The branch is ready for PI review before merging to `master`.
-- **Three science/architecture decisions are pending** (see Open Architectural Questions above) — do not proceed with new model development until the PI has resolved them.
+- **`R/07b_pnp_RECO.R` added** (commit `79979c3`) — resolves Architectural Question 1. Pipeline confirmed running cleanly from raw data.
+- **Two science/architecture decisions are still pending** (see Open Architectural Questions 2 and 3 above) — do not proceed with new model development until the PI has resolved them.

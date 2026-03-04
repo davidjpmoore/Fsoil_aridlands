@@ -336,6 +336,31 @@ for (style in styles) {
     cv_year_block_threshold(new_all, best_thr,
                             best$f_low$best, best$f_high$best, style)
   else NA_real_
+
+  # P-NP switch CV: leave-one-year-out — refit NP and P on training years,
+  # apply PulseFlag switch to all held-out days, compute RMSE on all days.
+  # Analogous to cv_year_block_threshold but switches on PulseFlag (Scientific Rule 1).
+  cv_PN <- if (CV_FOR_NP_P_THR) {
+    yrs_pn    <- sort(unique(year(new_all$date)))
+    cv_PN_vec <- vapply(yrs_pn, function(y) {
+      train_np <- df_np    %>% filter(year(date) != y) %>% mutate(GPPmax = GPP_scale)
+      train_p  <- df_pulse %>% filter(year(date) != y) %>% mutate(GPPmax = GPP_scale)
+      test     <- new_all  %>% filter(year(date) == y)
+      if (nrow(train_np) < 5 || nrow(train_p) < 5) return(NA_real_)
+      f_np2 <- try(nlsLM(form, data = train_np, start = as.list(coef(f_NP$best)),
+                         lower = get_bounds(style)$lower, upper = get_bounds(style)$upper,
+                         control = nls.lm.control(maxiter = 500)), silent = TRUE)
+      f_p2  <- try(nlsLM(form, data = train_p,  start = as.list(coef(f_P$best)),
+                         lower = get_bounds(style)$lower, upper = get_bounds(style)$upper,
+                         control = nls.lm.control(maxiter = 500)), silent = TRUE)
+      if (inherits(f_np2, "try-error") || inherits(f_p2, "try-error")) return(NA_real_)
+      pred_np2 <- pmax(as.numeric(predict(f_np2, newdata = test)), 0)
+      pred_p2  <- pmax(as.numeric(predict(f_p2,  newdata = test)), 0)
+      pt <- ifelse(test$PulseFlag == 1L, pred_p2, pred_np2)
+      rmse(test$meanRsoil, pt)
+    }, FUN.VALUE = numeric(1))
+    mean(cv_PN_vec, na.rm = TRUE)
+  } else NA_real_
   
   # ---------------------------
   # Parameter correlation matrices (CSV)
@@ -388,9 +413,16 @@ for (style in styles) {
            Fref=NA_real_, c4=NA_real_, b4=NA_real_, n=NA_real_,
            RMSE=rmse(obs,pred_Thr_opt), MAE=mae(obs,pred_Thr_opt), MBE=mbe(obs,pred_Thr_opt), R2=r2(obs,pred_Thr_opt),
            AIC=NA_real_, CV_RMSE_YearBlock=cv_Thr,
-           cIQR_Fref=NA_real_, cIQR_c4=NA_real_, cIQR_b4=NA_real_, cIQR_n=NA_real_)
+           cIQR_Fref=NA_real_, cIQR_c4=NA_real_, cIQR_b4=NA_real_, cIQR_n=NA_real_),
+    tibble(model = paste0("PNP_Switch_", style),
+           Fref = NA_real_, c4 = NA_real_, b4 = NA_real_, n = NA_real_,
+           RMSE = rmse(obs, Pred_PN), MAE = mae(obs, Pred_PN),
+           MBE  = mbe(obs, Pred_PN),  R2  = r2(obs, Pred_PN),
+           AIC  = NA_real_, CV_RMSE_YearBlock = cv_PN,
+           cIQR_Fref = NA_real_, cIQR_c4 = NA_real_,
+           cIQR_b4   = NA_real_, cIQR_n  = NA_real_)
   )
-  
+
   # Append fitted threshold sides only if we have them
   if (!is.null(thr_low_fit) && !is.null(thr_high_fit)) {
     params_tbl <- bind_rows(
