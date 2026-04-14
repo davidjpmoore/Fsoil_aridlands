@@ -799,19 +799,15 @@ Reco_df %>%
 
 # calculate RMSE COMBINED MODEL
 rmse_CombinedMod <- sqrt(sum((Reco_df$Reco_Combined - Reco_df$meanRECO)^2, na.rm=TRUE)/nrow(Reco_df))
-
 # calculate MAPE -  Mean absolute percent error
 mape_CombinedMod <- mean(abs((Reco_df$Reco_Combined - Reco_df$meanRECO) / Reco_df$meanRECO), na.rm=TRUE) * 100
- 
 # calculate R-squared 
 r_squared_CombinedMod <- cor(Reco_df$Reco_Combined, Reco_df$meanRECO, use = "complete.obs")^2
 
 # calculate RMSE MEAN MODEL
 rmse_MeanMod <- sqrt(sum((Reco_df$MeanM - Reco_df$meanRECO)^2, na.rm=TRUE)/nrow(Reco_df))
-
 # calculate MAPE -  Mean absolute percent error
 mape_MeanMod <- mean(abs((Reco_df$MeanM - Reco_df$meanRECO) / Reco_df$meanRECO), na.rm=TRUE) * 100
-
 # calculate R-squared
 r_squared_MeanMod <- cor(Reco_df$MeanM, Reco_df$meanRECO, use = "complete.obs")^2
 
