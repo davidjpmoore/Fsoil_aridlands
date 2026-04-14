@@ -52,16 +52,16 @@ GPPmax_NP <- max(years_sum_Pulse0$meanGPP, na.rm = TRUE)
 ########## Fit Non-Pulse model ##################
 years_sum_Pulse0$meanRECO <- as.numeric(as.character(years_sum_Pulse0$meanRECO))
 
-Param_model4_NP <- nls(meanRECO ~ FrefNP*((meanGPP_NP/GPPmax_NP +n)/1+n) *
-                         (1-c4*(0.1-meanSWC5_NP)^2)*exp(b4*meanST5_NP), 
+Param_model4_NP <- nls(meanRECO ~ FrefNP*((meanGPP_NP/GPPmax_NP +n)/(1+n)) *
+                         ((1-(c4*(meanSWC5_NP-0.125)))^2)*exp(b4*meanST5_NP), 
                        data = years_sum_Pulse0,
                        start = list(FrefNP=0.75, c4=56.54, b4=0.04, n=0.84),
                        control = nls.control(maxiter = 1000, minFactor = 0.01)
 )
 Summary_Model4_NP = summary(Param_model4_NP)
 
-# Formula: meanRECO ~ Fref * ((meanGPP_NP/GPPmax_NP + n)/1 + n) * (1 - c4 * 
-#                                                                    (0.1 - meanSWC5_NP)^2) * exp(b4 * meanST5_NP)
+# Formula: meanRECO ~ Fref * ((meanGPP_NP/GPPmax_NP + n)/(1 + n)) * 
+#                                (1 - (c4 * (0.1 - meanSWC5_NP)))^2 * exp(b4 * meanST5_NP)
 
 # NON_Pulse parameters
 #Estimate Std. Error t value Pr(>|t|)    
@@ -71,11 +71,25 @@ Summary_Model4_NP = summary(Param_model4_NP)
 # n    0.129719   0.004816  26.933   <2e-16 ***
 
 
-FrefNP = 0.561731
+#FrefNP = 0.561731
+#SMoptNP = 0.125 
+#c4NP = 8.106202
+#b4NP =  0.034162 
+#nNP=  0.129719
+
+############### NEW Parameters:
+#FrefNP  0.68211    0.02423   28.15   <2e-16 ***
+#  c4     -0.98346    0.11113   -8.85   <2e-16 ***
+#  b4      0.03819    0.00147   25.98   <2e-16 ***
+#  n       0.27508    0.01032   26.66   <2e-16 ***
+
+
+FrefNP = 0.68211
 SMoptNP = 0.125 
-c4NP = 8.106202
-b4NP =  0.034162 
-nNP=  0.129719
+c4NP = -0.98346
+b4NP =  0.03819 
+nNP=  0.27508
+
 
 #################### Pulse model ##################################
 ###################################################################
@@ -96,7 +110,9 @@ meanST5_P = years_sum_Pulse1$meanST5
 meanGPP_P = years_sum_Pulse1$meanGPP
 GPPmax_P = max(years_sum_Pulse1$meanGPP, na.rm=TRUE)
 
-Param_model4_P <- nls(meanRECO ~ FrefP*((meanGPP_P/GPPmax_P +n)/1+n) *(1-c4*(0.1-meanSWC5_P)^2)*exp(b4*meanST5_P), 
+
+Param_model4_P <- nls(meanRECO ~ FrefP*(((meanGPP_P/GPPmax_P) +n)/(1+n)) * 
+                        ((1-(c4*(meanSWC5_P - 0.125)))^2)*exp(b4*meanST5_P), 
                       data = years_sum_Pulse1,
                       start = list(FrefP=0.75, c4=56.54, b4=0.04, n=0.84),
                       control = nls.control(maxiter = 1000, minFactor = 0.01)
@@ -111,12 +127,25 @@ Summary_Model4_P = summary(Param_model4_P)
 #   n      0.243863   0.014703  16.586  < 2e-16 ***
 
 # Pulse parameters
-FrefP = 0.616634 
-SMoptP =0.125 
-c4P = -10.431847   
-b4P = 0.044407
-nP= 0.243863
+#FrefP = 0.616634 
+#SMoptP =0.125 
+#c4P = -10.431847   
+#b4P = 0.044407
+#nP= 0.243863
 
+
+########### NEW Parameters ##################
+#FrefP   0.917371   0.057326  16.003  < 2e-16 ***
+ # c4    -10.431827   1.596215  -6.535 1.01e-10 ***
+#  b4      0.044408   0.002129  20.862  < 2e-16 ***
+#  n       0.487724   0.029406  16.586  < 2e-16 ***
+
+
+FrefP = 0.917371 
+SMoptP =0.125 
+c4P = -10.431827   
+b4P = 0.044408
+nP= 0.487724
 
 ############### All time model OR MEAN MODEL #################################
 ################################################################
@@ -139,7 +168,7 @@ All_meanST5 = years_sum1$meanST5
 All_meanGPP = years_sum1$meanGPP
 All_GPPmax = max(years_sum1$meanGPP, na.rm = TRUE)
 
-Param_model4_All <- nls(meanRECO ~ FrefL*((All_meanGPP/All_GPPmax +nL)/1+nL) *(1-c4L*(0.1-All_meanSWC5)^2)*exp(b4L*All_meanST5), 
+Param_model4_All <- nls(meanRECO ~ FrefL*((All_meanGPP/All_GPPmax +nL)/(1+nL)) *(1-c4L*(0.1-All_meanSWC5)^2)*exp(b4L*All_meanST5), 
                       data = years_sum1,
                       start = list(FrefL=0.75,  c4L=56.54, b4L=0.04, nL=0.84),
                       control = nls.control(maxiter = 1000, minFactor = 0.01)
@@ -157,11 +186,25 @@ Summary_Model4_All = summary(Param_model4_All)
 #  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 # Mean parameters
-FrefL = 1.136042
+#FrefL = 1.136042
+#SMoptL =0.125 
+#c4L = -7.755161   
+#b4L = 0.036016
+#nL= 0.079803
+
+########## NEW Parameters ###################
+#FrefL  1.317354   0.054176  24.316  < 2e-16 ***
+#  c4L   -7.755599   1.219593  -6.359 2.37e-10 ***
+#  b4L    0.036016   0.001490  24.174  < 2e-16 ***
+#  nL     0.159607   0.005539  28.815  < 2e-16 ***
+
+FrefL = 1.317354
 SMoptL =0.125 
-c4L = -7.755161   
+c4L = -7.755599   
 b4L = 0.036016
-nL= 0.079803
+nL= 0.159607
+
+
 
 #run model for full time series
 ALL_model4_NP = FrefNP*((All_meanGPP/All_GPPmax +nNP)/1+nNP) *(1-c4NP*(SMoptNP-All_meanSWC5)^2)*exp(b4NP*All_meanST5)
