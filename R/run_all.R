@@ -150,6 +150,14 @@ run_script("R/12_13_chamber_models.R")
 #    out/model_eval/chamber/14/params_metrics.csv
 run_script("R/14_Robust_RsoilModels.R")
 
+# Figures 6e-6h: Rsoil model time-series and cumulative overlays (mirrors
+# Figs 6a-6d for RECO) using pre-computed predictions from script 14
+# -> out/figs/Fig6e_RsoilModels_Thr_TimeSeries.png
+# -> out/figs/Fig6f_RsoilModels_Thr_Cumulative.png
+# -> out/figs/Fig6g_RsoilModels_PNP_TimeSeries.png
+# -> out/figs/Fig6h_RsoilModels_PNP_Cumulative.png
+run_script("R/15_Rsoil_figs.R")
+
 # =============================================================================
 # STREAM 3 -- Publication figures
 # =============================================================================
