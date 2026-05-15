@@ -1,0 +1,8 @@
+Figure: Temperature–Moisture Space (eddy daily). 2012 excluded due to sparse coverage.
+
+(a) Daily ecosystem respiration (RECO) versus soil temperature at 5 cm. Black = pulse days; white = non-pulse.
+(b) Daily RECO versus soil water content at 5 cm (%). Y-axis shared with panel (a); black = pulse, white = non-pulse.
+(c) Soil temperature (5 cm) versus SWC (5 cm, %) with point size proportional to RECO; black = pulse, white = non-pulse.
+
+Methods (summary): Daily means were computed from half-hourly flux and driver data.
+Pulse days were defined using rainfall-triggered windows (>5, >10, >20 mm mapped to 8, 14, 20 days).

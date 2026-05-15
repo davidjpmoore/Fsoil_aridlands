@@ -1,0 +1,7 @@
+Panel (a): Days classified as pulse vs non-pulse by year (2013–2020).
+Panel (b): Annual total ecosystem respiration (RECO; g C m^-2 yr^-1) split into pulse and non-pulse days.
+Panel (c): Contribution of pulse days to total annual respiration (c). RECO during pulse days is disproportionately large;
+points above the 1:1 line indicate that pulse days contribute more RECO than their share of days.
+
+Notes: 2012 excluded due to sparse coverage. Shaded bands mark typical ranges: 30–50% of days are pulse (vertical band)
+and 50–80% of annual RECO occurs during pulse days (horizontal band).

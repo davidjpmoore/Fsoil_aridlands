@@ -1,0 +1,8 @@
+Supplementary Figure: ΔRECO in temperature–moisture space (Pulse minus Non-pulse). 2012 excluded.
+
+Panel: Heatmap of ΔRECO (µmol m⁻² s⁻¹) computed in matched bins of soil water content (2%-wide) and soil temperature (2°C-wide).
+Positive (red) indicates higher RECO on pulse days than non-pulse days at the same conditions; negative (blue) indicates the reverse.
+
+Methods (summary): Daily means were binned on a regular SWC×T grid.
+Bins were retained only when both groups had ≥5 observations. Color limits are symmetric about zero and set from the 95th percentile
+of |ΔRECO|. A mild signed power transform (γ = 1.2) was applied to emphasize larger differences and downweight near-zero values.
