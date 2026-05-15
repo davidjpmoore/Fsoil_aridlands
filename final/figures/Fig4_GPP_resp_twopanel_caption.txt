@@ -1,0 +1,7 @@
+Figure 4. Ecosystem respiration (Reco, panel a) and soil respiration (Rsoil, panel b) as a function of gross primary production (GPP) at US-Wkg (Walnut Gulch Kendall). Reco: eddy covariance daily means, 2012–2020. Rsoil: automated chamber daily means, 2017–2020.
+
+Panel (a): Reco vs GPP. Circles: daily means. Black fill: pulse days; white fill: non-pulse days. Solid grey line: linear regression for pulse days (R² = 0.62); dashed grey line: non-pulse days (R² = 0.59). Regression lines are drawn in front of points.
+
+Panel (b): Rsoil vs GPP. Squares: daily means. Same fill and line conventions as panel (a). Solid grey line: pulse-day regression (R² = 0.50); dashed grey line: non-pulse-day regression (R² = 0.71). Both panels share the same y-axis scale. Only days with GPP > 0 µmol m⁻² s⁻¹ are plotted.
+
+Pulse days are defined as days within a rainfall-event window triggered by precipitation > 5 mm d⁻¹ (window duration 8–20 days depending on event size; see CLAUDE.md).

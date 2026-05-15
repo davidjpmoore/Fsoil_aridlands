@@ -1,0 +1,9 @@
+Figure 2. Disproportionate contribution of rainfall pulse days to annual ecosystem respiration (RECO) at US-Wkg (Walnut Gulch Kendall), 2013–2020.
+
+Panel (a): Number of days classified as pulse (black) or non-pulse (white) for each year. Pulse days are defined as days falling within a rainfall-event window triggered by precipitation > 5 mm d⁻¹ (window duration 8–20 days depending on event size; see CLAUDE.md).
+
+Panel (b): Annual total RECO (g C m⁻² yr⁻¹) partitioned into pulse and non-pulse contributions. Daily RECO (µmol m⁻² s⁻¹) was converted to g C m⁻² d⁻¹ before summing.
+
+Panel (c): Scatter plot of pulse-day fraction of the year (x-axis) vs pulse-day fraction of annual RECO (y-axis) for each year (2013–2020). Points above the 1:1 dashed line indicate that pulse days contribute more RECO than their proportional share of the year. Shaded bands mark typical ranges across years: 30–50% of days are pulse days (vertical band) and 50–80% of annual RECO occurs during pulse days (horizontal band).
+
+2012 is excluded due to sparse eddy covariance coverage.

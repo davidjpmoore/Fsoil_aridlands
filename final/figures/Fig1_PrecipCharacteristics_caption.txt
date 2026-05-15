@@ -1,0 +1,7 @@
+Figure 1. Precipitation characteristics at the US-Wkg (Walnut Gulch Kendall) arid grassland site, 2012–2020.
+
+Panel (a): Frequency distribution of dry-spell lengths, defined as the number of days between consecutive rain events exceeding 5 mm d⁻¹. Dry spells are calculated as the gap in days between successive qualifying rain events, consistent with the pulse-trigger threshold used throughout the analysis.
+
+Panel (b): Frequency distribution of daily rainfall totals for all rain events exceeding 5 mm d⁻¹ (n = 168 events). Only days above this threshold are included; the x-axis therefore begins at 5 mm.
+
+Both histograms use 30 bins. The 5 mm threshold defines the minimum rainfall required to initiate a respiration pulse window (see CLAUDE.md).

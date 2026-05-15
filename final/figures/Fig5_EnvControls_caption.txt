@@ -1,0 +1,7 @@
+Figure 5. Environmental controls on ecosystem respiration (Reco, top row) and soil respiration (Rsoil, bottom row) under pulse (left column) and non-pulse (right column) conditions at US-Wkg (Walnut Gulch Kendall).
+
+Bubble position: x-axis, soil water content at 5 cm depth measured at the eddy covariance tower (%, capped at 32%); y-axis, soil temperature at 5 cm depth (eddy tower, °C, capped at 39°C). Bubble area is proportional to flux magnitude (µmol CO₂ m⁻² s⁻¹); size legend in panel (b); scale shared across all four panels; values clamped at 4 µmol CO₂ m⁻² s⁻¹.
+
+Panel (a): Reco, pulse days (n = 1124 days; eddy covariance 2012–2020). Panel (b): Reco, non-pulse days (n = 1774 days). Panel (c): Rsoil, pulse days (n = 394 days; automated chambers 2017–2020). Panel (d): Rsoil, non-pulse days (n = 617 days).
+
+Pulse days are defined as days within a rainfall-event window triggered by precipitation > 5 mm d⁻¹ (window duration 8–20 days depending on event size). Grey shading (SWC < 15%) marks the approximate threshold below which soil moisture rarely limits respiration at this site. Eddy tower SWC and Tsoil are used for all panels, including Rsoil rows, to ensure a consistent environmental frame of reference. Only days with positive flux values are shown.
