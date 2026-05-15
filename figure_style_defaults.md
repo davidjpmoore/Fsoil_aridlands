@@ -111,13 +111,112 @@ The design-at-2x approach is useful when you want figures to look good both on s
 
 ## Multi-Panel Conventions
 
-**Panel labels:** lowercase letters (a, b, c), bold, positioned upper-left of each panel. Use `ggpubr::ggarrange()` with `labels = c("a", "b", "c")` and `font.label = list(size = 14, face = "bold")`. Some journals prefer uppercase (A, B, C) — check before submission.
+**Panel labels:** lowercase letters (a, b, c), bold, positioned upper-left of each panel inside the plotting area. See §Multi-Panel Layout Conventions for the standard annotate() approach. Some journals prefer uppercase (A, B, C) — check before submission.
 
-**Shared legend:** when multiple panels use the same aesthetic mapping, use `plot_layout(guides = "collect")` (patchwork) or `common.legend = TRUE` (ggpubr) to avoid legend duplication.
+**Shared legend:** when multiple panels use the same aesthetic mapping, place the legend inside one panel (the rightmost by convention) rather than duplicating it or floating it outside the figure. See §Multi-Panel Layout Conventions Rule 4.
 
 **Panel alignment:** use `align = "hv"` (ggpubr) or `align()` (patchwork) so axes line up cleanly across panels. Misaligned axes look amateurish and make panel comparison harder.
 
 **One message per figure:** if a multi-panel figure is showing three unrelated things, it's three figures, not one. The exception is when the panels are deliberately telling a comparative story.
+
+## Multi-Panel Layout Conventions
+
+These four rules apply to all publication figures with shared axes or shared legends. They encode lab decisions made after reviewing journal submission requirements — project style files should not override them without a documented reason.
+
+### Rule 1 — Shared y-axis row
+
+When a row of panels shares the same y-axis scale, show the y-axis title and tick labels on the leftmost panel only. Suppress them on all other panels in the row. Set tight margins on the shared sides so panels appear to touch. This prevents the y-axis from being visually doubled and wastes no space on repeated labels.
+
+```r
+# Leftmost panel (a): normal y-axis
+p_a <- p_a + theme(plot.margin = margin(t=5, r=2, b=5, l=5, unit="pt"))
+
+# Non-leftmost panels (b, c): suppress y-axis and tighten left margin
+p_b <- p_b + theme(
+  axis.text.y  = element_blank(),
+  axis.ticks.y = element_blank(),
+  axis.title.y = element_blank(),   # or set y = NULL in labs()
+  plot.margin  = margin(t=5, r=2, b=5, l=2, unit="pt")
+)
+```
+
+### Rule 2 — Shared x-axis row
+
+When a row of panels shares the same x-axis variable, retain tick labels (values) on all panels so readers can read exact positions without looking across the figure.
+
+**Critical:** do NOT put the x-axis label on one panel via `labs(x = "...")` while using `labs(x = NULL)` on the others. Layout engines (ggpubr, patchwork, gridExtra) allocate vertical space for the label inside the panel that has it, making that panel's plot area shorter than the others — the panels look the same size in total allocated space but the data regions have different heights.
+
+The correct approach: set `labs(x = NULL)` on every panel in the row, then add the shared label as a `textGrob` in a thin dedicated row below all three panels using `arrangeGrob()`. The label spans the full width of the panel row and all three panels remain identical in height.
+
+```r
+library(gridExtra); library(grid)
+
+# Every panel in the row: suppress the x-axis label
+p_a <- p_a + labs(x = NULL)
+p_b <- p_b + labs(x = NULL)   # <-- NOT labs(x = "Days since rain event")
+p_c <- p_c + labs(x = NULL)
+
+# Build the row grob and the shared label grob separately
+row_grob  <- arrangeGrob(p_a, p_b, p_c, ncol = 3)
+xlab_grob <- textGrob("Days since rain event",
+                       vjust = 0.5, gp = gpar(fontsize = 10))
+
+# Stack: panel row / thin label row
+layout <- arrangeGrob(
+  row_grob, xlab_grob,
+  nrow    = 2,
+  heights = unit(c(1, 0.07), "null")
+)
+
+# Save with png() + grid.draw() because the result is a grob, not a ggplot
+png("fig.png", width = 7.2, height = 3, units = "in", res = 300, bg = "white")
+grid.draw(layout)
+dev.off()
+```
+
+### Rule 3 — Panel labels inside the plot area
+
+Place panel labels (a, b, c, …) inside the plotting area using `annotate()`. Do not use `ggpubr::ggarrange(labels = …)` or add them to the margin. Inside placement keeps labels within the figure bounding box, prevents them from being cropped by journal layout systems, and keeps the panel label visually associated with the data it labels.
+
+```r
+# Add to every panel — change only the label string
+p <- p + annotate(
+  "text",
+  x         = -Inf, y    = Inf,
+  label     = "a",
+  hjust     = -0.3, vjust = 1.3,
+  fontface  = "bold",
+  size      = 5
+)
+```
+
+`x = -Inf, y = Inf` snaps to the top-left corner of the coordinate system. `hjust = -0.3` nudges the text 30% of its width to the right of the left edge; `vjust = 1.3` drops it 30% of its height below the top edge. Both keep the label fully inside the panel.
+
+Remove labels from `ggarrange()` when using this approach:
+
+```r
+ggarrange(p_a, p_b, p_c, nrow = 1, ncol = 3)   # no labels = argument
+```
+
+### Rule 4 — Legend placement in multi-panel figures
+
+Place the legend inside the rightmost panel of the relevant row. Position it in the top-right corner using `legend.position` and `legend.justification`. Remove all legend box backgrounds and borders — the legend floats on the data without a box. Never place the legend outside the figure or duplicate it across panels.
+
+```r
+# Rightmost panel: legend inside, top-right, no border
+p_f <- p_f + theme(
+  legend.position      = c(0.97, 0.97),
+  legend.justification = c("right", "top"),
+  legend.background    = element_blank(),
+  legend.box.background = element_blank(),
+  legend.text          = element_text(size = 9),
+  legend.key.size      = unit(1.0, "lines")
+)
+
+# All other panels: legend suppressed
+p_d <- p_d + theme(legend.position = "none")
+p_e <- p_e + theme(legend.position = "none")
+```
 
 ## Caption Companion Files
 
@@ -162,7 +261,7 @@ The caption file does not need to be production-quality manuscript prose. It nee
 - Decorative grid lines on publication figures
 - Saving with transparent backgrounds (use `bg = "white"`)
 - Mixing diagnostic-quality and publication-quality figures in the same output folder
-- Adding panel labels (a, b, c) inside the panel where they may overlap data — keep them in the margin or use `ggpubr::ggarrange()`'s built-in labeling
+- Adding panel labels (a, b, c) in the figure margin using `ggpubr::ggarrange(labels = …)` — they can be cropped by journal layout systems; use `annotate()` inside the panel instead (see §Multi-Panel Layout Conventions Rule 3)
 
 ## When to Override These Defaults
 
