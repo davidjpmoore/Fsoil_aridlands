@@ -1,0 +1,5 @@
+Figure 6. Residuals (predicted minus observed) for three Reco models under non-pulse and pulse conditions at US-Wkg (Walnut Gulch Kendall), 2013–2020.
+
+Boxes show the interquartile range (IQR); horizontal line within each box is the median; whiskers extend to 1.5 × IQR; outliers are omitted for clarity. Y-axis is clipped to the 5th–95th percentile of all residuals (-0.60 to 0.43 µmol CO₂ m⁻² s⁻¹). Dashed grey line at y = 0 is the reference for unbiased prediction.
+
+Three models are compared: Mean (white boxes) — single lumped model fitted to all days; P-NP switch (grey 70%) — separate models for pulse and non-pulse days defined by rainfall-event windows; 15% threshold (grey 30%) — separate models switched by soil water content (SWC ≥ 15% = pulse conditions). Non-pulse group: n = 1774 days; Pulse group: n = 1124 days. 2012 excluded (sparse coverage).
