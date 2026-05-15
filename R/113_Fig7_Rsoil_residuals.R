@@ -125,12 +125,12 @@ p <- ggplot(df_long, aes(x = PulseClass, y = Residual, fill = Model)) +
   ) +
   coord_cartesian(ylim = c(q[1], q[2])) +
   labs(x = NULL, y = LABEL_RESID) +
-  annotate("text", x = -Inf, y = Inf, label = "a",
+  annotate("text", x = -Inf, y = Inf, label = "b",
            hjust = -0.5, vjust = 1.3, fontface = "bold", size = 5) +
   theme_pub() +
   theme(
-    legend.position       = c(0.97, 0.97),
-    legend.justification  = c("right", "top"),
+    legend.position       = c(0.03, 0.03),
+    legend.justification  = c("left", "bottom"),
     legend.background     = element_blank(),
     legend.box.background = element_blank(),
     legend.text           = element_text(size = 9),
