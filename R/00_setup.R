@@ -8,7 +8,7 @@ pkgs <- c(
 invisible(lapply(pkgs, require, character.only = TRUE))
 
 # Folders
-dir.create("out/figs", recursive = TRUE, showWarnings = FALSE)
+dir.create("review/figures", recursive = TRUE, showWarnings = FALSE)
 dir.create("out/derived", recursive = TRUE, showWarnings = FALSE)
 
 # Plot theme
@@ -19,8 +19,8 @@ theme_set(
 )
 
 # Saver
-save_plot <- function(p, filename, w=6, h=4, dpi=300) {
-  ggsave(file.path("out/figs", filename), p, width = w, height = h, dpi = dpi)
+save_plot <- function(p, filename, w=7, h=5, dpi=150) {
+  ggsave(file.path("review/figures", filename), p, width = w, height = h, dpi = dpi, bg = "white")
 }
 
 # Safe bounded nlsLM

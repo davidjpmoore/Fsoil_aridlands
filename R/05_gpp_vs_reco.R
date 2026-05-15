@@ -137,7 +137,7 @@ mk_plot <- function(df, title, ylim_max = 6) {
 }
 
 # Output dir
-out_dir <- "out/figs"
+out_dir <- "review/figures"
 if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
 
 # Build & save if there are finite pairs
@@ -146,7 +146,7 @@ save_if_ok <- function(df, fname, title) {
   if (n_ok > 0) {
     p <- mk_plot(df, title)
     fp <- file.path(out_dir, fname)
-    ggsave(fp, p, width = 6, height = 4.5, dpi = 300)
+    ggsave(fp, p, width = 7, height = 5, dpi = 150, bg = "white")
     message("Saved: ", fp, "   (n=", n_ok, ")")
     return(fp)
   } else {

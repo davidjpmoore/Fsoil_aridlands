@@ -103,4 +103,4 @@ p6h <- ggplot(cum_pnp, aes(date)) +
        title = "Cumulative Rsoil — rainfall-event P-NP model")
 save_plot(p6h, "Fig6h_RsoilModels_PNP_Cumulative.png", w = 7.5)
 
-message("Figures written to out/figs/")
+message("Figures written to review/figures/")

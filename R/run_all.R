@@ -81,24 +81,24 @@ run_script("R/02_define_pulses.R")
 
 # REVIEW NEEDED -- included for completeness, confirm role before final pipeline
 # Histograms of rain events >5 mm and inter-event dry-spell durations
-# -> out/figs/rain_gt5_hist.png, dry_spell_hist.png
+# -> review/figures/rain_gt5_hist.png, dry_spell_hist.png
 run_script("R/03_rain_pulse_figs.R")
 
 # REVIEW NEEDED -- included for completeness, confirm role before final pipeline
 # Season-tagged RECO histograms during pulse events (Winter/Spring/Summer)
 # and composite pulse-response curves (RECO + SWC) for hand-picked windows
-# -> out/figs/season_*_reco_hist.png, composite_*.png
+# -> review/figures/season_*_reco_hist.png, composite_*.png
 run_script("R/04_seasonal_pulses.R")
 
 # REVIEW NEEDED -- included for completeness, confirm role before final pipeline
 # Scatter plots of GPP vs RECO with linear regression for All / Pulse /
-# Non-pulse periods -> out/figs/gpp_vs_reco_*.png
+# Non-pulse periods -> review/figures/gpp_vs_reco_*.png
 # NOTE: requires ggpubr; produces no derived data, diagnostic use only
 run_script("R/05_gpp_vs_reco.R")
 
 # REVIEW NEEDED -- included for completeness, confirm role before final pipeline
 # Bubble plots of SWC vs soil temperature sized by RECO magnitude,
-# separately for pulse and non-pulse periods -> out/figs/bubble_*.png
+# separately for pulse and non-pulse periods -> review/figures/bubble_*.png
 run_script("R/06_swc_st_space.R")
 
 # Fit RECO nonlinear models (All-data, NonPulse, Pulse, 15%-SWC-threshold
@@ -129,13 +129,13 @@ run_script("R/09_pulse_np_chamber.R")
 
 # REVIEW NEEDED -- included for completeness, confirm role before final pipeline
 # Scatter plots of GPP vs Rsoil with linear regression for All / Pulse /
-# Non-pulse chamber periods -> out/figs/gpp_vs_rsoil_*.png
+# Non-pulse chamber periods -> review/figures/gpp_vs_rsoil_*.png
 # NOTE: requires ggpubr; produces no derived data, diagnostic use only
 run_script("R/10_gpp_vs_rsoil_chamber.R")
 
 # REVIEW NEEDED -- included for completeness, confirm role before final pipeline
 # Bubble plots of SWC vs Tsoil sized by Rsoil, separately for pulse and
-# non-pulse chamber periods -> out/figs/st_vs_rsoil_pulse.png,
+# non-pulse chamber periods -> review/figures/st_vs_rsoil_pulse.png,
 # swc_vs_rsoil_nonpulse.png
 run_script("R/11_swc_st_chamber.R")
 
@@ -152,10 +152,10 @@ run_script("R/14_Robust_RsoilModels.R")
 
 # Figures 6e-6h: Rsoil model time-series and cumulative overlays (mirrors
 # Figs 6a-6d for RECO) using pre-computed predictions from script 14
-# -> out/figs/Fig6e_RsoilModels_Thr_TimeSeries.png
-# -> out/figs/Fig6f_RsoilModels_Thr_Cumulative.png
-# -> out/figs/Fig6g_RsoilModels_PNP_TimeSeries.png
-# -> out/figs/Fig6h_RsoilModels_PNP_Cumulative.png
+# -> review/figures/Fig6e_RsoilModels_Thr_TimeSeries.png
+# -> review/figures/Fig6f_RsoilModels_Thr_Cumulative.png
+# -> review/figures/Fig6g_RsoilModels_PNP_TimeSeries.png
+# -> review/figures/Fig6h_RsoilModels_PNP_Cumulative.png
 run_script("R/15_Rsoil_figs.R")
 
 # =============================================================================
@@ -171,21 +171,24 @@ message(strrep("=", 70))
 # No data files read; no side effects beyond defining objects.
 run_script("R/000_figure_style.R")
 
+# TEMPORARILY DISABLED — scripts reference removed style constants SAVE_DISPROP_W
+# and SAVE_TEMP_MOIST_W; will be refactored as part of publication figure rebuild.
+
 # Disproportionate pulse contribution figure: pulse-day fraction vs pulse
 # fraction of annual RECO, plus annual RECO bar chart
-# -> out/figs/pub/Disprop_Pulse_Impact_legend.png
-run_script("R/103_Disprop_Pulse_Impact.R")
+# -> final/figures/Disprop_Pulse_Impact_legend.png
+# run_script("R/103_Disprop_Pulse_Impact.R")
 
 # Temperature x moisture state-space figure: SWC vs Tsoil bubble plot
 # coloured by pulse/non-pulse, sized by RECO
-# -> out/figs/pub/Temp_Moisture_Space_Figure.png
-run_script("R/104_Temp_Moisture_Space_Figure.R")
+# -> final/figures/Temp_Moisture_Space_Figure.png
+# run_script("R/104_Temp_Moisture_Space_Figure.R")
 
 # Supplementary DELTA-RECO heatmap: diverging colour grid of RECO difference
 # (pulse minus non-pulse) across SWC x Tsoil bins
-# -> out/figs/pub/Temp_Moisture_DELTA_SuppFigure.png,
-#    out/figs/pub/Temp_Moisture_Space_BubbleOnly.png
-run_script("R/105_Temp_Moisture_DELTA_SuppFigure.R")
+# -> final/figures/Temp_Moisture_DELTA_SuppFigure.png,
+#    final/figures/Temp_Moisture_Space_BubbleOnly.png
+# run_script("R/105_Temp_Moisture_DELTA_SuppFigure.R")
 
 # =============================================================================
 # Done

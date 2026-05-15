@@ -19,16 +19,17 @@ library(ggpubr)
 
 # In this file we plot figures to show interactions between Rsoil and GPP
 # --- saving helper (safe, minimal) ---
-fig_dir <- "out/figs"
+fig_dir <- "review/figures"
 if (!dir.exists(fig_dir)) dir.create(fig_dir, recursive = TRUE)
 
-save_last_plot <- function(name, width = 6, height = 5, dpi = 300) {
+save_last_plot <- function(name, width = 7, height = 5, dpi = 150) {
   p <- ggplot2::last_plot()
   if (is.null(p)) {
     message("No last plot found for ", name, " — skipping.")
     return(invisible(FALSE))
   }
-  ggplot2::ggsave(file.path(fig_dir, name), plot = p, width = width, height = height, dpi = dpi)
+  ggplot2::ggsave(file.path(fig_dir, name), plot = p, width = width, height = height,
+                  dpi = dpi, bg = "white")
   message("Saved: ", file.path(fig_dir, name))
   invisible(TRUE)
 }

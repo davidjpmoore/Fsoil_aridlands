@@ -26,9 +26,12 @@ Fsoil_aridlands/
 ├── data/                     # Raw input data (do not modify)
 ├── out/
 │   ├── derived/              # Intermediate CSVs (pipeline outputs)
-│   ├── figs/                 # All figures; pub/ subfolder for publication-ready
 │   ├── chamber/              # Chamber model outputs
 │   └── model_eval/chamber/   # Model evaluation metrics and diagnostics
+├── review/
+│   └── figures/              # Diagnostic figure outputs (gitignored)
+└── final/
+    └── figures/              # Publication-ready figure outputs (gitignored)
 ├── legacy/                   # READ-ONLY reference copies of original scripts
 │   ├── Eddy model_2.R        # Original RECO model (1162 lines — complete version)
 │   ├── Chamber model.R       # Original Rsoil model (1187 lines — complete version)
@@ -99,6 +102,12 @@ The pipeline uses **two different ways** to define "pulse" vs "non-pulse". They 
 | **SWC-threshold** | `SWC ≥ 15%` (fraction ≥ 0.15) | `07` and `12` model fitting and switching |
 
 **Rule**: the classification used for fitting must match the classification used for switching predictions. Do not mix them within a script.
+
+---
+
+## Lab Standards
+
+At the start of any session involving figures or style, check all `.md` files in the project root for lab-wide standards and conventions (e.g. `figure_style_defaults.md`). These take precedence over any assumptions derived from existing code. Use `Glob("**/*.md")` to discover them.
 
 ---
 
@@ -271,10 +280,10 @@ source("R/14_Robust_RsoilModels.R")
 |------|------------------|
 | `out/derived/metrics_RECO_15.csv` | RMSE, MAPE, R² — SWC-threshold switch model |
 | `out/derived/metrics_RECO_PNP.csv` | RMSE, MAPE, R² — rainfall-event P-NP switch model |
-| `out/figs/Fig6a_RecoModels_15pct_TimeSeries.png` | Time-series overlay, threshold model |
-| `out/figs/Fig6b_RecoModels_15pct_Cumulative.png` | Cumulative RECO, threshold model |
-| `out/figs/Fig6c_RecoModels_PNP_TimeSeries.png` | Time-series overlay, P-NP model |
-| `out/figs/Fig6d_RecoModels_PNP_Cumulative.png` | Cumulative RECO, P-NP model |
+| `review/figures/Fig6a_RecoModels_15pct_TimeSeries.png` | Time-series overlay, threshold model |
+| `review/figures/Fig6b_RecoModels_15pct_Cumulative.png` | Cumulative RECO, threshold model |
+| `review/figures/Fig6c_RecoModels_PNP_TimeSeries.png` | Time-series overlay, P-NP model |
+| `review/figures/Fig6d_RecoModels_PNP_Cumulative.png` | Cumulative RECO, P-NP model |
 | R console | Printed coefficients for `m_np`, `m_p`, `m_all` (both scripts) |
 
 ---
@@ -392,7 +401,7 @@ with the complete raw data is required before final numbers can be reported.
 - Missing/fill values: `-9999` and `NaN` are treated as `NA` on read.
 - The `12_13_chamber_models.R` script is what `run_all.R` actually calls (not `12_threshold15_RSOIL.R` or `13_chamber_model.R` individually).
 - `14_Robust_RsoilModels.R` is the most rigorous modelling script — it adds multi-start optimization (30 starts), year-blocked CV, and threshold grid search.
-- Publication figures go to `out/figs/pub/` (scripts 103, 104, 105).
+- Publication figures go to `final/figures/` (scripts 103, 104, 105 — temporarily disabled pending refactor).
 - **All five bugs are resolved** on branch `bug-fixes` (commits `e7f91c5`, `53be3ef`, `d17a0a8`, `047c42a`). The branch is ready for PI review before merging to `master`.
 - **`R/07b_pnp_RECO.R` added** (commit `79979c3`) — resolves Architectural Question 1. Pipeline confirmed running cleanly from raw data.
 - **Two science/architecture decisions are still pending** (see Open Architectural Questions 2 and 3 above) — do not proceed with new model development until the PI has resolved them.

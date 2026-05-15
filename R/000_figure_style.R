@@ -8,11 +8,16 @@
 #   else source("000_figure_style.R")
 #
 # Defines (all objects are named for direct reference in figure scripts):
-#   Themes     : theme_in_ticks, theme_in_ticks_angle, theme_in_ticks_legend
+#   Themes     : theme_pub() [primary], theme_in_ticks [compat alias],
+#                theme_in_ticks_angle, theme_in_ticks_legend
 #   Palettes   : PAL_PULSE
 #   Heatmap    : COL_DELTA_LOW/MID/HIGH, scale_fill_delta_reco()
 #   Points     : PT_SCATTER, PT_DISP, PT_BUBBLE, BAR_LINEWIDTH
-#   Saving     : SAVE_DPI, SAVE_DISPROP_W/H, SAVE_TEMP_MOIST_W/H, SAVE_SINGLE_W/H
+#   Saving     : SAVE_DPI_PUB, SAVE_DPI_DIAG,
+#                SAVE_SINGLE_COL_W, SAVE_DOUBLE_COL_W,
+#                SAVE_DIAG_W, SAVE_DIAG_H,
+#                SAVE_SINGLE_W, SAVE_SINGLE_H,
+#                BG_WHITE
 #   ggarrange  : GGARRANGE_LABELS, GGARRANGE_FONT_LABEL
 #   Axis labels: LABEL_RECO, LABEL_RECO_ANNUAL, LABEL_DELTA_RECO,
 #                LABEL_RECO_SIZE, LABEL_SWC_5CM, LABEL_TSOIL_5CM,
@@ -31,19 +36,29 @@ suppressPackageStartupMessages({
 # -----------------------------------------------------------------------------
 # 1. Base theme
 # -----------------------------------------------------------------------------
-# theme_bw at 12 pt; no grid; panel border 0.5 pt black; inward ticks (-3 pt);
-# axis text margins compensate for inward tick direction.
-# Note: legend.title is NOT suppressed here — scripts that need it blank should
-# add  + theme(legend.title = element_blank())  locally (e.g. script 103).
+# Minimal publication-ready theme parameterised by base_size.
+# base_size = 11 → single-column figures (~3.5 in)
+# base_size = 24 → design-at-2x for double-column; scale down at submission
+# No legend title by default — add locally when the title carries information.
 
-theme_in_ticks <- theme_bw(base_size = 12) +
-  theme(
-    panel.grid        = element_blank(),
-    panel.border      = element_rect(color = "black", linewidth = 0.5),
-    axis.ticks.length = unit(-3, "pt"),
-    axis.text.x       = element_text(margin = margin(t = 6)),
-    axis.text.y       = element_text(margin = margin(r = 6))
-  )
+theme_pub <- function(base_size = 11) {
+  theme_bw(base_size = base_size) +
+    theme(
+      panel.grid        = element_blank(),
+      panel.border      = element_rect(color = "black", linewidth = 0.5, fill = NA),
+      axis.ticks        = element_line(color = "black", linewidth = 0.4),
+      axis.ticks.length = unit(-3, "pt"),
+      axis.text.x       = element_text(margin = margin(t = 6)),
+      axis.text.y       = element_text(margin = margin(r = 6)),
+      legend.title      = element_blank(),
+      legend.background = element_blank(),
+      strip.background  = element_blank(),
+      strip.text        = element_text(face = "bold")
+    )
+}
+
+# Backward-compatible alias used by scripts 103, 104, 105 (base_size = 11).
+theme_in_ticks <- theme_pub()
 
 
 # -----------------------------------------------------------------------------
@@ -53,17 +68,13 @@ theme_in_ticks <- theme_bw(base_size = 12) +
 # For panels with discrete year labels that need angled x-axis text
 # (bar chart panels a/b in script 103)
 theme_in_ticks_angle <- theme_in_ticks +
-  theme(axis.text.x = element_text(angle = 30, hjust = 1, vjust = 1))
+  theme(axis.text.x = element_text(angle = 30, hjust = 1, vjust = 1,
+                                   margin = margin(t = 6)))
 
 # For standalone single-panel figures that expose a full legend with a title
 # (bubble-only panel in script 105)
-theme_in_ticks_legend <- theme_bw(base_size = 12) +
+theme_in_ticks_legend <- theme_pub() +
   theme(
-    panel.grid        = element_blank(),
-    panel.border      = element_rect(color = "black", linewidth = 0.5),
-    axis.ticks.length = unit(-3, "pt"),
-    axis.text.x       = element_text(margin = margin(t = 6)),
-    axis.text.y       = element_text(margin = margin(r = 6)),
     legend.title      = element_text(size = 10),
     legend.key.height = unit(0.9, "lines"),
     legend.key.width  = unit(1.1, "lines")
@@ -141,18 +152,26 @@ BAR_LINEWIDTH <- 0.3
 # -----------------------------------------------------------------------------
 # 6. ggsave output dimensions and resolution
 # -----------------------------------------------------------------------------
-SAVE_DPI <- 300
 
-# Three-panel landscape (ncol=3, nrow=1 via ggpubr::ggarrange)
-SAVE_DISPROP_W    <- 10    # script 103  Disprop_Pulse_Impact_legend.png
-SAVE_DISPROP_H    <- 4.2
-SAVE_TEMP_MOIST_W <- 11   # script 104  Temp_Moisture_Space_Figure.png
-SAVE_TEMP_MOIST_H <- 4.4
+# Resolution
+SAVE_DPI_PUB  <- 300   # publication-quality PNG
+SAVE_DPI_DIAG <- 150   # diagnostic / review figures — fast, adequate on screen
 
-# Single-panel (both 105 outputs share these dimensions intentionally —
-# identical proportions allow seamless slide transitions between them)
-SAVE_SINGLE_W <- 6.8      # script 105  Temp_Moisture_DELTA_SuppFigure.png
-SAVE_SINGLE_H <- 5.0      #             Temp_Moisture_Space_BubbleOnly.png
+# Background
+BG_WHITE <- "white"
+
+# Journal column widths (Nature family as reference baseline)
+SAVE_SINGLE_COL_W  <- 3.5    # single column  (~89 mm)
+SAVE_DOUBLE_COL_W  <- 7.2    # double column  (~183 mm)
+
+# Diagnostic defaults
+SAVE_DIAG_W <- 7
+SAVE_DIAG_H <- 5
+
+# Single-panel publication figures (scripts 105 — both outputs share these
+# dimensions intentionally for seamless slide transitions between them)
+SAVE_SINGLE_W <- 6.8
+SAVE_SINGLE_H <- 5.0
 
 
 # -----------------------------------------------------------------------------
@@ -188,7 +207,7 @@ LABEL_RECO_SIZE <- expression(
 
 # Plain-text axis labels
 LABEL_SWC_5CM         <- "Soil water content (5 cm, %)"
-LABEL_TSOIL_5CM       <- "Soil temperature (5 cm, \u00b0C)"
+LABEL_TSOIL_5CM       <- "Soil temperature (5 cm, °C)"
 LABEL_PULSE_DAY_FRAC  <- "Pulse-day fraction of year"
 LABEL_PULSE_RECO_FRAC <- "Pulse fraction of annual RECO"
 LABEL_N_DAYS          <- "Number of days"

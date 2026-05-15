@@ -28,8 +28,8 @@
 #
 # Outputs:
 #   out/derived/metrics_RECO_PNP.csv
-#   out/figs/reco_ts_overlay_PNP.png
-#   out/figs/reco_cumulative_PNP.png
+#   review/figures/Fig6c_RecoModels_PNP_TimeSeries.png
+#   review/figures/Fig6d_RecoModels_PNP_Cumulative.png
 #
 # WARNING: out/derived/years_sum1_DM.csv must be regenerated from raw eddy data
 # by running 01_read_eddy.R then 02_define_pulses.R before using any results in
@@ -203,4 +203,4 @@ p_cum <- ggplot(cum, aes(date)) +
   )
 save_plot(p_cum, "Fig6d_RecoModels_PNP_Cumulative.png", w = 7.5)
 
-message("Figures written to out/figs/")
+message("Figures written to review/figures/")
