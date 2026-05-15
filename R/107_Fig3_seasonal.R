@@ -133,7 +133,7 @@ make_hist_panel <- function(season_label, panel_label, show_y = TRUE) {
   } else {
     p <- p + theme(
       axis.text.y  = element_blank(),
-      axis.ticks.y = element_blank(),
+      axis.ticks.y = element_line(color = "black", linewidth = 0.4),
       plot.margin  = margin(t = 5, r = 5, b = 5, l = 2, unit = "pt")
     )
   }
@@ -277,7 +277,7 @@ make_comp_panel <- function(comp, panel_label, show_y = TRUE, show_legend = FALS
   } else {
     p <- p + theme(
       axis.text.y  = element_blank(),
-      axis.ticks.y = element_blank(),
+      axis.ticks.y = element_line(color = "black", linewidth = 0.4),
       plot.margin  = margin(t = 5, r = 5, b = 5, l = 2, unit = "pt")
     )
   }

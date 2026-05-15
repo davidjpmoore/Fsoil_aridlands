@@ -125,16 +125,18 @@ These four rules apply to all publication figures with shared axes or shared leg
 
 ### Rule 1 — Shared y-axis row
 
-When a row of panels shares the same y-axis scale, show the y-axis title and tick labels on the leftmost panel only. Suppress them on all other panels in the row. Set tight margins on the shared sides so panels appear to touch. This prevents the y-axis from being visually doubled and wastes no space on repeated labels.
+When a row of panels shares the same y-axis scale, show the y-axis title and tick **labels** on the leftmost panel only. Suppress the labels and title on all other panels in the row, but **never suppress the tick marks** — tick marks must remain visible on all four sides of every panel. Set tight margins on the shared sides so panels appear to touch.
+
+`theme_pub()` now draws inward ticks on all four sides of every panel by default (via `axis.ticks.x.top`, `axis.ticks.y.right`, and their corresponding `axis.ticks.length.*` elements). On non-leftmost panels, suppress only `axis.text.y`. Suppress the y-axis title via `labs(y = NULL)` or `axis.title.y = element_blank()`. Never set `axis.ticks.y = element_blank()` on a shared-axis panel.
 
 ```r
 # Leftmost panel (a): normal y-axis
 p_a <- p_a + theme(plot.margin = margin(t=5, r=2, b=5, l=5, unit="pt"))
 
-# Non-leftmost panels (b, c): suppress y-axis and tighten left margin
+# Non-leftmost panels (b, c): suppress labels and title only — keep tick marks
 p_b <- p_b + theme(
   axis.text.y  = element_blank(),
-  axis.ticks.y = element_blank(),
+  axis.ticks.y = element_line(color = "black", linewidth = 0.4),  # keep marks visible
   axis.title.y = element_blank(),   # or set y = NULL in labs()
   plot.margin  = margin(t=5, r=2, b=5, l=2, unit="pt")
 )
