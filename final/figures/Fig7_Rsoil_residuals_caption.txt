@@ -1,0 +1,7 @@
+Figure 7. Residuals (predicted minus observed) for three Rsoil models under non-pulse and pulse conditions at US-Wkg (Walnut Gulch Kendall), 2017–2020 (n = 1994 chamber observations; Non-pulse: n = 1232, Pulse: n = 762).
+
+Boxes show the interquartile range (IQR); horizontal line within each box is the median; whiskers extend to 1.5 × IQR; outliers are omitted for clarity. Dashed grey line at y = 0 is the reference for unbiased prediction.
+
+Three models are compared: Mean (white boxes) — single lumped model fitted to all days (Pred_All); P-NP switch (grey 70%) — separate models for pulse and non-pulse days defined by rainfall-event windows (Pred_PN); Threshold switch (grey 30%) — separate models switched by an optimised SWC threshold (Pred_Thr; optimal threshold = 0.13, identified by grid search in script 14).
+
+Y-axis scale is shared with Figure 6 (Reco residuals): limits set to the combined 5th–95th percentile of Reco and Rsoil residuals across all three models (-0.54 to 0.38 µmol CO₂ m⁻² s⁻¹), allowing direct visual comparison of bias magnitude between eddy covariance (Reco, 2013–2020, n ≈ 2898 days) and chamber (Rsoil, 2017–2020, n = 1994 observations) model fits. Note that the Rsoil dataset is smaller and covers a shorter period than the Reco dataset.
