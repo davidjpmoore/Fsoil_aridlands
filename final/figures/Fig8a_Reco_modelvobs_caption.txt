@@ -1,0 +1,5 @@
+Figure 8a. Reco model performance at US-Wkg (Walnut Gulch Kendall), 2013–2020 (n = 2898 daily observations).
+
+Panel (a): Observed vs predicted daily Reco for three models. Each point represents one day. White circles: Mean model (single lumped fit); grey circles: P-NP switch model (separate pulse/non-pulse fits, rainfall-event classification); black circles: 15% threshold model (SWC-threshold switch). Dashed line is the 1:1 reference. Point alpha = 0.4 to indicate overplotting density. Axis limits set to the range of observed values.
+
+Panel (b): Cumulative bias (running sum of predicted minus observed) over time for each model. Line types: solid = Mean; dashed = P-NP switch; dotted = 15% threshold. Grey horizontal line at zero is the reference for unbiased cumulative prediction. Persistent positive values indicate systematic over-prediction; persistent negative values indicate under-prediction.

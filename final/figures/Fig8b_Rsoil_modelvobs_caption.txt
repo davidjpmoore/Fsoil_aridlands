@@ -1,0 +1,7 @@
+Figure 8b. Rsoil model performance at US-Wkg (Walnut Gulch Kendall), 2017–2020 (n = 1994 chamber observations).
+
+Panel (a): Observed vs predicted daily Rsoil for three models. Each point represents one day. White circles: Mean model (single lumped fit, Pred_All); grey circles: P-NP switch model (separate pulse/non-pulse fits, rainfall-event classification, Pred_PN); black circles: Threshold switch model (SWC-threshold switch, optimal threshold = 0.13, Pred_Thr). Dashed line is the 1:1 reference. Point alpha = 0.4 to indicate overplotting density. Axis limits set to the range of observed Rsoil values.
+
+Panel (b): Cumulative bias (running sum of predicted minus observed) over the 2017–2020 chamber period for each model. Line types: solid = Mean; dashed = P-NP switch; dotted = Threshold switch. Grey horizontal line at zero is the reference for unbiased cumulative prediction.
+
+Note: Rsoil observations (n = 1994 days, 2017–2020) cover a shorter period than the Reco eddy covariance record (n ≈ 2898 days, 2013–2020). The chamber dataset reflects 7-port automated Rsoil measurements (LI-COR); daily means are used throughout.
