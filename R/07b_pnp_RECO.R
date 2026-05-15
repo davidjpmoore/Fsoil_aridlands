@@ -167,6 +167,14 @@ write_csv(metrics, "out/derived/metrics_RECO_PNP.csv")
 message("\nMetrics (written to out/derived/metrics_RECO_PNP.csv):")
 print(metrics)
 
+preds_pnp <- out %>%
+  left_join(select(ys1, date, meanSWC5), by = "date") %>%
+  mutate(PulseFlag = as.integer(max_pulse_duration > 0)) %>%
+  select(date, meanRECO, MeanM_PN, Reco_PNP, NonPulseM_PN, PulseM_PN,
+         meanSWC5, max_pulse_duration, PulseFlag)
+write_csv(preds_pnp, "out/derived/RECO_predictions_PNP.csv")
+message("Per-day predictions written to out/derived/RECO_predictions_PNP.csv")
+
 # --- 6. Figures --------------------------------------------------------------
 
 # Time-series scatter: observed vs all three model overlays

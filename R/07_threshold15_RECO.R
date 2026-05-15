@@ -89,6 +89,14 @@ write_csv(metrics, "out/derived/metrics_RECO_15.csv")
 message("\nMetrics (written to out/derived/metrics_RECO_15.csv):")
 print(metrics)
 
+preds_15 <- out %>%
+  left_join(select(ys1, date, meanSWC5, max_pulse_duration), by = "date") %>%
+  mutate(PulseFlag = as.integer(max_pulse_duration > 0)) %>%
+  select(date, meanRECO, MeanM_15, Reco_Combined, NonPulseM_15, PulseM_15,
+         meanSWC5, max_pulse_duration, PulseFlag)
+write_csv(preds_15, "out/derived/RECO_predictions_15.csv")
+message("Per-day predictions written to out/derived/RECO_predictions_15.csv")
+
 p_ts <- ggplot(out, aes(date)) +
   geom_point(aes(y=meanRECO), color="blue", size=0.8) +
   geom_point(aes(y=NonPulseM_15), color="red",   size=0.5, alpha=.6) +
