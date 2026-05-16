@@ -1,0 +1,24 @@
+Fig. 9. Model-predicted disproportionate contribution of pulse days to annual
+ecosystem respiration (RECO) at US-Wkg (Walnut Gulch, AZ), 2013-2020.
+
+Each panel plots the fraction of annual model-predicted RECO that fell on
+rainfall-event pulse days (y-axis) against the fraction of days per year
+classified as pulse days (x-axis), following the structure of Fig. 2c.
+Panels compare three model variants:
+  (a) Mean - single parameter set fitted to all days;
+  (b) P-NP switch - separate parameter sets for pulse and non-pulse days,
+      switching on the rainfall-event criterion (max_pulse_duration > 0);
+  (c) 15% threshold switch - separate parameter sets for days with soil water
+      content at 5 cm >= or < 15%, switching on the SWC threshold.
+
+Black filled circles: model-predicted pulse fraction of annual RECO (one
+point per year). Grey filled circles: observed RECO from eddy-covariance
+(identical across all panels, reproduced from Fig. 2c for reference).
+The dashed 1:1 line indicates equal pulse-day and pulse-RECO fractions;
+points above this line indicate a disproportionately large pulse contribution.
+
+Pulse days are defined by the rainfall-event criterion throughout (daily
+precipitation > 5 mm triggers an 8-20 day window depending on amount;
+CLAUDE.md for full definition). This common definition is applied to all
+three panels so contributions are directly comparable. 2012 is excluded
+due to sparse data coverage.
