@@ -1,5 +1,15 @@
 # CLAUDE.md — Project Context for Fsoil_aridlands
 
+## Session Continuity
+
+At the start of every session, read `next_steps.md` in the project root.
+Compare the timestamp in the file header to the current date.
+If the file is from a previous session, summarise the open items to the PI
+before doing anything else. Do not begin new work until the PI has
+acknowledged the outstanding items.
+
+---
+
 ## Scientific Context
 
 This project studies **ecosystem and soil respiration responses to rainfall pulse events** in an arid grassland ecosystem at the **US-Wkg site** (Walnut Gulch Experimental Watershed, Arizona). The central hypothesis is that post-rain "pulse" periods disproportionately drive annual respiration, and that separate models for pulse vs. non-pulse conditions outperform a single lumped model.
