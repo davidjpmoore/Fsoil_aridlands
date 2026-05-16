@@ -121,12 +121,20 @@ p_a <- ggplot(df_scatter, aes(x = Observed, y = Predicted, fill = Model)) +
   scale_x_continuous(expand = expansion(mult = c(0, 0))) +
   scale_y_continuous(expand = expansion(mult = c(0, 0))) +
   labs(x = LABEL_OBS, y = LABEL_PRED) +
-  annotate("text", x = Inf, y = Inf, label = "a",
-           hjust = 1.3, vjust = 1.3, fontface = "bold", size = 5) +
+  annotate("text", x = -Inf, y = Inf, label = "a",
+           hjust = -0.3, vjust = 1.3, fontface = "bold", size = 5) +
+  guides(fill = guide_legend(
+    override.aes = list(shape = 21, size = 3, alpha = 1, stroke = 0.4, color = "black")
+  )) +
   theme_pub() +
   theme(
-    legend.position = "none",
-    plot.margin     = margin(5, 5, 5, 5, "pt")
+    legend.position       = c(0.03, 0.90),
+    legend.justification  = c("left", "top"),
+    legend.background     = element_blank(),
+    legend.box.background = element_blank(),
+    legend.text           = element_text(size = 9),
+    legend.key.size       = unit(0.85, "lines"),
+    plot.margin           = margin(5, 5, 5, 5, "pt")
   )
 
 # --- 7. Panel b: cumulative residual time series ------------------------------
@@ -137,11 +145,11 @@ p_b <- ggplot(df_cumul, aes(x = date, y = CumResid, linetype = Model)) +
   scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
   scale_y_continuous(expand = expansion(mult = c(0.05, 0.05))) +
   labs(x = NULL, y = LABEL_CUM) +
-  annotate("text", x = Inf, y = Inf, label = "b",
-           hjust = 1.3, vjust = 1.3, fontface = "bold", size = 5) +
+  annotate("text", x = -Inf, y = Inf, label = "b",
+           hjust = -0.3, vjust = 1.3, fontface = "bold", size = 5) +
   theme_pub() +
   theme(
-    legend.position       = c(0.03, 0.97),
+    legend.position       = c(0.03, 0.90),
     legend.justification  = c("left", "top"),
     legend.background     = element_blank(),
     legend.box.background = element_blank(),
