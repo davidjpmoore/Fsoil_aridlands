@@ -1,0 +1,3 @@
+Figure 10. Daily ecosystem respiration (Reco) at US-Wkg (Walnut Gulch Kendall, Arizona), 2013–2020 (n = 2898 daily observations).
+
+Grey filled circles show observed daily mean Reco from eddy covariance gap-filling and flux partitioning (shape 21, fill = grey40, alpha = 0.4). Three model predictions are overlaid as black lines: solid = Mean model (single lumped fit, all days); dashed = P-NP switch model (separate pulse and non-pulse fits using rainfall-event classification); dotted = 15% threshold model (SWC-threshold switch at soil water content ≥ 15%). Year 2012 excluded due to sparse coverage.

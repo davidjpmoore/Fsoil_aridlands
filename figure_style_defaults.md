@@ -178,7 +178,9 @@ dev.off()
 
 ### Rule 3 — Panel labels inside the plot area
 
-Place panel labels (a, b, c, …) inside the plotting area using `annotate()`. Do not use `ggpubr::ggarrange(labels = …)` or add them to the margin. Inside placement keeps labels within the figure bounding box, prevents them from being cropped by journal layout systems, and keeps the panel label visually associated with the data it labels.
+Panel labels (a, b, c, …) are only required when a figure contains two or more panels. Single-panel figures do not need a panel label.
+
+Place panel labels inside the plotting area using `annotate()`. Do not use `ggpubr::ggarrange(labels = …)` or add them to the margin. Inside placement keeps labels within the figure bounding box, prevents them from being cropped by journal layout systems, and keeps the panel label visually associated with the data it labels.
 
 ```r
 # Add to every panel — change only the label string
